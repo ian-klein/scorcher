@@ -6,7 +6,8 @@ class PageNavigator {
     constructor() {
         this.pages = {
             scoreEntry: document.querySelector('[data-page="score-entry"]'),
-            review: document.querySelector('[data-page="review"]')
+            review: document.querySelector('[data-page="review"]'),
+            results: document.querySelector('[data-page="results"]')
         };
     }
 
@@ -23,6 +24,14 @@ class PageNavigator {
     }
 
     init() {
+        // Results button - navigate to results page
+        const resultsBtn = document.getElementById('resultsBtn');
+        if (resultsBtn) {
+            resultsBtn.addEventListener('click', () => {
+                this.showPage('results');
+            });
+        }
+
         // Review button - navigate to review page
         const reviewBtn = document.getElementById('reviewBtn');
         if (reviewBtn) {
@@ -31,10 +40,18 @@ class PageNavigator {
             });
         }
 
-        // Back button - navigate to score entry page
+        // Back button (from review page) - navigate to score entry page
         const backBtn = document.getElementById('backBtn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
+                this.showPage('scoreEntry');
+            });
+        }
+
+        // Back button (from results page) - navigate to score entry page
+        const resultsBackBtn = document.getElementById('resultsBackBtn');
+        if (resultsBackBtn) {
+            resultsBackBtn.addEventListener('click', () => {
                 this.showPage('scoreEntry');
             });
         }
@@ -44,6 +61,14 @@ class PageNavigator {
         if (submitBtn) {
             submitBtn.addEventListener('click', () => {
                 console.log('Submit button clicked - functionality to be implemented');
+            });
+        }
+
+        // Download button - placeholder for now
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+                console.log('Download button clicked - functionality to be implemented');
             });
         }
     }

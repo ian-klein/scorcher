@@ -147,16 +147,12 @@ export class ScoreEntryController {
         this.saveCurrentScore();
         console.log('Results button clicked');
         console.log('Current scores:', this.scores);
-        // TODO: Navigate to results page
-        alert('Results page - To be implemented');
     }
 
     handleReview() {
         this.saveCurrentScore();
         console.log('Review button clicked');
         console.log('Current scores:', this.scores);
-        // TODO: Navigate to review page
-        alert('Review page - To be implemented');
     }
 
     // Public method to get all scores
