@@ -1,0 +1,31 @@
+We are going to create simple web app designed for entering your hole-by-hole score after a round of golf. I want you to create the index.html and styles.css, and some basic wiring of the controls so that we can see what all the pages look like. I will write the bulk of the javascript code. It will be a single page application with a modern feel, and all sizing will be responsive. It is mainly designed to run on smartphones, but will also work on tablets and desktops. The application consists of 4 pages: an identification page, the main score entry page, a score review page and an admin page.
+
+The identification page is a simple page tha identifies the scorcher app, and contains a single field in which the user enters their email address. There is a single "Continue" button that will display the main score entry page.
+
+The main score entry page has 4 vertical sections: header, hole score, keypad and control. The header consists of the competition name, and the date, and underneath that the player name, their handicap index and their playing handicap. The hole score section is a group of controls for entering the score for a hole. This group consists of the a label with the hole number (centered) and undernath that a left arrow, an input box, a read-only text field and a right arrow. Beneath this is the keypad section:  a numeric keypad, laid out in 4 rows  1-2-3, 4-5-6, 7-8-9, X-0-DEL . Beneath this is the control section, which contains two buttons - "Results" on the left, and "Review" on the right.  The size of the keypad should be similar to the standrd numeric enttry keypad on smartphones, but each key is a bit squarer to make room for the left and right buttons either side of the keypad.
+
+The score review page has the same header as the main score page, but underneath shows the scores for each hole in two columns. Each column has a label for the hole number, and two spans for holding 2 digit numbers - so in total each row of the data has 6 numbers - hole, score, points, hole score points. The first column has holes 1 - 9, and the second column holes 10 to 18. There will be 10 rows in the table: the first 9 have the hole by hole scores, row 10 has the total of the points for each half. Undernath the table, is a summary of the overall score for 18 holes, and undernath that a section containing 2 buttons - "Back" and "Submit". The "Back" button will return to the main score entry page, and the "Submit" button will submit the scores to the server.
+
+The admin has an option list tat allows the selection of a competition. Underneath is a table of all the players who enterd scores for tt competitin and their score (two columns). Undernath that is a download button for retrieving the data as a CSV file.
+
+All the controls on all the pages should be neatly laid out and lined up sing modern styling.
+
+The javascript should be modular, with the source files in the js directory.
+
+=======================================================================================================
+
+We are going to create a web app that is designed to be run on a smart phone. All the sizes of the DOM elements should be responsive. There wil be several pages, each with its own set of controls. Each page will be defined in a section element, and the section element will have a data attribute to identify the page. The first page to design wil be the "score entry" page, which shoud have data attribte of "score-entry". The score entry page has 4 vertical sections: header, hole, keypad and buttons.
+
+The header consists of the competition name,the date, the player name, their handicap index and their playing handicap. 
+
+The hole section Consists of a span that will display the hole number, and undernath that a group of 3 controls that are horizontally aligned - a left arrow, a input box, and a right arrow. The input box will have enough space to show a two digit  number in 16pt font., and the left and right arrows will be used to navigate between holes.
+
+The keypad section is a numeric keypad, laid out in 4 rows  1-2-3, 4-5-6, 7-8-9, X-0-DEL, similar to the numeric keypad you tyoically see on smart phones.
+
+The buttons section consists of two buttons:"Results" on the left, and "Review" on the right. 
+
+The page shoud fit nicely on most smartphones without scrolling. There is plenty of vertical space in all phne form factors.
+
+Now generate the index.html, styles.css and modular javascipt ecessary to render this page.
+
+
