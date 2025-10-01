@@ -29,3 +29,6 @@ The page shoud fit nicely on most smartphones without scrolling. There is plenty
 Now generate the index.html, styles.css and modular javascipt ecessary to render this page.
 
 
+Let us add the next page of the application. It is displayed when the user taps "Review". The header remains the same as the score entry page. Undernath the header is a table with two (overall) columns that each take up half the available width (with padding), headings are "Out" and "Back". There are then 9 rows of data that have 6 data cells each. The data cells are read only, and have room for 2 digits. The data is the hole number, the score and the points (if needed). In the Out column the holes are 1 - 9, and in the Back column the holes are 10 - 18. The 10th row has the total of the points for each half. Undernath the table, is a summary of the overall score for 18 holes, and undernath that a section containing 2 buttons - "Back" and "Submit". The "Back" button will return to the main score entry page, and the "Submit" button will submit the scores to the server.
+
+Add this page to the HTML and add the javascript to do the navigation between the pages. For now, the Submit button does nothing, Just wire the Back button to display the score entry page.

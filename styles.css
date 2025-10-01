@@ -313,9 +313,165 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* Review Page Styles */
+.page[data-page="review"] {
+    padding: clamp(0.6rem, 1.2vh, 0.9rem) clamp(0.9rem, 4vw, 1.2rem);
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+}
+
+.score-table-section {
+    background: var(--card-bg);
+    padding: clamp(0.7rem, 1.6vh, 1rem);
+    border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
+    box-shadow: var(--shadow);
+    margin-bottom: clamp(0.6rem, 1.4vh, 0.9rem);
+    flex-shrink: 0;
+}
+
+.score-table-container {
+    display: flex;
+    gap: clamp(0.6rem, 2vw, 1rem);
+}
+
+.score-column {
+    flex: 1;
+    min-width: 0;
+}
+
+.column-header {
+    text-align: center;
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: clamp(0.4rem, 1vh, 0.6rem);
+    padding-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.score-grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.1rem, 0.3vh, 0.15rem);
+}
+
+.score-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.3rem, 1vw, 0.5rem);
+}
+
+.score-row.header-row {
+    margin-bottom: clamp(0.15rem, 0.4vh, 0.25rem);
+    padding-bottom: clamp(0.15rem, 0.4vh, 0.25rem);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.score-row.header-row .score-cell {
+    font-weight: 600;
+    font-size: clamp(0.7rem, 2.8vw, 0.85rem);
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+.score-row.total-row {
+    margin-top: clamp(0.15rem, 0.4vh, 0.25rem);
+    border-top: 1px solid var(--border-color);
+    padding-top: clamp(0.15rem, 0.4vh, 0.25rem);
+}
+
+.score-row.total-row .score-cell {
+    font-weight: 700;
+    background: transparent;
+}
+
+.score-row.overall-total-row {
+    margin-top: clamp(0.2rem, 0.5vh, 0.3rem);
+    border-top: 2px solid var(--primary-color);
+    padding-top: clamp(0.2rem, 0.5vh, 0.3rem);
+}
+
+.score-row.overall-total-row .score-cell {
+    font-weight: 700;
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+    background: transparent;
+    color: var(--primary-color);
+}
+
+.score-cell {
+    text-align: center;
+    padding: clamp(0.2rem, 0.5vh, 0.3rem) clamp(0.2rem, 0.5vw, 0.3rem);
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    min-width: 0;
+}
+
+.score-cell.hole-num {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.summary-section {
+    background: var(--card-bg);
+    padding: clamp(0.7rem, 1.6vh, 1rem);
+    border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
+    box-shadow: var(--shadow);
+    margin-bottom: clamp(0.6rem, 1.4vh, 0.9rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.4rem, 1vh, 0.6rem);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: clamp(0.4rem, 1vh, 0.6rem);
+    background: var(--bg-color);
+    border-radius: clamp(0.3rem, 1vw, 0.5rem);
+}
+
+.summary-label {
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.summary-value {
+    font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+}
+
+.back-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+}
+
+.submit-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* Responsive adjustments for larger screens */
 @media (min-width: 768px) {
-    .page[data-page="score-entry"] {
+    .page[data-page="score-entry"],
+    .page[data-page="review"] {
         max-width: 500px;
         margin: 0 auto;
     }

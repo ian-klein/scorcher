@@ -78,6 +78,167 @@
         </div>
     </section>
 
+    <!-- Review Page -->
+    <section class="page" data-page="review" style="display: none;">
+        <!-- Header Section (same as score entry) -->
+        <div class="header">
+            <div class="competition-info">
+                <div class="competition-name" id="reviewCompetitionName">Club Championship 2025</div>
+                <div class="competition-date" id="reviewCompetitionDate">October 1, 2025</div>
+            </div>
+            <div class="player-info">
+                <div class="player-name" id="reviewPlayerName">John Smith</div>
+                <div class="handicap-info">
+                    <span class="handicap-label">HI:</span>
+                    <span class="handicap-index" id="reviewHandicapIndex">12.4</span>
+                    <span class="handicap-separator">|</span>
+                    <span class="handicap-label">PH:</span>
+                    <span class="playing-handicap" id="reviewPlayingHandicap">14</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Score Table Section -->
+        <div class="score-table-section">
+            <div class="score-table-container">
+                <div class="score-column">
+                    <div class="column-header">Out</div>
+                    <div class="score-grid">
+                        <div class="score-row header-row">
+                            <div class="score-cell">Hole</div>
+                            <div class="score-cell">Score</div>
+                            <div class="score-cell">Pts</div>
+                        </div>
+                        <!-- Holes 1-9 -->
+                        <div class="score-row" data-hole="1">
+                            <div class="score-cell hole-num">1</div>
+                            <div class="score-cell score-val" id="score-1">-</div>
+                            <div class="score-cell pts-val" id="pts-1">-</div>
+                        </div>
+                        <div class="score-row" data-hole="2">
+                            <div class="score-cell hole-num">2</div>
+                            <div class="score-cell score-val" id="score-2">-</div>
+                            <div class="score-cell pts-val" id="pts-2">-</div>
+                        </div>
+                        <div class="score-row" data-hole="3">
+                            <div class="score-cell hole-num">3</div>
+                            <div class="score-cell score-val" id="score-3">-</div>
+                            <div class="score-cell pts-val" id="pts-3">-</div>
+                        </div>
+                        <div class="score-row" data-hole="4">
+                            <div class="score-cell hole-num">4</div>
+                            <div class="score-cell score-val" id="score-4">-</div>
+                            <div class="score-cell pts-val" id="pts-4">-</div>
+                        </div>
+                        <div class="score-row" data-hole="5">
+                            <div class="score-cell hole-num">5</div>
+                            <div class="score-cell score-val" id="score-5">-</div>
+                            <div class="score-cell pts-val" id="pts-5">-</div>
+                        </div>
+                        <div class="score-row" data-hole="6">
+                            <div class="score-cell hole-num">6</div>
+                            <div class="score-cell score-val" id="score-6">-</div>
+                            <div class="score-cell pts-val" id="pts-6">-</div>
+                        </div>
+                        <div class="score-row" data-hole="7">
+                            <div class="score-cell hole-num">7</div>
+                            <div class="score-cell score-val" id="score-7">-</div>
+                            <div class="score-cell pts-val" id="pts-7">-</div>
+                        </div>
+                        <div class="score-row" data-hole="8">
+                            <div class="score-cell hole-num">8</div>
+                            <div class="score-cell score-val" id="score-8">-</div>
+                            <div class="score-cell pts-val" id="pts-8">-</div>
+                        </div>
+                        <div class="score-row" data-hole="9">
+                            <div class="score-cell hole-num">9</div>
+                            <div class="score-cell score-val" id="score-9">-</div>
+                            <div class="score-cell pts-val" id="pts-9">-</div>
+                        </div>
+                        <div class="score-row total-row">
+                            <div class="score-cell"></div>
+                            <div class="score-cell" id="out-score-total">-</div>
+                            <div class="score-cell" id="out-pts-total">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="score-column">
+                    <div class="column-header">Back</div>
+                    <div class="score-grid">
+                        <div class="score-row header-row">
+                            <div class="score-cell">Hole</div>
+                            <div class="score-cell">Score</div>
+                            <div class="score-cell">Pts</div>
+                        </div>
+                        <!-- Holes 10-18 -->
+                        <div class="score-row" data-hole="10">
+                            <div class="score-cell hole-num">10</div>
+                            <div class="score-cell score-val" id="score-10">-</div>
+                            <div class="score-cell pts-val" id="pts-10">-</div>
+                        </div>
+                        <div class="score-row" data-hole="11">
+                            <div class="score-cell hole-num">11</div>
+                            <div class="score-cell score-val" id="score-11">-</div>
+                            <div class="score-cell pts-val" id="pts-11">-</div>
+                        </div>
+                        <div class="score-row" data-hole="12">
+                            <div class="score-cell hole-num">12</div>
+                            <div class="score-cell score-val" id="score-12">-</div>
+                            <div class="score-cell pts-val" id="pts-12">-</div>
+                        </div>
+                        <div class="score-row" data-hole="13">
+                            <div class="score-cell hole-num">13</div>
+                            <div class="score-cell score-val" id="score-13">-</div>
+                            <div class="score-cell pts-val" id="pts-13">-</div>
+                        </div>
+                        <div class="score-row" data-hole="14">
+                            <div class="score-cell hole-num">14</div>
+                            <div class="score-cell score-val" id="score-14">-</div>
+                            <div class="score-cell pts-val" id="pts-14">-</div>
+                        </div>
+                        <div class="score-row" data-hole="15">
+                            <div class="score-cell hole-num">15</div>
+                            <div class="score-cell score-val" id="score-15">-</div>
+                            <div class="score-cell pts-val" id="pts-15">-</div>
+                        </div>
+                        <div class="score-row" data-hole="16">
+                            <div class="score-cell hole-num">16</div>
+                            <div class="score-cell score-val" id="score-16">-</div>
+                            <div class="score-cell pts-val" id="pts-16">-</div>
+                        </div>
+                        <div class="score-row" data-hole="17">
+                            <div class="score-cell hole-num">17</div>
+                            <div class="score-cell score-val" id="score-17">-</div>
+                            <div class="score-cell pts-val" id="pts-17">-</div>
+                        </div>
+                        <div class="score-row" data-hole="18">
+                            <div class="score-cell hole-num">18</div>
+                            <div class="score-cell score-val" id="score-18">-</div>
+                            <div class="score-cell pts-val" id="pts-18">-</div>
+                        </div>
+                        <div class="score-row total-row">
+                            <div class="score-cell"></div>
+                            <div class="score-cell" id="back-score-total">-</div>
+                            <div class="score-cell" id="back-pts-total">-</div>
+                        </div>
+                        <div class="score-row overall-total-row">
+                            <div class="score-cell">Total</div>
+                            <div class="score-cell" id="overall-score-total">-</div>
+                            <div class="score-cell" id="overall-pts-total">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Buttons Section -->
+        <div class="buttons-section">
+            <button class="action-btn back-btn" id="backBtn">Back</button>
+            <button class="action-btn submit-btn" id="submitBtn">Submit</button>
+        </div>
+    </section>
+
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
