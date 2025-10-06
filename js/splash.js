@@ -2,7 +2,7 @@
 'use strict';
 
 import { getCompetition, isValidEmail, getPlayer } from './data.js';
-import { navigator } from './navigator.js';
+import { pageNavigator } from './page-navigator.js';
 
 const EMAIL_STORAGE_KEY = 'email_v1';
 
@@ -33,7 +33,7 @@ export class SplashScreen {
         }
 
         const comp = getCompetition();
-        navigator.competition = comp;
+        pageNavigator.competition = comp;
 
         if (comp.type === 'team') {
             this.displayMessage('Do not use this app for team competitions - just put your signed, completed card in the box');
@@ -65,9 +65,9 @@ function onSubmitEmailClick(splashScreen) {
             return;
         }
         localStorage.setItem(EMAIL_STORAGE_KEY, email);
-        navigator.player = getPlayer(email);
+        pageNavigator.player = getPlayer(email);
 
         splashScreen.hide();
-        navigator.showPage('scoreEntry');
+        pageNavigator.showPage('scoreEntry');
     }
 }    

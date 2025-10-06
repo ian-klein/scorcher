@@ -2,7 +2,7 @@
 
 'use strict'
 
-class Navigator {
+class PageNavigator {
     constructor() {
         this.pages = {
             scoreEntry: document.querySelector('[data-page="score-entry"]'),
@@ -27,4 +27,4 @@ class Navigator {
     }
 }
 
-export const navigator = new Navigator();
+export const pageNavigator = new PageNavigator();
