@@ -23,10 +23,11 @@ export class SplashScreen {
             this.emailInput.value = email;
         }
 
-        //Check that today is a wednesday
+        //Check that today is a Wednesday
         const today = new Date();
         const day = today.getDay();
-        if (day !== 3) {
+        const isDayEnforced = false;
+        if (day !== 3 && isDayEnforced) {
             this.displayMessage('There is no competition today - it is not a Wednesday!');
             this.submitEmail.disabled = true;
         }
