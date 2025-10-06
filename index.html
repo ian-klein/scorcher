@@ -9,8 +9,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Splash Screen -->
+    <section class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <img src="images/scorcher.png" alt="Scorcher Logo" class="splash-logo">
+            <div class="splash-title">Scorcher - Scorecard Checker</div>
+            <div class="splash-controls" id="splashControls" style="display: flex;">
+                <div class="email-input-group" id="emailInputGroup">
+                    <input type="email" id="emailInput" placeholder="Enter your email">
+                    <button type="button" id="submitEmail">OK</button>
+                    <span id="splashMessage" class="splash-message">Messages go here</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Score Entry Page -->
-    <section class="page" data-page="score-entry">
+    <section class="page" data-page="score-entry" style="display: none;">
         <!-- Header Section -->
         <div class="header">
             <div class="competition-info">
