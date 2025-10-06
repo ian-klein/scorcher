@@ -1,8 +1,7 @@
 'use strict'
 
-import { SplashScreen } from './splash.js';
+import { splashScreen } from './splash.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const splashScreen = new SplashScreen();
     splashScreen.init();
 });

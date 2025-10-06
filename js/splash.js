@@ -6,7 +6,7 @@ import { pageNavigator } from './page-navigator.js';
 
 const EMAIL_STORAGE_KEY = 'email_v1';
 
-export class SplashScreen {
+class SplashScreen {
     constructor() {
         this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
@@ -71,3 +71,5 @@ function onSubmitEmailClick(splashScreen) {
         pageNavigator.showPage('scoreEntry');
     }
 }    
+
+export const splashScreen = new SplashScreen();
