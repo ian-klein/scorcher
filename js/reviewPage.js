@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { pageNavigator } from './page-navigator.js';
+import { pageNavigator } from './pageNavigator.js';
 
 class ReviewPage {
     constructor() {

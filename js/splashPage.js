@@ -2,12 +2,12 @@
 'use strict';
 
 import { getCompetition, isValidEmail, getPlayer } from './data.js';
-import { pageNavigator } from './page-navigator.js';
-import { scoreEntry } from './score-entry.js';
+import { pageNavigator } from './pageNavigator.js';
+import { scoreEntryPage } from './scoreEntryPage.js';
 
 const EMAIL_STORAGE_KEY = 'email_v1';
 
-class SplashScreen {
+class SplashPage {
     constructor() {
         this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
@@ -66,10 +66,10 @@ class SplashScreen {
             pageNavigator.player = getPlayer(email);
     
             this.hide();
-            scoreEntry.init();
+            scoreEntryPage.init();
             pageNavigator.showPage('scoreEntry');
         }
-    }    
+    }
     
     onEmailInputInput() {
         const email = this.emailInput.value.trim();
@@ -82,4 +82,4 @@ class SplashScreen {
     }
 }
 
-export const splashScreen = new SplashScreen();
+export const splashPage = new SplashPage();
