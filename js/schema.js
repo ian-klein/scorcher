@@ -4,6 +4,8 @@ export class Player {
         this.hi = 0;
         this.gender = '';
         this.ph = null;
+        this.tees = null;
+        this.shots = null;
     }
 }
 
@@ -17,15 +19,8 @@ export class Competition {
 
 export class Scores {
     constructor() {
-        this.gross = new Array(18).fill(null);
-        this.points = new Array(18).fill(null);
-    }
-
-    totalGross() {
-        return this.gross.reduce((total, value) => total + value, 0);
-    }
-
-    totalPoints() {
-        return this.points.reduce((total, value) => total + value, 0);
+        this.gross = new Array(18).fill(null);      //Gross scor for each hole
+        this.points = new Array(18).fill(null);     //Stableford pponts for each hole
+        this.adjusted = new Array(18).fill(null);   //Stablefors adjusted score for each hole
     }
 }

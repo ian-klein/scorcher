@@ -119,7 +119,36 @@ class ScoreEntryPage {
     saveCurrentScore() {
         const score = this.scoreInput.value;
         this.scores.gross[this.currentHole - 1] = score;
+        this.scores.points[this.currentHole - 1] = this.calculatePoints();
+        this.scores.adjusted[this.currentHole - 1] = this.calculateAdjusted();
     }
+
+    calculatePoints() {
+        const score = this.scores.gross[this.currentHole - 1]
+
+        if (!score || score === 'X' || score === '' || score === 0) {
+            return 0;
+        } else {
+            const par = pageNavigator.player.tees.par[this.currentHole - 1];
+            const nett = score - pageNavigator.player.shots[this.currentHole - 1];
+
+            const points = Math.max(0,  par-nett + 2);
+            return points;
+        }
+    }
+    
+    calculateAdjusted() {
+        const score = this.scores.gross[this.currentHole - 1];
+        const par = pageNavigator.player.tees.par[this.currentHole - 1];
+        const shots = pageNavigator.player.shots[this.currentHole - 1];
+
+        if (!score || score === 'X' || score === '' || score === 0) {
+            return par + shots + 2;
+        } else {
+            return Math.min(par + shots + 2, score);
+        }
+    }
+
 
     onResultsBtnClick() {
         this.saveCurrentScore();

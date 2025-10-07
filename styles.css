@@ -429,6 +429,19 @@ button[disabled],
     color: var(--primary-color);
 }
 
+.score-row.nett-total-row {
+    margin-top: clamp(0.2rem, 0.5vh, 0.3rem);
+    border-top: 2px solid var(--primary-color);
+    padding-top: clamp(0.2rem, 0.5vh, 0.3rem);
+}
+
+.score-row.nett-total-row .score-cell {
+    font-weight: 700;
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+    background: transparent;
+    color: var(--primary-color);
+}
+
 .score-cell {
     text-align: center;
     padding: clamp(0.2rem, 0.5vh, 0.3rem) clamp(0.2rem, 0.5vw, 0.3rem);

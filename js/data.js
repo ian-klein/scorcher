@@ -23,7 +23,30 @@ export function getPlayer(email) {
         p.gender = 'male';
     }
 
-    p.ph = calcPH(p.gender, p.hi);
+    //Add caluculated fields to the player (tees, playing handicap and shots given per hole)
+
+    if (p.gender === 'male') {
+        p.tees = course.male.white;
+    } else {
+        p.tees = course.female.gold;
+    }
+
+    p.ph = Math.round((p.hi * p.tees.sr / 113 + (p.tees.cr - p.tees.parTotal)) * 0.95);
+
+    //Calculate how many shots are given on each hole for this player
+    p.shots = new Array(18).fill(0);
+    
+    const base = Math.trunc(p.ph/18);
+    const modulo = p.ph % 18;
+    for (let i = 0; i < 18; i++) {
+        const si = p.tees.si[i];
+        if (modulo >= si) {
+            p.shots[i] = base + 1;
+        } else {
+            p.shots[i] = base;
+        }
+    }
+
     return p;
 }
 
@@ -53,17 +76,6 @@ export function getCompetition() {
     }
 
     return c;
-}
-
-function calcPH(gender, hi) {
-    let tees = null;
-    if (gender === 'male') {
-        tees = course.male.white;
-    } else {
-        tees = course.female.gold;
-    }
-
-    return Math.round((hi * tees.sr / 113 + tees.cr - tees.parTotal) * 0.95);
 }
 
 export const course = {
