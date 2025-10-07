@@ -24,6 +24,7 @@ class ReviewPage {
         this.backPointsTotal = document.getElementById('back-pts-total');
         this.overallPointsTotal = document.getElementById('overall-pts-total');
 
+        this.holeControls = document.querySelectorAll('.hole-num');
         this.scoreControls = document.querySelectorAll('.score-val');
         this.pointsControls = document.querySelectorAll('.pts-val');
 
@@ -52,6 +53,10 @@ class ReviewPage {
     }
 
     renderScores() {
+        this.holeControls.forEach((control, index) => {
+            control.textContent = (index + 1).toString() + '(' + pageNavigator.player.tees.par[index] + ')';
+        });
+
         this.scoreControls.forEach((control, index) => {
             control.textContent = pageNavigator.scores.gross[index];
         });
