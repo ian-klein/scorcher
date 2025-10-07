@@ -58,7 +58,7 @@ export function getPlayer(email) {
 export function getCompetition() {
     const c = new Competition();
 
-    c.name = '08/10 Millers Stableford';
+    c.name = '08/10 Millers Medal';
     c.date = '08/10/2025';
 
     //Determine the type of competition

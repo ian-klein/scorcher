@@ -53,16 +53,16 @@ class ReviewPage {
     }
 
     renderScores() {
-        this.holeControls.forEach((control, index) => {
-            control.textContent = (index + 1).toString() + '(' + pageNavigator.player.tees.par[index] + ')';
-        });
+        if (pageNavigator.competition.type === 'stableford') {
+            this.renderStablefordScores();
+        } else if (pageNavigator.competition.type === 'strokeplay') {
+            this.renderStrokeplayScores();
+        }
+    }
 
+    renderStablefordScores() {
         this.scoreControls.forEach((control, index) => {
             control.textContent = pageNavigator.scores.gross[index];
-        });
-
-        this.pointsControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scores.points[index];
         });
 
         const outScoreTotal = pageNavigator.scores.adjusted.slice(0, 9).reduce((total, value) => total + value, 0);
@@ -83,6 +83,10 @@ class ReviewPage {
         this.overallScoreTotal.textContent = overallScoreTotal + star;
         this.nettScoreTotal.textContent = nettScoreTotal + star;
 
+        this.pointsControls.forEach((control, index) => {
+            control.textContent = pageNavigator.scores.points[index];
+        });
+
         const outPointsTotal = pageNavigator.scores.points.slice(0, 9).reduce((total, value) => total + value, 0);
         const backPointsTotal = pageNavigator.scores.points.slice(9).reduce((total, value) => total + value, 0);
         const overallPointsTotal = outPointsTotal + backPointsTotal;
@@ -91,9 +95,62 @@ class ReviewPage {
         this.backPointsTotal.textContent = backPointsTotal;
         this.overallPointsTotal.textContent = overallPointsTotal;    
     }
+
+    renderStrokeplayScores() {
+        this.scoreControls.forEach((control, index) => {
+            control.textContent = pageNavigator.scores.gross[index];
+        });
+
+        let outScoreTotal = 0;
+        let backScoreTotal = 0;
+        let noReturn = false;
+        for (let i = 0; i < 18; i++) {
+            const score = pageNavigator.scores.gross[i];
+            if (!score || score === '' || score === 'X' || score === '0') {
+                noReturn = true;
+            }
+            else {
+                if (i < 9) {
+                    outScoreTotal += parseInt(score);
+                }
+                else {
+                    backScoreTotal += parseInt(score);
+                }
+            }
+        }
+        const overallScoreTotal = outScoreTotal + backScoreTotal;
+        const nettScoreTotal = overallScoreTotal - pageNavigator.player.ph;
+
+        if (noReturn) {
+            this.outScoreTotal.textContent = 'X';
+            this.backScoreTotal.textContent = 'X';
+            this.overallScoreTotal.textContent = 'X';
+            this.nettScoreTotal.textContent = 'X';
+        } else {
+            this.outScoreTotal.textContent = outScoreTotal;
+            this.backScoreTotal.textContent = backScoreTotal;
+            this.overallScoreTotal.textContent = overallScoreTotal;
+            this.nettScoreTotal.textContent = nettScoreTotal;
+        }
+        
+        //Clear all the points - not used for strokeplay
+        this.pointsControls.forEach((control, index) => {
+            control.textContent = '';
+        });
+        this.outPointsTotal.textContent = '';
+        this.backPointsTotal.textContent = '';
+        this.overallPointsTotal.textContent = '';
+    }
+
+    renderHoleNumbers() {
+        this.holeControls.forEach((control, index) => {
+            control.textContent = (index + 1).toString() + '(' + pageNavigator.player.tees.par[index] + ')';
+        });
+    }
    
     init() {
         this.renderHeader();
+        this.renderHoleNumbers();
         this.renderScores();
     }
 }
