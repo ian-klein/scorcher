@@ -27,6 +27,15 @@ export function getPlayer(email) {
         p.gender = 'male';
     }
 
+    if (email === 'wesley.taylor@outlook.com') {
+        p = new Player();
+
+        p.email = email;
+        p.name = 'Wes Taylor';
+        p.hi = 32.6;
+        p.gender = 'male';
+    }
+
     //Add caluculated fields to the player (tees, playing handicap and shots given per hole)
 
     if (p) {
@@ -58,7 +67,7 @@ export function getPlayer(email) {
 export function getCompetition() {
     const c = new Competition();
 
-    c.name = '08/10 Millers Medal';
+    c.name = '08/10 Millers Stableford';
     c.date = '08/10/2025';
 
     //Determine the type of competition
