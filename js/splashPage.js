@@ -1,7 +1,7 @@
 // Logic for the splash screen (which also prompts for email if we did not already have it)
 'use strict';
 
-import { getCompetition, isValidEmail, getPlayer } from './data.js';
+import { getCompetition, getPlayer } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
 
@@ -58,12 +58,13 @@ class SplashPage {
     onSubmitEmailClick() {
         const email = this.emailInput.value.trim();
         if (email) {
-            if (!isValidEmail(email)) {
+            const player = getPlayer(email);
+            if (!player) {
                 this.displayMessage('Email address is not in the Golf Genius master roster');
                 return;
             }
             localStorage.setItem(EMAIL_STORAGE_KEY, email);
-            pageNavigator.player = getPlayer(email);
+            pageNavigator.player = player;
     
             this.hide();
             scoreEntryPage.init();

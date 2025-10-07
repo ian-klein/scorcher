@@ -7,9 +7,11 @@ import { Player, Competition } from './schema.js';
 //Currently stubbed because golf genius API key is suspended
 
 export function getPlayer(email) {
-    const p = new Player();
+    let p = null;
 
     if (email === 'ian.klein14@gmail.com') {
+        p = new Player();
+
         p.email = email;
         p.name = 'Ian Klein';
         p.hi = 20.7;
@@ -17,6 +19,8 @@ export function getPlayer(email) {
     }
 
     if (email === 'peter.shanks1@gmail.com') {
+        p = new Player();
+
         p.email = email;
         p.name = 'Peter Shanks';
         p.hi = 10.2;
@@ -25,39 +29,30 @@ export function getPlayer(email) {
 
     //Add caluculated fields to the player (tees, playing handicap and shots given per hole)
 
-    if (p.gender === 'male') {
-        p.tees = course.male.white;
-    } else {
-        p.tees = course.female.gold;
-    }
-
-    p.ph = Math.round((p.hi * p.tees.sr / 113 + (p.tees.cr - p.tees.parTotal)) * 0.95);
-
-    //Calculate how many shots are given on each hole for this player
-    p.shots = new Array(18).fill(0);
-    
-    const base = Math.trunc(p.ph/18);
-    const modulo = p.ph % 18;
-    for (let i = 0; i < 18; i++) {
-        const si = p.tees.si[i];
-        if (modulo >= si) {
-            p.shots[i] = base + 1;
+    if (p) {
+        if (p.gender === 'male') {
+            p.tees = course.male.white;
         } else {
-            p.shots[i] = base;
+            p.tees = course.female.gold;
+        }
+
+        p.ph = Math.round((p.hi * p.tees.sr / 113 + (p.tees.cr - p.tees.parTotal)) * 0.95);
+
+        //Calculate how many shots are given on each hole for this player
+        p.shots = new Array(18).fill(0);
+        
+        const base = Math.trunc(p.ph/18);
+        const modulo = p.ph % 18;
+        for (let i = 0; i < 18; i++) {
+            const si = p.tees.si[i];
+            if (modulo >= si) {
+                p.shots[i] = base + 1;
+            } else {
+                p.shots[i] = base;
+            }
         }
     }
-
     return p;
-}
-
-export function isValidEmail(email) {
-    if (email === 'ian.klein14@gmail.com') {
-        return true;
-    }
-    if (email === 'peter.shanks1@gmail.com') {
-        return true;
-    }
-    return false;
 }
 
 export function getCompetition() {
