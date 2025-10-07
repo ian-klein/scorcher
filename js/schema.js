@@ -11,7 +11,7 @@ export class Competition {
     constructor() {
         this.name = '';
         this.date = '';
-        this.type = 'stableford'; // Options: 'stableford', 'strokeplay', 'team'
+        this.type = 'stableford'; // Options: 'stableford', 'strokeplay', 'other'
     }
 }
 

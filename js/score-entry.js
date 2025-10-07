@@ -1,7 +1,9 @@
 //Manages the score entry page interactions
 
 'use strict';
+
 import { pageNavigator } from './page-navigator.js';
+import { reviewPage } from './reviewPage.js'
 import { Scores } from './schema.js';
 
 class ScoreEntry {
@@ -97,12 +99,15 @@ class ScoreEntry {
         } else if (value === 'X') {
             // X typically means no score or not played
             this.elements.scoreInput.value = 'X';
+        } else if (value === '0' && currentScore === '') {
+            // 0 typically means no score or not played
+            this.elements.scoreInput.value = 'X';
         } else {
             // Number key pressed
-            if (currentScore === 'X') {
-                // Replace X with number
+            if (currentScore === 'X' || currentScore === '') {
+                // Set score as the number
                 this.elements.scoreInput.value = value;
-            } else if (currentScore.length < 2) {
+            } else if (currentScore === '1') {
                 // Add digit (max 2 digits)
                 this.elements.scoreInput.value = currentScore + value;
             }
@@ -126,25 +131,17 @@ class ScoreEntry {
 
     onReviewBtnClick() {
         this.saveCurrentScore();
+        pageNavigator.scores = this.scores;
+        reviewPage.init();
         pageNavigator.showPage('review');
     }
 
     renderHeader() {
-        if (pageNavigator.competition.name) {
-            this.elements.competitionName.textContent = pageNavigator.competition.name;
-        }
-        if (pageNavigator.competition.date) {
-            this.elements.competitionDate.textContent = pageNavigator.competition.date;
-        }
-        if (pageNavigator.player.name) {
-            this.elements.playerName.textContent = pageNavigator.player.name;
-        }
-        if (pageNavigator.player.handicapIndex) {
-            this.elements.handicapIndex.textContent = pageNavigator.player.handicapIndex;
-        }
-        if (pageNavigator.player.playingHandicap) {
-            this.elements.playingHandicap.textContent = pageNavigator.player.playingHandicap;
-        }
+        this.elements.competitionName.textContent = pageNavigator.competition.name;
+        this.elements.competitionDate.textContent = pageNavigator.competition.date;
+        this.elements.playerName.textContent = pageNavigator.player.name;
+        this.elements.handicapIndex.textContent = pageNavigator.player.hi;
+        this.elements.playingHandicap.textContent = pageNavigator.player.ph;
     }
 
     renderHoleScore() {

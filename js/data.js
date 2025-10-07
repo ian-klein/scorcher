@@ -41,7 +41,7 @@ export function getCompetition() {
     const c = new Competition();
 
     c.name = '08/10 Millers Stableford';
-    c.date = new Date();
+    c.date = '08/10/2025';
 
     //Determine the type of competition
     if (c.name.toLowerCase().includes('medal') || c.name.toLowerCase().includes('strokeplay')) {
@@ -49,7 +49,7 @@ export function getCompetition() {
     } else if (c.name.toLowerCase().includes('stableford')) {
         c.type = 'stableford';
     } else {
-        c.type = 'team';
+        c.type = 'other';
     }
 
     return c;
@@ -63,27 +63,27 @@ function calcPH(gender, hi) {
         tees = course.female.gold;
     }
 
-    return Math.round(hi * tees.sr / 113 * 0.95);
+    return Math.round((hi * tees.sr / 113 + tees.cr - tees.parTotal) * 0.95);
 }
 
 export const course = {
     male: {
         black: {
-            par: 72,
+            parTotal: 72,
             sr: 129,
             cr: 71.4,
             par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
             si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
         },
         white: {
-            par: 72,
+            parTotal: 72,
             sr: 119,
             cr: 68.6,
             par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
             si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
         },
         gold: {
-            par: 69,
+            parTotal: 69,
             sr: 113,
             cr: 66.6,
             par: [ 5,  3, 4, 4, 4,  3, 4,  4,  3,  4, 4,  4,  4,  3, 4, 4, 4,  4],
@@ -92,14 +92,14 @@ export const course = {
     },
     female: {
         white: {
-            par: 72,
+            parTotal: 72,
             sr: 137,
             cr: 74.5,
             par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
             si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
         },
         gold: {
-            par: 72,
+            parTotal: 72,
             sr: 129,
             cr: 72.4,
             par: [ 5, 3,  4, 4, 5,  3, 5,  4,  3,  5, 4,  4,  4,  3, 4, 4, 4,  4],
