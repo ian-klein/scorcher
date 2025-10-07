@@ -1,18 +1,24 @@
-// Score Entry Controller - Manages the score entry page interactions
-export class ScoreEntryController {
+//Manages the score entry page interactions
+
+'use strict';
+import { pageNavigator } from './page-navigator.js';
+import { Scores } from './schema.js';
+
+class ScoreEntry {
     constructor() {
         this.currentHole = 1;
         this.maxHoles = 18;
-        this.scores = new Array(18).fill('');
         
         // DOM elements
         this.elements = {};
+        this.scores = new Scores();
     }
 
     init() {
         this.cacheElements();
-        this.attachEventListeners();
-        this.updateDisplay();
+        this.wireEvents();
+        this.renderHeader();
+        this.renderHoleScore();
     }
 
     cacheElements() {
@@ -40,7 +46,7 @@ export class ScoreEntryController {
         this.elements.reviewBtn = document.getElementById('reviewBtn');
     }
 
-    attachEventListeners() {
+    wireEvents() {
         // Navigation arrows
         this.elements.prevHole.addEventListener('click', () => this.navigateHole(-1));
         this.elements.nextHole.addEventListener('click', () => this.navigateHole(1));
@@ -55,8 +61,8 @@ export class ScoreEntryController {
         });
         
         // Action buttons
-        this.elements.resultsBtn.addEventListener('click', () => this.handleResults());
-        this.elements.reviewBtn.addEventListener('click', () => this.handleReview());
+        this.elements.resultsBtn.addEventListener('click', () => this.onResultsBtnClick());
+        this.elements.reviewBtn.addEventListener('click', () => this.onReviewBtnClick());
         
         // Prevent manual input on score field
         this.elements.scoreInput.addEventListener('keydown', (e) => {
@@ -68,14 +74,13 @@ export class ScoreEntryController {
         // Save current score before navigating
         this.saveCurrentScore();
         
-        const newHole = this.currentHole + direction;
+        let newHole = this.currentHole + direction;
         
-        if (newHole < 1 || newHole > this.maxHoles) {
-            return; // Don't navigate beyond bounds
-        }
+        if (newHole < 1) newHole = 18;
+        if (newHole > 18) newHole = 1;
         
         this.currentHole = newHole;
-        this.updateDisplay();
+        this.renderHoleScore();
         
         // Add haptic feedback on mobile devices
         if (navigator.vibrate) {
@@ -111,72 +116,47 @@ export class ScoreEntryController {
 
     saveCurrentScore() {
         const score = this.elements.scoreInput.value;
-        this.scores[this.currentHole - 1] = score;
+        this.scores.gross[this.currentHole - 1] = score;
     }
 
-    updateDisplay() {
+    onResultsBtnClick() {
+        this.saveCurrentScore();
+        pageNavigator.showPage('results');
+    }
+
+    onReviewBtnClick() {
+        this.saveCurrentScore();
+        pageNavigator.showPage('review');
+    }
+
+    renderHeader() {
+        if (pageNavigator.competition.name) {
+            this.elements.competitionName.textContent = pageNavigator.competition.name;
+        }
+        if (pageNavigator.competition.date) {
+            this.elements.competitionDate.textContent = pageNavigator.competition.date;
+        }
+        if (pageNavigator.player.name) {
+            this.elements.playerName.textContent = pageNavigator.player.name;
+        }
+        if (pageNavigator.player.handicapIndex) {
+            this.elements.handicapIndex.textContent = pageNavigator.player.handicapIndex;
+        }
+        if (pageNavigator.player.playingHandicap) {
+            this.elements.playingHandicap.textContent = pageNavigator.player.playingHandicap;
+        }
+    }
+
+    renderHoleScore() {
         // Update hole number
         this.elements.holeNumber.textContent = this.currentHole;
         
         // Update score input with saved score for this hole
-        this.elements.scoreInput.value = this.scores[this.currentHole - 1];
-        
-        // Update arrow button states
-        this.elements.prevHole.disabled = this.currentHole === 1;
-        this.elements.nextHole.disabled = this.currentHole === this.maxHoles;
-        
-        // Visual feedback for disabled buttons
-        if (this.currentHole === 1) {
-            this.elements.prevHole.style.opacity = '0.4';
-            this.elements.prevHole.style.cursor = 'not-allowed';
-        } else {
-            this.elements.prevHole.style.opacity = '1';
-            this.elements.prevHole.style.cursor = 'pointer';
-        }
-        
-        if (this.currentHole === this.maxHoles) {
-            this.elements.nextHole.style.opacity = '0.4';
-            this.elements.nextHole.style.cursor = 'not-allowed';
-        } else {
-            this.elements.nextHole.style.opacity = '1';
-            this.elements.nextHole.style.cursor = 'pointer';
-        }
+        const score = this.scores.gross[this.currentHole - 1];
+        this.elements.scoreInput.value = `${score ?? ''}`;
     }
 
-    handleResults() {
-        this.saveCurrentScore();
-        console.log('Results button clicked');
-        console.log('Current scores:', this.scores);
-    }
-
-    handleReview() {
-        this.saveCurrentScore();
-        console.log('Review button clicked');
-        console.log('Current scores:', this.scores);
-    }
-
-    // Public method to get all scores
-    getScores() {
-        this.saveCurrentScore();
-        return [...this.scores];
-    }
-
-    // Public method to set player data
-    setPlayerData(data) {
-        if (data.competitionName) {
-            this.elements.competitionName.textContent = data.competitionName;
-        }
-        if (data.competitionDate) {
-            this.elements.competitionDate.textContent = data.competitionDate;
-        }
-        if (data.playerName) {
-            this.elements.playerName.textContent = data.playerName;
-        }
-        if (data.handicapIndex) {
-            this.elements.handicapIndex.textContent = data.handicapIndex;
-        }
-        if (data.playingHandicap) {
-            this.elements.playingHandicap.textContent = data.playingHandicap;
-        }
-    }
 }
+
+export const scoreEntry = new ScoreEntry();
+

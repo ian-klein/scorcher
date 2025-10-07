@@ -1,8 +1,8 @@
 //Functions to get the data from golf genius
 
-'use strict'
+'use strict';
 
-import { Player, Competition, Score } from './schema.js';
+import { Player, Competition } from './schema.js';
 
 //Currently stubbed because golf genius API key is suspended
 
@@ -23,6 +23,7 @@ export function getPlayer(email) {
         p.gender = 'male';
     }
 
+    p.ph = calcPH(p.gender, p.hi);
     return p;
 }
 
@@ -54,114 +55,55 @@ export function getCompetition() {
     return c;
 }
 
-//====================== Saved from app.js just in case there sis something good here ==========================
-// Page navigation
-class PageNavigator {
-    constructor() {
-        this.splashScreen = new SplashScreen();
-        this.pages = {
-            scoreEntry: document.querySelector('[data-page="score-entry"]'),
-            review: document.querySelector('[data-page="review"]'),
-            results: document.querySelector('[data-page="results"]')
-        };
+function calcPH(gender, hi) {
+    let tees = null;
+    if (gender === 'male') {
+        tees = course.male.white;
+    } else {
+        tees = course.female.gold;
     }
 
-    showPage(pageName) {
-        // Hide all pages
-        Object.values(this.pages).forEach(page => {
-            if (page) page.style.display = 'none';
-        });
+    return Math.round(hi * tees.sr / 113 * 0.95);
+}
 
-        // Show requested page
-        if (this.pages[pageName]) {
-            this.pages[pageName].style.display = 'flex';
-        }
-    }
-
-    init() {
-        // Show splash screen first
-        this.splashScreen.show();
-        
-        // Initialize email input after a short delay
-        setTimeout(() => {
-            this.initEmailInput();
-        }, 500);
-
-        // Initialize score entry
-        const scoreEntryController = new ScoreEntryController();
-        scoreEntryController.init();
-
-        // Set up navigation
-        this.setupNavigation();
-    }
-
-    initEmailInput() {
-        this.splashScreen.showEmailInput(true);
-        
-        this.splashScreen.onEmailSubmit((email) => {
-            if (this.validateEmail(email)) {
-                this.splashScreen.hide();
-                this.showPage('scoreEntry');
-                // Store email or use for authentication
-                console.log('User email:', email);
-            } else {
-                this.splashScreen.setMessage('Please enter a valid email address');
-            }
-        });
-    }
-
-    validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    }
-
-    setupNavigation() {
-        // Results button - navigate to results page
-        const resultsBtn = document.getElementById('resultsBtn');
-        if (resultsBtn) {
-            resultsBtn.addEventListener('click', () => {
-                this.showPage('results');
-            });
-        }
-
-        // Review button - navigate to review page
-        const reviewBtn = document.getElementById('reviewBtn');
-        if (reviewBtn) {
-            reviewBtn.addEventListener('click', () => {
-                this.showPage('review');
-            });
-        }
-
-        // Back button (from review page) - navigate to score entry page
-        const backBtn = document.getElementById('backBtn');
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                this.showPage('scoreEntry');
-            });
-        }
-
-        // Back button (from results page) - navigate to score entry page
-        const resultsBackBtn = document.getElementById('resultsBackBtn');
-        if (resultsBackBtn) {
-            resultsBackBtn.addEventListener('click', () => {
-                this.showPage('scoreEntry');
-            });
-        }
-
-        // Submit button - placeholder for now
-        const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn) {
-            submitBtn.addEventListener('click', () => {
-                console.log('Submit button clicked - functionality to be implemented');
-            });
-        }
-
-        // Download button - placeholder for now
-        const downloadBtn = document.getElementById('downloadBtn');
-        if (downloadBtn) {
-            downloadBtn.addEventListener('click', () => {
-                console.log('Download button clicked - functionality to be implemented');
-            });
+export const course = {
+    male: {
+        black: {
+            par: 72,
+            sr: 129,
+            cr: 71.4,
+            par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
+            si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
+        },
+        white: {
+            par: 72,
+            sr: 119,
+            cr: 68.6,
+            par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
+            si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
+        },
+        gold: {
+            par: 69,
+            sr: 113,
+            cr: 66.6,
+            par: [ 5,  3, 4, 4, 4,  3, 4,  4,  3,  4, 4,  4,  4,  3, 4, 4, 4,  4],
+            si:  [ 7, 15, 3, 5, 9, 17, 1, 11, 13, 12, 6, 14, 16, 18, 2, 8, 4, 10]
+       }
+    },
+    female: {
+        white: {
+            par: 72,
+            sr: 137,
+            cr: 74.5,
+            par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
+            si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
+        },
+        gold: {
+            par: 72,
+            sr: 129,
+            cr: 72.4,
+            par: [ 5, 3,  4, 4, 5,  3, 5,  4,  3,  5, 4,  4,  4,  3, 4, 4, 4,  4],
+            si:  [ 7, 15, 3, 5, 9, 17, 1, 11, 13, 12, 6, 14, 16, 18, 2, 8, 4, 10]
         }
     }
 }

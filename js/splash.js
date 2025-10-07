@@ -3,6 +3,7 @@
 
 import { getCompetition, isValidEmail, getPlayer } from './data.js';
 import { pageNavigator } from './page-navigator.js';
+import { scoreEntry } from './score-entry.js';
 
 const EMAIL_STORAGE_KEY = 'email_v1';
 
@@ -22,6 +23,8 @@ class SplashScreen {
         if (email) {
             this.emailInput.value = email;
         }
+        this.submitEmail.disabled = !email || email.length === 0;
+
 
         //Check that today is a Wednesday
         const today = new Date();
@@ -52,24 +55,31 @@ class SplashScreen {
         this.splashMessage.textContent = message;
     }
 
+    onSubmitEmailClick() {
+        const email = this.emailInput.value.trim();
+        if (email) {
+            if (!isValidEmail(email)) {
+                this.displayMessage('Email address is not in the Golf Genius master roster');
+                return;
+            }
+            localStorage.setItem(EMAIL_STORAGE_KEY, email);
+            pageNavigator.player = getPlayer(email);
+    
+            this.hide();
+            scoreEntry.init();
+            pageNavigator.showPage('scoreEntry');
+        }
+    }    
+    
+    onEmailInputInput() {
+        const email = this.emailInput.value.trim();
+        this.submitEmail.disabled = !email || email.length === 0;
+    }
+    
     wireEvents() {
-        this.submitEmail.addEventListener('click', () => onSubmitEmailClick(this));
+        this.submitEmail.addEventListener('click', () => this.onSubmitEmailClick());
+        this.emailInput.addEventListener('input', () => this.onEmailInputInput());
     }
 }
-
-function onSubmitEmailClick(splashScreen) {
-    const email = splashScreen.emailInput.value.trim();
-    if (email) {
-        if (!isValidEmail(email)) {
-            splashScreen.displayMessage('Email address is not in the Golf Genius master roster');
-            return;
-        }
-        localStorage.setItem(EMAIL_STORAGE_KEY, email);
-        pageNavigator.player = getPlayer(email);
-
-        splashScreen.hide();
-        pageNavigator.showPage('scoreEntry');
-    }
-}    
 
 export const splashScreen = new SplashScreen();

@@ -15,12 +15,17 @@ export class Competition {
     }
 }
 
-export class Score {
+export class Scores {
     constructor() {
-        this.player = new Player();
-        this.gross = [];
-        this.points = [];
-        this.totalGross = 0;
-        this.totalPoints = 0;
+        this.gross = new Array(18).fill(null);
+        this.points = new Array(18).fill(null);
+    }
+
+    totalGross() {
+        return this.gross.reduce((total, value) => total + value, 0);
+    }
+
+    totalPoints() {
+        return this.points.reduce((total, value) => total + value, 0);
     }
 }

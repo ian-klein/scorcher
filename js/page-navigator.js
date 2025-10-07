@@ -1,6 +1,6 @@
 //Navigate between pages in the app
 
-'use strict'
+'use strict';
 
 class PageNavigator {
     constructor() {
@@ -11,7 +11,7 @@ class PageNavigator {
         };
         this.player = null;
         this.competition = null;
-        this.score = null;
+        this.scores = null;
     }
 
     showPage(pageName) {
