@@ -82,7 +82,35 @@ export function getCompetition() {
     return c;
 }
 
-export const course = {
+export async function submitScore(player, scores) {
+    const requestHeaders = {
+        'Content-Type': 'application/json'
+    };
+    
+    const requestBody = JSON.stringify({
+        player: player,
+        scores: scores
+    });
+
+    const requestUrl = new URL('./.netlify/functions/submit-score', window.location.origin);
+
+    try {
+        const response = await fetch(requestUrl, {
+            method: 'POST',
+            headers: requestHeaders,
+            body: requestBody
+        });
+
+        if (!response.ok) {
+            throw new Error('HTTP error, status = ' + response.status);
+        }
+    } catch (error) {
+        console.error('Error submitting score:', error);
+    }
+}
+
+// Mill Green course details
+const course = {
     male: {
         black: {
             parTotal: 72,

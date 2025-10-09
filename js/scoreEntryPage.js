@@ -6,6 +6,8 @@ import { pageNavigator } from './pageNavigator.js';
 import { reviewPage } from './reviewPage.js'
 import { Scores } from './schema.js';
 
+const SAVED_SCORES_KEY = 'saved_scores_v1';
+
 class ScoreEntryPage {
     constructor() {
         this.currentHole = 1;
@@ -35,11 +37,33 @@ class ScoreEntryPage {
         this.resultsBtn = document.getElementById('resultsBtn');
         this.reviewBtn = document.getElementById('reviewBtn');
 
-        this.scores = new Scores();
+        this.scores = null;
         this.wireEvents();
     }
 
+    saveScores() {
+        localStorage.setItem(SAVED_SCORES_KEY, JSON.stringify(this.scores));
+    }
+
+    loadScores() {
+        const savedScores = localStorage.getItem(SAVED_SCORES_KEY);
+        if (savedScores) {
+            this.scores = JSON.parse(savedScores);
+
+            //Make sure the saved scores are for this player on the same day
+            const today = new Date().toISOString().slice(0, 10);
+            if (!this.scores || this.scores.name !== pageNavigator.player.name || this.scores.date !== today) {
+                this.scores = new Scores(pageNavigator.player.name);
+            }
+        }
+        else {
+            this.scores = new Scores(pageNavigator.player.name);
+        }
+    }
+
     init() {
+        this.loadScores()
+
         this.renderHeader();
         this.renderHoleScore();
     }
@@ -70,9 +94,6 @@ class ScoreEntryPage {
     }
 
     navigateHole(direction) {
-        // Save current score before navigating
-        this.saveCurrentScore();
-        
         let newHole = this.currentHole + direction;
         
         if (newHole < 1) newHole = 18;
@@ -109,6 +130,8 @@ class ScoreEntryPage {
                 this.scoreInput.value = currentScore + value;
             }
         }
+
+        this.saveCurrentScore();
         
         // Add haptic feedback on mobile devices
         if (navigator.vibrate) {
@@ -121,6 +144,7 @@ class ScoreEntryPage {
         this.scores.gross[this.currentHole - 1] = score;
         this.scores.points[this.currentHole - 1] = this.calculatePoints();
         this.scores.adjusted[this.currentHole - 1] = this.calculateAdjusted();
+        this.saveScores();
     }
 
     calculatePoints() {
@@ -151,12 +175,10 @@ class ScoreEntryPage {
 
 
     onResultsBtnClick() {
-        this.saveCurrentScore();
         pageNavigator.showPage('results');
     }
 
     onReviewBtnClick() {
-        this.saveCurrentScore();
         pageNavigator.scores = this.scores;
         reviewPage.init();
         pageNavigator.showPage('review');

@@ -38,7 +38,7 @@ class SplashPage {
         const comp = getCompetition();
         pageNavigator.competition = comp;
 
-        if (comp.type === 'team') {
+        if (comp.type === 'other') {
             this.displayMessage('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
             this.submitEmail.disabled = true;
         }

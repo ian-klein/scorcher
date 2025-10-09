@@ -3,7 +3,7 @@
 'use strict';
 
 import { pageNavigator } from './pageNavigator.js';
-import { course } from './data.js'
+import { submitScore } from './data.js';
 
 class ReviewPage {
     constructor() {
@@ -40,8 +40,15 @@ class ReviewPage {
         pageNavigator.showPage('scoreEntry');
     }
 
-    onSubmitBtnClick() {
-        alert("Not implemented yet")
+    async onSubmitBtnClick() {
+        const isAnyGrossScoreNull = pageNavigator.scores.gross.some(score => score === null);
+
+        if (isAnyGrossScoreNull) {
+            alert('Please enter all scores before submitting');
+            return;
+        }
+
+        await submitScore(pageNavigator.player, pageNavigator.scores);
     }
 
     renderHeader() {
