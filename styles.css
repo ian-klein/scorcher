@@ -445,7 +445,8 @@ button[disabled],
 .score-cell {
     text-align: center;
     padding: clamp(0.2rem, 0.5vh, 0.3rem) clamp(0.2rem, 0.5vw, 0.3rem);
-    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    font-weight: 700;
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
     border: none;
     background: transparent;
     color: var(--text-primary);

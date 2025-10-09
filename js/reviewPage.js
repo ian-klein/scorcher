@@ -72,7 +72,9 @@ class ReviewPage {
 
         let star = '';
         for (let i = 0; i < 18; i++) {
-            if (pageNavigator.scores.adjusted[i].toString() !== pageNavigator.scores.gross[i].toString()) {
+            const adjusted = pageNavigator.scores.adjusted[i]?.toString();
+            const gross = pageNavigator.scores.gross[i]?.toString();
+            if (!adjusted || !gross || adjusted !== gross) {
                 star = '*';
                 break;
             }
