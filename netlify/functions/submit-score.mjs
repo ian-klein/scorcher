@@ -16,7 +16,14 @@ export default async function submitScore(request, context) {
     const filename = `${directory}/${body.player.name.replace(/[^a-zA-Z0-9]/g, '-')}.json`;
 
     //Save the score to the filesystem
-    await writeFile(filename, JSON.stringify(body.scores.gross), 'utf8');
+    const playerScores = {
+        score:{
+            name: body.player.name,
+            scores: body.scores.gross
+        }
+    };
+        
+    await writeFile(filename, JSON.stringify(playerScores), 'utf8');
 
     //Send the response
     const rbody = {

@@ -46,18 +46,20 @@ class ScoreEntryPage {
     }
 
     loadScores() {
+        const playerName = pageNavigator.player.name;
+        const competitionDate = pageNavigator.competition.date;
+    
         const savedScores = localStorage.getItem(SAVED_SCORES_KEY);
         if (savedScores) {
             this.scores = JSON.parse(savedScores);
 
-            //Make sure the saved scores are for this player on the same day
-            const today = new Date().toISOString().slice(0, 10);
-            if (!this.scores || this.scores.name !== pageNavigator.player.name || this.scores.date !== today) {
-                this.scores = new Scores(pageNavigator.player.name);
+            //Make sure the saved scores are for this player for this competition
+            if (!this.scores || this.scores.name !== playerName || this.scores.date !== competitionDate) {
+                this.scores = new Scores(playerName, competitionDate);
             }
         }
         else {
-            this.scores = new Scores(pageNavigator.player.name);
+            this.scores = new Scores(playerName, competitionDate);
         }
     }
 

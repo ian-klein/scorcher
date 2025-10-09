@@ -5,7 +5,38 @@
 import { Player, Competition } from './schema.js';
 
 //Currently stubbed because golf genius API key is suspended
+//Current approach is to assum the Golf Genius is unavailble
 
+let eventDiary = [];
+
+export async function loadEventDiary() {
+    const res = await fetch('data/diary.json');
+    const data = await res.json();
+    eventDiary = Array.isArray(data.events) ? data.events : [];
+}
+
+export function getCompetition() {
+    if (!eventDiary) {
+        return null;
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const foundEvent = eventDiary.find(c => c.date >= today);
+
+    const c = new Competition();
+
+    if (foundEvent) {
+        c.name = 'Millers ' + foundEvent.name;
+        c.date = foundEvent.date;
+        c.type = foundEvent.type;
+    }
+    else {
+        c.name = 'Unknow';
+        c.date = '01/01/2025';
+        c.type = 'other';
+    }
+    return c;
+}
 export function getPlayer(email) {
     let p = null;
 
@@ -62,24 +93,6 @@ export function getPlayer(email) {
         }
     }
     return p;
-}
-
-export function getCompetition() {
-    const c = new Competition();
-
-    c.name = '08/10 Millers Stableford';
-    c.date = '08/10/2025';
-
-    //Determine the type of competition
-    if (c.name.toLowerCase().includes('medal') || c.name.toLowerCase().includes('strokeplay')) {
-        c.type = 'strokeplay';
-    } else if (c.name.toLowerCase().includes('stableford')) {
-        c.type = 'stableford';
-    } else {
-        c.type = 'other';
-    }
-
-    return c;
 }
 
 export async function submitScore(player, scores) {

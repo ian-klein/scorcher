@@ -1,7 +1,7 @@
 'use strict';
 
 import { splashPage } from './splashPage.js';
+import { loadEventDiary } from './data.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    splashPage.init();
-});
+await loadEventDiary();
+splashPage.init();

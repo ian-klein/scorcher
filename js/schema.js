@@ -18,9 +18,9 @@ export class Competition {
 }
 
 export class Scores {
-    constructor(name) {
+    constructor(name, date) {
         this.name = name;
-        this.date = new Date().toISOString().slice(0, 10);
+        this.date = date;
         this.gross = new Array(18).fill(null);      //Gross score for each hole
         this.points = new Array(18).fill(null);     //Stableford points for each hole
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
