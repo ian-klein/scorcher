@@ -68,13 +68,13 @@ body {
 }
 
 .competition-name {
-    font-size: clamp(0.95rem, 4vw, 1.15rem);
+    font-size: clamp(1.045rem, 4.4vw, 1.265rem);
     font-weight: 700;
     margin-bottom: clamp(0.15rem, 0.3vh, 0.25rem);
 }
 
 .competition-date {
-    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    font-size: clamp(0.825rem, 3.3vw, 0.99rem);
     opacity: 0.9;
 }
 
@@ -85,12 +85,12 @@ body {
 }
 
 .player-name {
-    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    font-size: clamp(0.99rem, 3.85vw, 1.21rem);
     font-weight: 600;
 }
 
 .handicap-info {
-    font-size: clamp(0.8rem, 3vw, 0.95rem);
+    font-size: clamp(0.88rem, 3.3vw, 1.045rem);
     display: flex;
     align-items: center;
     gap: clamp(0.25rem, 1.5vw, 0.4rem);
@@ -152,8 +152,8 @@ body {
 }
 
 .arrow-btn {
-    width: clamp(2.5rem, 10vw, 3.5rem);
-    height: clamp(2.5rem, 10vw, 3.5rem);
+    width: clamp(3.2rem, 13vw, 4.5rem);
+    height: clamp(3.2rem, 13vw, 4.5rem);
     border: 2px solid var(--border-color);
     background: var(--card-bg);
     border-radius: 50%;
@@ -172,14 +172,14 @@ body {
 }
 
 .arrow-btn svg {
-    width: 60%;
-    height: 60%;
+    width: 70%;
+    height: 70%;
 }
 
 .score-input {
-    width: clamp(3.5rem, 14vw, 4.5rem);
-    height: clamp(2.8rem, 11vw, 3.8rem);
-    font-size: clamp(1.3rem, 5vw, 1.6rem);
+    width: clamp(4.5rem, 16vw, 5.5rem);
+    height: clamp(3.6rem, 13vw, 4.6rem);
+    font-size: clamp(1.6rem, 6vw, 1.9rem);
     font-weight: 700;
     text-align: center;
     border: 2px solid var(--primary-color);
@@ -322,9 +322,7 @@ button[disabled],
     letter-spacing: 0.5px;
 }
 
-.results-btn {
-    /* Using same blue as other buttons */
-}
+
 
 .results-btn:active {
     transform: translateY(2px);
