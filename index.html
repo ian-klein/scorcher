@@ -93,7 +93,6 @@
 
         <!-- Buttons Section -->
         <div class="buttons-section">
-            <button class="action-btn results-btn" id="resultsBtn">Results</button>
             <button class="action-btn review-btn" id="reviewBtn">Review</button>
         </div>
     </section>
@@ -264,53 +263,6 @@
         </div>
     </section>
 
-    <!-- Results Page -->
-    <section class="page" data-page="results" style="display: none;">
-        <!-- Header Section (same as other pages) -->
-        <div class="header">
-            <div class="competition-info">
-                <div class="competition-name" id="resultsCompetitionName">Club Championship 2025</div>
-                <div class="competition-date" id="resultsCompetitionDate">October 1, 2025</div>
-            </div>
-            <div class="player-info">
-                <div class="player-name" id="resultsPlayerName">John Smith</div>
-                <div class="handicap-info">
-                    <span class="handicap-label">HI:</span>
-                    <span class="handicap-index" id="resultsHandicapIndex">12.4</span>
-                    <span class="handicap-separator">|</span>
-                    <span class="handicap-label">PH:</span>
-                    <span class="playing-handicap" id="resultsPlayingHandicap">14</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Results Table Section -->
-        <div class="results-table-section">
-            <div class="results-table-container">
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Player</th>
-                            <th>Score</th>
-                            <th>Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultsTableBody">
-                        <!-- Results will be populated here -->
-                        <tr class="empty-state">
-                            <td colspan="3">No results available yet</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Results Buttons Section -->
-        <div class="buttons-section">
-            <button class="action-btn back-btn" id="resultsBackBtn">Back</button>
-            <button class="action-btn download-btn" id="downloadBtn">Download</button>
-        </div>
-    </section>
 
     <script type="module" src="js/app.js"></script>
 </body>

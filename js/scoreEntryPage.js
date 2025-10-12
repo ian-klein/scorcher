@@ -34,7 +34,6 @@ class ScoreEntryPage {
         this.deleteKey = document.querySelector('.delete-key');
         
         // Action buttons
-        this.resultsBtn = document.getElementById('resultsBtn');
         this.reviewBtn = document.getElementById('reviewBtn');
 
         this.scores = null;
@@ -86,7 +85,6 @@ class ScoreEntryPage {
         });
         
         // Action buttons
-        this.resultsBtn.addEventListener('click', () => this.onResultsBtnClick());
         this.reviewBtn.addEventListener('click', () => this.onReviewBtnClick());
         
         // Prevent manual input on score field
@@ -173,11 +171,6 @@ class ScoreEntryPage {
         } else {
             return Math.min(par + shots + 2, score);
         }
-    }
-
-
-    onResultsBtnClick() {
-        pageNavigator.showPage('results');
     }
 
     onReviewBtnClick() {
