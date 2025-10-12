@@ -96,9 +96,21 @@ body {
     gap: clamp(0.25rem, 1.5vw, 0.4rem);
 }
 
+/* General handicap label (used in score entry page) */
 .handicap-label {
     opacity: 0.85;
     font-weight: 500;
+}
+
+/* Specific to splash screen */
+#splashControls .handicap-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    margin: 0;
+    padding: 0 5px 0 0;
+    opacity: 1;
+    font-weight: normal;
 }
 
 .handicap-index,
@@ -709,14 +721,6 @@ button,
     justify-content: space-between;
     gap: 10px;
     width: 100%;
-}
-
-.handicap-label {
-    font-size: 0.56rem; /* 66% of 0.85rem */
-    color: #666;
-    white-space: nowrap;
-    margin: 0;
-    padding: 0 5px 0 0;
 }
 
 #handicapValue {

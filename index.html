@@ -15,15 +15,15 @@
         <div class="splash-content">
             <img src="images/scorcher.png" alt="Scorcher Logo" class="splash-logo">
             <div class="splash-title">Scorcher - Scorecard Checker</div>
-            <div class="splash-controls" id="splashControls" style="display: flex;">
+            <div class="splash-controls" id="splashControls">
                 <div class="email-input-group" id="emailInputGroup">
                     <input type="email" id="emailInput" placeholder="Enter your email">
-                    <div class="handicap-controls">
-                        <label for="handicapValue" class="handicap-label">Playing handicap:</label>
-                        <input type="number" id="handicapValue" inputmode="numeric" pattern="\d*" placeholder="0" min="0" max="54">
+                    <div class="handicap-controls" id="handicapControls">
+                        <label for="handicapValue" class="handicap-label">Playing Handicap</label>
+                        <input type="number" id="handicapValue" inputmode="numeric" placeholder="PH">
                     </div>
-                    <button type="button" id="submitEmail">OK</button>
-                    <span id="splashMessage" class="splash-message">Messages go here</span>
+                    <button type="button" id="submitEmail">Continue</button>
+                    <span id="splashMessage" class="splash-message">Enter your email address and your playing handicap (as it appears on your card)</span>
                 </div>
             </div>
         </div>

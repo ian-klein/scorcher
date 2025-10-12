@@ -65,7 +65,7 @@ class SplashPage {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
         if (email && ph) {
-            const player = getPlayer(email);
+            const player = getPlayer(email,ph);
             if (!player) {
                 this.displayMessage('Email address is not in the Golf Genius master roster');
                 return;
