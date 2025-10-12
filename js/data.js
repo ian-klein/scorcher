@@ -8,6 +8,8 @@ import { Player, Competition } from './schema.js';
 //Current approach is to assum the Golf Genius is unavailble
 
 let eventDiary = [];
+let players = [];
+let admins = [];
 
 export async function loadEventDiary() {
     const res = await fetch('data/diary.json');
@@ -15,11 +17,17 @@ export async function loadEventDiary() {
     eventDiary = Array.isArray(data.events) ? data.events : [];
 }
 
-export function getCompetition() {
-    if (!eventDiary) {
-        return null;
-    }
+export async function loadPlayers() {
+    const res = await fetch('data/players.json');
+    const data = await res.json();
+    players = Array.isArray(data.players) ? data.players : [];
 
+    const res2 = await fetch('data/admin.json');
+    const data2 = await res2.json();
+    admins = Array.isArray(data2.admins) ? data2.admins : [];
+}
+
+export function getCompetition() {
     const today = new Date().toISOString().slice(0, 10);
     const foundEvent = eventDiary.find(c => c.date >= today);
 
@@ -31,52 +39,42 @@ export function getCompetition() {
         c.type = foundEvent.type;
     }
     else {
-        c.name = 'Unknow';
+        c.name = 'Unknown';
         c.date = '01/01/2025';
         c.type = 'other';
     }
     return c;
 }
-export function getPlayer(email) {
-    let p = null;
-
-    if (email === 'ian.klein14@gmail.com') {
-        p = new Player();
-
-        p.email = email;
-        p.name = 'Ian Klein';
-        p.hi = 20.7;
-        p.gender = 'male';
-    }
-
-    if (email === 'peter.shanks1@gmail.com') {
-        p = new Player();
-
-        p.email = email;
-        p.name = 'Peter Shanks';
-        p.hi = 10.2;
-        p.gender = 'male';
-    }
-
-    if (email === 'wesley.taylor@outlook.com') {
-        p = new Player();
-
-        p.email = email;
-        p.name = 'Wes Taylor';
-        p.hi = 32.6;
-        p.gender = 'male';
-    }
-
-    //Add caluculated fields to the player (tees, playing handicap and shots given per hole)
+export function getPlayer(email, ph) {
+    const p = players.find(p => p.email === email);
 
     if (p) {
+        //Add caluculated fields to the player (tees, playing handicap and shots given per hole)
+        if (p.gender === null) {
+            p.gender = 'male';
+        }
+
+        p.name = p.firstName + ' ' + p.lastName;
+
+        //Set tees based on gender
         if (p.gender === 'male') {
             p.tees = course.male.white;
         } else {
             p.tees = course.female.gold;
         }
 
-        p.ph = Math.round((p.hi * p.tees.sr / 113 + (p.tees.cr - p.tees.parTotal)) * 0.95);
+        //Set playing handicap
+        if (ph) {
+            p.ph = ph;
+        } else if (p.hi) {
+            p.ph = Math.round((p.hi * p.tees.sr / 113 + (p.tees.cr - p.tees.parTotal)) * 0.95);
+        }
+        else {
+            p.ph = 0;
+        }
+
+        //Check if this player is an admin
+        p.admin = admins.includes(email);
 
         //Calculate how many shots are given on each hole for this player
         p.shots = new Array(18).fill(0);

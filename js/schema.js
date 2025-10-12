@@ -1,8 +1,12 @@
 export class Player {
     constructor() {
+        this.email = '';
+        this.firstName = '';
+        this.lastName = '';
+        this.gender = '';
+        this.admin = false;
         this.name = '';
         this.hi = 0;
-        this.gender = '';
         this.ph = null;
         this.tees = null;
         this.shots = null;
