@@ -5,33 +5,39 @@ import { getCompetition, getPlayer } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
 
-const EMAIL_STORAGE_KEY = 'email_v1';
+const PLAYER_STORAGE_KEY= 'player_v1'
 
 class SplashPage {
     constructor() {
         this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
         this.emailInput = document.getElementById('emailInput');
+        this.handicapValue = document.getElementById('handicapValue');
         this.emailInputGroup = document.getElementById('emailInputGroup');
         this.submitEmail = document.getElementById('submitEmail');
         this.splashMessage = document.getElementById('splashMessage');
     }
 
     init() {
-        //Get email from local storage and hide the inout controls if found
-        const email = localStorage.getItem(EMAIL_STORAGE_KEY);
-        if (email) {
-            this.emailInput.value = email;
+        //Get email & PH from local storage
+        const raw = localStorage.getItem(PLAYER_STORAGE_KEY);
+        if (raw) {
+            const storedPlayer = JSON.parse(raw);
+
+            this.emailInput.value = storedPlayer.email;
+            this.handicapValue.value = storedPlayer.ph;            
         }
-        this.submitEmail.disabled = !email || email.length === 0;
+            
+        this.submitEmail.disabled = !this.emailInput.value || this.emailInput.value.length === 0 || 
+                                    !this.handicapValue.value || this.handicapValue.value.length === 0;
 
 
         //Check that today is a Wednesday
         const today = new Date();
         const day = today.getDay();
-        const isDayEnforced = false;
+        const isDayEnforced = false; //Remove for production
         if (day !== 3 && isDayEnforced) {
-            this.displayMessage('There is no competition today - it is not a Wednesday!');
+            alert('There is no competition today - it is not a Wednesday!');
             this.submitEmail.disabled = true;
         }
 
@@ -39,7 +45,7 @@ class SplashPage {
         pageNavigator.competition = comp;
 
         if (comp.type === 'other') {
-            this.displayMessage('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
+            alert('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
             this.submitEmail.disabled = true;
         }
 
@@ -57,13 +63,19 @@ class SplashPage {
 
     onSubmitEmailClick() {
         const email = this.emailInput.value.trim();
-        if (email) {
+        const ph = this.handicapValue.value.trim();
+        if (email && ph) {
             const player = getPlayer(email);
             if (!player) {
                 this.displayMessage('Email address is not in the Golf Genius master roster');
                 return;
             }
-            localStorage.setItem(EMAIL_STORAGE_KEY, email);
+
+            const storedPlayer = {
+                email: email,
+                ph: ph
+            }
+            localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(storedPlayer));
             pageNavigator.player = player;
     
             this.hide();
@@ -71,15 +83,25 @@ class SplashPage {
             pageNavigator.showPage('scoreEntry');
         }
     }
-    
-    onEmailInputInput() {
+
+    enableSubmit() {
         const email = this.emailInput.value.trim();
-        this.submitEmail.disabled = !email || email.length === 0;
+        const ph = this.handicapValue.value.trim();
+        this.submitEmail.disabled = !email || email.length === 0 || !ph || ph.length === 0;
     }
     
+    onEmailInputInput() {
+        this.enableSubmit();
+    }
+
+    onHandicapValueInput() {
+        this.enableSubmit();
+    }
+
     wireEvents() {
         this.submitEmail.addEventListener('click', () => this.onSubmitEmailClick());
         this.emailInput.addEventListener('input', () => this.onEmailInputInput());
+        this.handicapValue.addEventListener('input', () => this.onHandicapValueInput());
     }
 }
 

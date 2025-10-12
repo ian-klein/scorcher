@@ -18,6 +18,10 @@
             <div class="splash-controls" id="splashControls" style="display: flex;">
                 <div class="email-input-group" id="emailInputGroup">
                     <input type="email" id="emailInput" placeholder="Enter your email">
+                    <div class="handicap-controls">
+                        <label for="handicapValue" class="handicap-label">Playing handicap:</label>
+                        <input type="number" id="handicapValue" inputmode="numeric" pattern="\d*" placeholder="0" min="0" max="54">
+                    </div>
                     <button type="button" id="submitEmail">OK</button>
                     <span id="splashMessage" class="splash-message">Messages go here</span>
                 </div>
