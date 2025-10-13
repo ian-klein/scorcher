@@ -10,14 +10,24 @@ import { Player, Competition } from './schema.js';
 let eventDiary = [];
 let players = [];
 let admins = [];
+let course = null;
 
-export async function loadEventDiary() {
+export async function loadData() {
+    await loadEventDiary();
+    await loadPlayers();
+    await loadCourse();
+}
+
+async function loadEventDiary() {
     const res = await fetch('data/diary.json');
     const data = await res.json();
     eventDiary = Array.isArray(data.events) ? data.events : [];
+    for(const e of eventDiary) {
+        e.date = new Date(e.date);
+    }
 }
 
-export async function loadPlayers() {
+async function loadPlayers() {
     const res = await fetch('data/players.json');
     const data = await res.json();
     players = Array.isArray(data.players) ? data.players : [];
@@ -27,24 +37,25 @@ export async function loadPlayers() {
     admins = Array.isArray(data2.admins) ? data2.admins : [];
 }
 
-export function getCompetition() {
-    const today = new Date().toISOString().slice(0, 10);
-    const foundEvent = eventDiary.find(c => c.date >= today);
-
-    const c = new Competition();
-
-    if (foundEvent) {
-        c.name = 'Millers ' + foundEvent.name;
-        c.date = foundEvent.date;
-        c.type = foundEvent.type;
-    }
-    else {
-        c.name = 'Unknown';
-        c.date = '01/01/2025';
-        c.type = 'other';
-    }
-    return c;
+async function loadCourse() {
+    const res = await fetch('data/course.json');
+    const data = await res.json();
+    course = data;
 }
+
+export function getCompetition() {
+    const today = new Date();
+    const event = eventDiary.find(c => c.date >= today);
+
+    return event ? event : new Competition();
+}
+
+export function competitionDisplayName(c) {
+    const day = c.date.getDate().toString().padStart(2, '0');
+    const month = (c.date.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month} Millers ${c.name}`;
+}
+
 export function getPlayer(email, ph) {
     const p = players.find(p => p.email === email);
 
@@ -91,74 +102,4 @@ export function getPlayer(email, ph) {
         }
     }
     return p;
-}
-
-export async function submitScore(player, scores) {
-    const requestHeaders = {
-        'Content-Type': 'application/json'
-    };
-    
-    const requestBody = JSON.stringify({
-        player: player,
-        scores: scores
-    });
-
-    const requestUrl = new URL('./.netlify/functions/submit-score', window.location.origin);
-
-    try {
-        const response = await fetch(requestUrl, {
-            method: 'POST',
-            headers: requestHeaders,
-            body: requestBody
-        });
-
-        if (!response.ok) {
-            throw new Error('HTTP error, status = ' + response.status);
-        }
-    } catch (error) {
-        console.error('Error submitting score:', error);
-    }
-}
-
-// Mill Green course details
-const course = {
-    male: {
-        black: {
-            parTotal: 72,
-            sr: 129,
-            cr: 71.4,
-            par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
-            si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
-        },
-        white: {
-            parTotal: 72,
-            sr: 119,
-            cr: 68.6,
-            par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
-            si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
-        },
-        gold: {
-            parTotal: 69,
-            sr: 113,
-            cr: 66.6,
-            par: [ 5,  3, 4, 4, 4,  3, 4,  4,  3,  4, 4,  4,  4,  3, 4, 4, 4,  4],
-            si:  [ 7, 15, 3, 5, 9, 17, 1, 11, 13, 12, 6, 14, 16, 18, 2, 8, 4, 10]
-       }
-    },
-    female: {
-        white: {
-            parTotal: 72,
-            sr: 137,
-            cr: 74.5,
-            par: [ 5, 3, 4, 4,  5,  3, 5,  4,  3, 5,  4, 4,  4, 3, 4,  4, 4,  4],
-            si:  [12, 4, 2, 8, 16, 18, 6, 10, 14, 7, 17, 3, 15, 9, 1, 13, 5, 11]
-        },
-        gold: {
-            parTotal: 72,
-            sr: 129,
-            cr: 72.4,
-            par: [ 5, 3,  4, 4, 5,  3, 5,  4,  3,  5, 4,  4,  4,  3, 4, 4, 4,  4],
-            si:  [ 7, 15, 3, 5, 9, 17, 1, 11, 13, 12, 6, 14, 16, 18, 2, 8, 4, 10]
-        }
-    }
 }

@@ -1,8 +1,7 @@
 'use strict';
 
 import { splashPage } from './splashPage.js';
-import { loadEventDiary, loadPlayers } from './data.js';
+import { loadData } from './data.js';
 
-await loadEventDiary();
-await loadPlayers();
+await loadData();
 splashPage.init();

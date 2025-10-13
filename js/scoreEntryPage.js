@@ -5,6 +5,7 @@
 import { pageNavigator } from './pageNavigator.js';
 import { reviewPage } from './reviewPage.js'
 import { Scores } from './schema.js';
+import { competitionDisplayName } from './data.js';
 
 const SAVED_SCORES_KEY = 'saved_scores_v1';
 
@@ -46,19 +47,19 @@ class ScoreEntryPage {
 
     loadScores() {
         const playerName = pageNavigator.player.name;
-        const competitionDate = pageNavigator.competition.date;
+        const date = pageNavigator.competition.date;
     
         const savedScores = localStorage.getItem(SAVED_SCORES_KEY);
         if (savedScores) {
-            this.scores = JSON.parse(savedScores);
+            this.scores = JSON.parse(savedScores, (key,value) => { if (key === 'date') { return new Date(value); } else { return value; } } );
 
             //Make sure the saved scores are for this player for this competition
-            if (!this.scores || this.scores.name !== playerName || this.scores.date !== competitionDate) {
-                this.scores = new Scores(playerName, competitionDate);
+            if (!this.scores || this.scores.name !== playerName || this.scores.date.toISOString().slice(0, 10) !== date.toISOString().slice(0, 10)) {
+                this.scores = new Scores(playerName, date);
             }
         }
         else {
-            this.scores = new Scores(playerName, competitionDate);
+            this.scores = new Scores(playerName, date);
         }
     }
 
@@ -180,8 +181,8 @@ class ScoreEntryPage {
     }
 
     renderHeader() {
-        this.competitionName.textContent = pageNavigator.competition.name;
-        this.competitionDate.textContent = pageNavigator.competition.date;
+        this.competitionName.textContent = competitionDisplayName(pageNavigator.competition);
+        this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
         this.playerName.textContent = pageNavigator.player.name;
         this.handicapIndex.textContent = pageNavigator.player.hi;
         this.playingHandicap.textContent = pageNavigator.player.ph;

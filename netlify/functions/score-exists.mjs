@@ -1,35 +1,30 @@
-//Save a score to the filesystem
+//Check to see if a score exists for this plyaer and this competition
 
 'use strict';
 
-import { mkdir, writeFile } from 'node:fs/promises';
+import { access } from 'node:fs/promises';
 import { competitionDirectoryPath, playerFileName, revive } from '../functionsUtil.mjs';
 
-export default async function submitScore(request, context) {
+export default async function scoreExists(request, context) {
     const body = await request.json();
     revive(body);
 
-    //Make sure the results directory exists
     const directoryPath = competitionDirectoryPath(body.competition);
-    mkdir(directoryPath, { recursive: true });
-
-    //Generate a valid file name from the player.name
     const filename = `${directoryPath}/${playerFileName(body.player)}`;
-
-    //Save the score to the filesystem
-    const playerScores = {
-        score:{
-            name: body.player.name,
-            scores: body.scores.gross
-        }
-    };
-        
-    await writeFile(filename, JSON.stringify(playerScores), 'utf8');
-
+    
+    let exists = false;
+    try {
+        await access(filename);
+        exists = true;
+    } catch (error) {
+        exists = false;
+    }
+    
     //Send the response
     const rbody = {
         status: 'OK',
-        filename: filename
+        filename: filename,
+        exists: exists
     };
     const response = new Response(JSON.stringify(rbody), {
         status: 200,
@@ -41,3 +36,5 @@ export default async function submitScore(request, context) {
     
     return response;
 }
+
+

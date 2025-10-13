@@ -1,16 +1,16 @@
 {
     "events": [
-        { "date": "2025/10/15", "name": "Stableford",       "type": "stableford" },
-        { "date": "2025/10/22", "name": "6B/6W/6G",         "type": "other" },
-        { "date": "2025/10/29", "name": "Stableford",       "type": "stableford" },
-        { "date": "2025/11/05", "name": "Greensomes",       "type": "other" },
-        { "date": "2025/11/12", "name": "Turkey Trot",      "type": "other" },
-        { "date": "2025/11/19", "name": "Hidden Pairs",     "type": "stableford" },
-        { "date": "2025/11/26", "name": "Stableford",       "type": "stableford" },
-        { "date": "2025/12/03", "name": "Team Waltz",       "type": "other" },
-        { "date": "2025/12/10", "name": "Stableford",       "type": "stableford" },
-        { "date": "2025/12/17", "name": "Stableford",       "type": "stableford" },
-        { "date": "2025/12/24", "name": "Christmas Eve",    "type": "other" },
-        { "date": "2025/12/31", "name": "Sign up and play", "type": "other" }
+        { "date": "2025-10-15", "name": "Stableford",       "type": "stableford" },
+        { "date": "2025-10-22", "name": "6B/6W/6G",         "type": "other" },
+        { "date": "2025-10-29", "name": "Stableford",       "type": "stableford" },
+        { "date": "2025-11-05", "name": "Greensomes",       "type": "other" },
+        { "date": "2025-11-12", "name": "Turkey Trot",      "type": "other" },
+        { "date": "2025-11-19", "name": "Hidden Pairs",     "type": "stableford" },
+        { "date": "2025-11-26", "name": "Stableford",       "type": "stableford" },
+        { "date": "2025-12-03", "name": "Team Waltz",       "type": "other" },
+        { "date": "2025-12-10", "name": "Stableford",       "type": "stableford" },
+        { "date": "2025-12-17", "name": "Stableford",       "type": "stableford" },
+        { "date": "2025-12-24", "name": "Christmas Eve",    "type": "other" },
+        { "date": "2025-12-31", "name": "Sign up and play", "type": "other" }
     ]
 }

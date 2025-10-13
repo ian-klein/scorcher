@@ -3,7 +3,8 @@
 'use strict';
 
 import { pageNavigator } from './pageNavigator.js';
-import { submitScore } from './data.js';
+import { submitScore, resetScore, scoreExists } from './backend.js';
+import { competitionDisplayName } from './data.js';
 
 class ReviewPage {
     constructor() {
@@ -41,19 +42,28 @@ class ReviewPage {
     }
 
     async onSubmitBtnClick() {
-        const isAnyGrossScoreNull = pageNavigator.scores.gross.some(score => score === null);
+        if (this.submitBtn.textContent === 'Reset Score') {
+            if (!confirm('Are you sure you want to delete this saved score?')) {
+                return;
+            }
+            await resetScore(pageNavigator.competition, pageNavigator.player);
+            this.submitBtn.textContent = 'Submit Score';
+        } else {
+            const isAnyGrossScoreNull = pageNavigator.scores.gross.some(score => score === null);
 
-        if (isAnyGrossScoreNull) {
-            alert('Please enter all scores before submitting');
-            return;
+            if (isAnyGrossScoreNull) {
+                alert('Please enter all scores before submitting');
+                return;
+            }
+
+            await submitScore(pageNavigator.competition, pageNavigator.player, pageNavigator.scores);
+            this.submitBtn.textContent = 'Reset Score';
         }
-
-        await submitScore(pageNavigator.player, pageNavigator.scores);
     }
 
     renderHeader() {
-        this.competitionName.textContent = pageNavigator.competition.name;
-        this.competitionDate.textContent = pageNavigator.competition.date;
+        this.competitionName.textContent = competitionDisplayName(pageNavigator.competition);
+        this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
         this.playerName.textContent = pageNavigator.player.name;
         this.handicapIndex.textContent = pageNavigator.player.hi;
         this.playingHandicap.textContent = pageNavigator.player.ph;
@@ -157,10 +167,19 @@ class ReviewPage {
         });
     }
    
+    async renderSubmitButton() {
+        const exists = await scoreExists(pageNavigator.competition, pageNavigator.player);
+        if (exists) {
+            this.submitBtn.textContent = 'Reset Score';
+        } else {
+            this.submitBtn.textContent = 'Submit Score';
+        }
+    }
     init() {
         this.renderHeader();
         this.renderHoleNumbers();
         this.renderScores();
+        this.renderSubmitButton();
     }
 }
 

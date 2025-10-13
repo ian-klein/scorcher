@@ -15,16 +15,16 @@ export class Player {
 
 export class Competition {
     constructor() {
-        this.name = '';
-        this.date = '';
+        this.name = 'Unknown';
+        this.date = new Date('1993-01-01');
         this.type = 'stableford'; // Options: 'stableford', 'strokeplay', 'other'
     }
 }
 
 export class Scores {
     constructor(name, date) {
-        this.name = name;
-        this.date = date;
+        this.name = name;   //Player name
+        this.date = date;   //Competition date
         this.gross = new Array(18).fill(null);      //Gross score for each hole
         this.points = new Array(18).fill(null);     //Stableford points for each hole
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
