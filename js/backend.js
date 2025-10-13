@@ -87,3 +87,31 @@ export async function scoreExists(competition, player) {
         return false;
     }
 }
+
+export async function emailScores(competition, player) {
+        const requestHeaders = {
+            'Content-Type': 'application/json'
+        };
+        
+        const requestBody = JSON.stringify({
+            competition: competition,
+            player: player
+        });
+
+        const requestUrl = new URL('./.netlify/functions/email-scores', window.location.origin);
+
+        try {
+            const response = await fetch(requestUrl, {
+                method: 'POST',
+                headers: requestHeaders,
+                body: requestBody
+            });
+
+            if (!response.ok) {
+                throw new Error('HTTP error, status = ' + response.status);
+            }
+        } catch (error) {
+            console.error('Error emailing scores:', error);
+        }
+        
+}

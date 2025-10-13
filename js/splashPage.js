@@ -114,6 +114,11 @@ class SplashPage {
         this.renderSubmitButton();
     }
 
+    onAdminBtnClick() {
+        this.hide();
+        pageNavigator.showPage('admin');
+    }
+
     wireEvents() {
         this.submitEmail.addEventListener('click', () => this.onSubmitEmailClick());
         this.emailInput.addEventListener('input', () => this.onEmailInputInput());

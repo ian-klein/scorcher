@@ -821,6 +821,130 @@ button,
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Admin Page Styles */
+.admin-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+[data-page="admin"] .admin-section {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 0.5vh;
+}
+
+[data-page="admin"] .admin-section h2 {
+    color: #2c5f2d;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+[data-page="admin"] .admin-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+[data-page="admin"] .admin-select {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    height: 34px;
+    box-sizing: border-box;
+}
+
+[data-page="admin"] .table-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+[data-page="admin"] .diary-container {
+    max-height: 200px;
+}
+
+[data-page="admin"] .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+[data-page="admin"] .admin-table th,
+[data-page="admin"] .admin-table td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+[data-page="admin"] .admin-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+[data-page="admin"] .admin-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+[data-page="admin"] .button-group {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+/* Admin button styles - scoped to admin page only */
+[data-page="admin"] .admin-btn,
+[data-page="admin"] .action-btn {
+    background-color: #2c5f2d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+    white-space: nowrap;
+    box-sizing: border-box;
+    height: 30px;
+    line-height: 1.2;
+}
+
+[data-page="admin"] .admin-btn:hover,
+[data-page="admin"] .action-btn:hover {
+    background-color: #1e4b1f;
+}
+
+/* Specific styles for Email Scores button */
+[data-page="admin"] .admin-controls .admin-btn {
+    flex: 0 0 33%;
+    padding: 4px 8px;
+}
+
+/* Styles for button groups (Upload/Download) */
+[data-page="admin"] .button-group .action-btn {
+    flex: 1;
+    min-width: 80px;
+}
+
+[data-page="admin"] .course-label {
+    margin: 0 0 10px 0;
+    color: #555;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     * {
