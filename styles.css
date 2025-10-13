@@ -860,16 +860,77 @@ button,
     box-sizing: border-box;
 }
 
-[data-page="admin"] .table-container {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-bottom: 12px;
-    border: 1px solid #eee;
-    border-radius: 4px;
+/* Admin section heights */
+[data-page="admin"] .admin-container {
+    min-height: 100vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vh;
+    padding: 1.5vh 3vw;
+    box-sizing: border-box;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-[data-page="admin"] .diary-container {
-    max-height: 200px;
+[data-page="admin"] .admin-section {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5vh 1.5vw;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+/* Section heights using flex-grow to distribute space */
+[data-page="admin"] .admin-section:nth-child(1) { /* Scores */
+    flex: 0 0 auto;
+    max-height: 15vh;
+}
+
+[data-page="admin"] .admin-section:nth-child(2) { /* Players */
+    flex: 1 1 40%;
+    min-height: 30vh;
+}
+
+[data-page="admin"] .admin-section:nth-child(3) { /* Administrators */
+    flex: 1 1 20%;
+    min-height: 20vh;
+}
+
+[data-page="admin"] .admin-section:nth-child(4) { /* Diary */
+    flex: 1 1 30%;
+    min-height: 25vh;
+}
+
+[data-page="admin"] .section-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Allows content to shrink below its minimum content size */
+}
+
+[data-page="admin"] .table-container {
+    flex: 1;
+    min-height: 0; /* Allows the container to shrink below its content size */
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin: 0.5vh 0;
+}
+
+[data-page="admin"] .button-group {
+    flex-shrink: 0;
+    margin-top: 8px;
+}
+
+/* Make sure the table takes full width */
+[data-page="admin"] .admin-table {
+    width: 100%;
+    table-layout: fixed;
 }
 
 [data-page="admin"] .admin-table {
