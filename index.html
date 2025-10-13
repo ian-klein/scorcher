@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>Scorcher - Golf Score Entry</title>
+    <title>Scorcher - Scorecsrd Checker</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="/images/favicon.png">  
 </head>
@@ -14,7 +14,7 @@
     <section class="splash-screen" id="splashScreen">
         <div class="splash-content">
             <img src="images/scorcher.png" alt="Scorcher Logo" class="splash-logo">
-            <div class="splash-title">Scorcher - Scorecard Checker</div>
+            <div class="splash-title">Scorecard Checker</div>
             <div class="splash-controls" id="splashControls">
                 <div class="email-input-group" id="emailInputGroup">
                     <input type="email" id="emailInput" placeholder="Enter your email">
@@ -22,8 +22,9 @@
                         <label for="handicapValue" class="handicap-label">Playing Handicap</label>
                         <input type="number" id="handicapValue" inputmode="numeric" placeholder="PH">
                     </div>
+                    <span id="splashMessage" class="splash-message"></span>
                     <button type="button" id="submitEmail">Continue</button>
-                    <span id="splashMessage" class="splash-message">Enter your email address and your playing handicap (as it appears on your card)</span>
+                    <button type="button" id="adminBtn" style="display: none;"sp>Admin</button>
                 </div>
             </div>
         </div>

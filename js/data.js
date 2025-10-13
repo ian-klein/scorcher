@@ -90,8 +90,8 @@ export function getPlayer(email, ph) {
         //Calculate how many shots are given on each hole for this player
         p.shots = new Array(18).fill(0);
         
-        const base = Math.trunc(p.ph/18);
-        const modulo = p.ph % 18;
+        const base = Math.trunc(p.ph/18);   // Get this many shots for all holes
+        const modulo = p.ph % 18;           // Get 1 extra shot on holes with si up to and includiong "modulo"
         for (let i = 0; i < 18; i++) {
             const si = p.tees.si[i];
             if (modulo >= si) {

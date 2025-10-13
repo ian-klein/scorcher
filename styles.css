@@ -745,19 +745,42 @@ button,
     width: 100%;
     max-width: 300px;
     padding: 12px 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
     border-radius: 4px;
-    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px auto 2px auto;
+    transition: background-color 0.3s ease;
 }
 
-#submitEmail:not(:disabled):hover {
-    background: linear-gradient(135deg, #3a7bc8, #2c5f9e);
-    transform: translateY(-1px);
+#adminBtn {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0 auto 10px auto;
+    transition: background-color 0.3s ease;
 }
 
-#submitEmail:not(:disabled):active {
-    transform: translateY(1px);
+#submitEmail:disabled,
+#adminBtn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#submitEmail:hover:not(:disabled),
+#adminBtn:hover:not(:disabled) {
+    background-color: var(--primary-dark);
 }
 
 .email-input-group input[type="email"] {
@@ -780,7 +803,7 @@ button,
 .splash-message {
     display: block;
     min-height: 20px;
-    color: #666;
+    color: #f00;
     font-size: 0.95rem;
     margin: 5px 0 0 0;
     padding: 8px 12px;

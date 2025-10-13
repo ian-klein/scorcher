@@ -15,7 +15,33 @@ class SplashPage {
         this.handicapValue = document.getElementById('handicapValue');
         this.emailInputGroup = document.getElementById('emailInputGroup');
         this.submitEmail = document.getElementById('submitEmail');
-        this.splashMessage = document.getElementById('splashMessage');
+        this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
+        this.adminBtn = document.getElementById('adminBtn');
+    }
+
+    renderAdminButton() {
+        const email = this.emailInput.value.trim();
+        const ph = this.handicapValue.value.trim();
+        const player = getPlayer(email,ph);
+        const isAdmin = player && player.admin;
+
+        if (isAdmin) {
+            this.adminBtn.style.display = 'block';
+        } else {
+            this.adminBtn.style.display = 'none';
+        }
+    }
+
+    renderSubmitButton() {
+        const email = this.emailInput.value.trim();
+        const ph = this.handicapValue.value.trim();
+        this.submitEmail.disabled = !email || email.length === 0 || !ph || ph.length === 0;
+    }
+
+    renderPage() {
+        this.renderAdminButton();
+        this.renderSubmitButton();
+        this.displayMessage('');
     }
 
     init() {
@@ -27,28 +53,8 @@ class SplashPage {
             this.emailInput.value = storedPlayer.email;
             this.handicapValue.value = storedPlayer.ph;            
         }
-            
-        this.submitEmail.disabled = !this.emailInput.value || this.emailInput.value.length === 0 || 
-                                    !this.handicapValue.value || this.handicapValue.value.length === 0;
 
-
-        //Check that today is a Wednesday
-        const today = new Date();
-        const day = today.getDay();
-        const isDayEnforced = false; //Remove for production
-        if (day !== 3 && isDayEnforced) {
-            alert('There is no competition today - it is not a Wednesday!');
-            this.submitEmail.disabled = true;
-        }
-
-        const comp = getCompetition();
-        pageNavigator.competition = comp;
-
-        if (comp.type === 'other') {
-            alert('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
-            this.submitEmail.disabled = true;
-        }
-
+        this.renderPage();
         this.wireEvents();
     }
 
@@ -66,9 +72,23 @@ class SplashPage {
         const ph = this.handicapValue.value.trim();
         if (email && ph) {
             const player = getPlayer(email,ph);
-            if (!player) {
-                this.displayMessage('Email address is not in the Golf Genius master roster');
+            if (!player) {  
+                this.displayMessage('That email address is not in the player database');
                 return;
+            }
+
+            //Check that today is a Wednesday (but only for non-admin users)
+            const today = new Date();
+            const day = today.getDay();
+            if (day !== 3 && !player.admin) {
+                this.displayMessage('There is no competition today - it is not a Wednesday!');
+                return;
+            }
+
+            //Only score Stableford and strokeplay
+            const comp = getCompetition();
+            if (comp.type === 'other') {
+                this.displayMessage('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
             }
 
             const storedPlayer = {
@@ -76,7 +96,9 @@ class SplashPage {
                 ph: ph
             }
             localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(storedPlayer));
+
             pageNavigator.player = player;
+            pageNavigator.competition = comp;
     
             this.hide();
             scoreEntryPage.init();
@@ -84,24 +106,19 @@ class SplashPage {
         }
     }
 
-    enableSubmit() {
-        const email = this.emailInput.value.trim();
-        const ph = this.handicapValue.value.trim();
-        this.submitEmail.disabled = !email || email.length === 0 || !ph || ph.length === 0;
-    }
-    
     onEmailInputInput() {
-        this.enableSubmit();
+        this.renderPage();
     }
 
     onHandicapValueInput() {
-        this.enableSubmit();
+        this.renderSubmitButton();
     }
 
     wireEvents() {
         this.submitEmail.addEventListener('click', () => this.onSubmitEmailClick());
         this.emailInput.addEventListener('input', () => this.onEmailInputInput());
         this.handicapValue.addEventListener('input', () => this.onHandicapValueInput());
+        this.adminBtn.addEventListener('click', () => this.onAdminBtnClick());
     }
 }
 
