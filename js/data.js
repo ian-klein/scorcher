@@ -3,6 +3,7 @@
 'use strict';
 
 import { Player, Competition } from './schema.js';
+import { bootstrap } from './bootstrap.js';
 
 //Currently stubbed because golf genius API key is suspended
 //Current approach is to assum the Golf Genius is unavailble
@@ -19,28 +20,44 @@ export async function loadData() {
 }
 
 async function loadEventDiary() {
-    const res = await fetch('data/diary.json');
-    const data = await res.json();
-    eventDiary = Array.isArray(data.events) ? data.events : [];
+    try {
+        const res = await fetch('data/diary.json');
+        const data = await res.json();
+        eventDiary = Array.isArray(data.events) ? data.events : bootstrap.diary.events;
+    } catch (error) {
+        eventDiary = bootstrap.diary.events;
+    }
     for(const e of eventDiary) {
         e.date = new Date(e.date);
     }
 }
 
 async function loadPlayers() {
-    const res = await fetch('data/players.json');
-    const data = await res.json();
-    players = Array.isArray(data.players) ? data.players : [];
+    try {
+        const res = await fetch('data/players.json');
+        const data = await res.json();
+        players = Array.isArray(data.players) ? data.players : bootstrap.players.players;
+    } catch (error) {
+        players = bootstrap.players.players;
+    }
 
-    const res2 = await fetch('data/admin.json');
-    const data2 = await res2.json();
-    admins = Array.isArray(data2.admins) ? data2.admins : [];
+    try {
+        const res2 = await fetch('data/admin.json');
+        const data2 = await res2.json();
+        admins = Array.isArray(data2.admins) ? data2.admins : bootstrap.admins;
+    } catch (error) {
+        admins = bootstrap.admins;
+    }
 }
 
 async function loadCourse() {
-    const res = await fetch('data/course.json');
-    const data = await res.json();
-    course = data;
+    try {
+        const res = await fetch('data/course.json');
+        const data = await res.json();
+        course = data || bootstrap.course;
+    } catch (error) {
+        course = bootstrap.course;
+    }
 }
 
 export function getCompetition(date) {
