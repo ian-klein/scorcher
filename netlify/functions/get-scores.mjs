@@ -5,7 +5,7 @@
 import { readFile } from 'node:fs/promises';
 import { directoryFor, fileNameFor, revive } from '../functionsUtil.mjs';
 
-export default async function getScore(request, context) {
+export default async function getScores(request, context) {
     const body = await request.json();
     revive(body);
 

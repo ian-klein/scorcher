@@ -17,7 +17,7 @@ export async function resetScore(competition, player) {
     });
 }
 
-export async function getScore(competition, player) {
+export async function getScores(competition, player) {
     const response = await postRequest('get-score', {
         competition: competition,
         player: player

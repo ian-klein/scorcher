@@ -3,7 +3,7 @@
 'use strict';
 
 import { pageNavigator } from './pageNavigator.js';
-import { submitScore, resetScore, getScore } from './backend.js';
+import { submitScore, getScores } from './backend.js';
 import { competitionDisplayName } from './data.js';
 
 class ReviewPage {
@@ -164,7 +164,7 @@ class ReviewPage {
     async renderSubmitButton() {
         this.submitBtn.disabled = false;
         this.scoreSubmitted.style.display = 'none';
-        const scores = await getScore(pageNavigator.competition, pageNavigator.player);
+        const scores = await getScores(pageNavigator.competition, pageNavigator.player);
         if (scores) {
             for (let i = 0; i < 18; i++) {
                 if (scores.gross[i] !== pageNavigator.scores.gross[i]) {
