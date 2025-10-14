@@ -10,7 +10,8 @@ import { uploadFile, getResults } from './backend.js';
 
 class AdminPage {
     constructor() {
-        this.getScoresBtn = document.getElementById('getScoresBtn');
+        this.getResultsBtn = document.getElementById('getResultsBtn');
+        this.downloadResultsLink = document.getElementById('downloadResultsLink');
         this.competitionSelect = document.getElementById('competitionSelect');
         this.playersTableBody = document.getElementById('playersTableBody');
         this.uploadPlayersBtn = document.getElementById('uploadPlayersBtn');
@@ -43,7 +44,7 @@ class AdminPage {
             this.competitionSelect.appendChild(option);
         }
 
-        this.getScoresBtn.disabled = true;
+        this.getResultsBtn.disabled = true;
     }
 
     renderPlayers() {
@@ -89,7 +90,7 @@ class AdminPage {
 
     wireEvents() {
         this.competitionSelect.addEventListener('change', () => this.onCompetitionSelectChange());
-        this.getScoresBtn.addEventListener('click', () => this.onGetScoresBtnClick());
+        this.getResultsBtn.addEventListener('click', () => this.onGetResultsBtnClick());
         this.uploadPlayersBtn.addEventListener('click', () => this.onUploadPlayersBtnClick());
         this.playersFileInput.addEventListener('change', () => this.onPlayersFileInputChange());
         this.downloadPlayersBtn.addEventListener('click', () => this.onDownloadPlayersBtnClick());
@@ -110,13 +111,16 @@ class AdminPage {
     }
 
     onCompetitionSelectChange() {
-        this.getScoresBtn.disabled = !this.competitionSelect.value || this.competitionSelect.value === '';
+        this.getResultsBtn.disabled = !this.competitionSelect.value || this.competitionSelect.value === '';
     }
 
-    onGetScoresBtnClick() {
+    async onGetResultsBtnClick() {  
         const date = new Date(this.competitionSelect.value);
         const competition = getCompetition(date);
-        getResults(competition);
+        const resultsFile = await getResults(competition);
+        this.downloadResultsLink.href = resultsFile;
+        this.downloadResultsLink.download = resultsFile.split('/').pop();
+        this.downloadResultsLink.click();
     }
 
     onUploadPlayersBtnClick() {

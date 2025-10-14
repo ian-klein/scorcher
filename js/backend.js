@@ -44,6 +44,8 @@ export async function getResults(competition) {
     const response = await postRequest('get-results', {
         competition: competition
     });
+    const results = await response.json();
+    return results.resultsFile;
 }
 
 async function postRequest(urlSuffix, body) {
