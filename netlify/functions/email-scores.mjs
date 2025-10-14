@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { competitionDirectoryPath, playerFileName, revive } from '../functionsUtil.mjs';
+import { revive } from '../functionsUtil.mjs';
 const nodemailer = require('nodemailer');
 
 export default async function emailScores(request, context) {

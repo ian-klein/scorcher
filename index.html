@@ -274,7 +274,7 @@
                     <select id="competitionSelect" class="admin-select">
                         <option value="">Select Competition</option>
                     </select>
-                    <button type="button" class="admin-btn" id="emailScoresBtn">Email Scores</button>
+                    <button type="button" class="admin-btn" id="getScoresBtn">Get Scores</button>
                 </div>
             </div>
 
@@ -288,8 +288,8 @@
                                 <tr>
                                     <th>First Name</th>
                                     <th>Last Name</th>
-                                    <th>Email</th>
                                     <th>Gender</th>
+                                    <th>Email</th>
                                 </tr>
                             </thead>
                             <tbody id="playersTableBody">
@@ -300,6 +300,8 @@
                     <div class="button-group">
                         <button type="button" class="admin-btn" id="uploadPlayersBtn">Upload</button>
                         <button type="button" class="admin-btn" id="downloadPlayersBtn">Download</button>
+                        <input type="file" id="playersFileInput" accept=".json" style="display: none;">
+                        <a href="data/players.json" download="players.json" id="downloadPlayersLink" style="display: none;">Download players.json</a>
                     </div>
                 </div>
             </div>
@@ -331,7 +333,7 @@
             <div class="admin-section">
                 <h4>Diary</h4>
                 <div class="section-content">
-                    <div class="table-container diary-container">
+                    <div class="table-container">
                         <table class="admin-table">
                             <thead>
                                 <tr>

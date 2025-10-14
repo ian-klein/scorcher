@@ -888,22 +888,22 @@ button,
 /* Section heights using flex-grow to distribute space */
 [data-page="admin"] .admin-section:nth-child(1) { /* Scores */
     flex: 0 0 auto;
-    max-height: 15vh;
+    max-height: 12vh;
 }
 
 [data-page="admin"] .admin-section:nth-child(2) { /* Players */
     flex: 1 1 40%;
-    min-height: 30vh;
+    max-height: 27vh;
 }
 
 [data-page="admin"] .admin-section:nth-child(3) { /* Administrators */
     flex: 1 1 20%;
-    min-height: 20vh;
+    max-height: 20vh;
 }
 
 [data-page="admin"] .admin-section:nth-child(4) { /* Diary */
     flex: 1 1 30%;
-    min-height: 25vh;
+    max-height: 22vh;
 }
 
 [data-page="admin"] .section-content {
@@ -916,7 +916,7 @@ button,
 [data-page="admin"] .table-container {
     flex: 1;
     min-height: 0; /* Allows the container to shrink below its content size */
-    overflow-y: auto;
+    overflow: auto;
     border: 1px solid #eee;
     border-radius: 4px;
     margin: 0.5vh 0;

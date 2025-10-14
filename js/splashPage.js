@@ -4,6 +4,7 @@
 import { getCompetition, getPlayer } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
+import { adminPage } from './adminPage.js';
 
 const PLAYER_STORAGE_KEY= 'player_v1'
 
@@ -115,7 +116,13 @@ class SplashPage {
     }
 
     onAdminBtnClick() {
+        const email = this.emailInput.value.trim();
+        const ph = this.handicapValue.value.trim();
+        const player = getPlayer(email,ph);
         this.hide();
+        pageNavigator.player = player;
+
+        adminPage.init();
         pageNavigator.showPage('admin');
     }
 

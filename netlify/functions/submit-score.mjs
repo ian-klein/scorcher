@@ -3,28 +3,21 @@
 'use strict';
 
 import { mkdir, writeFile } from 'node:fs/promises';
-import { competitionDirectoryPath, playerFileName, revive } from '../functionsUtil.mjs';
+import { directoryFor, fileNameFor, revive } from '../functionsUtil.mjs';
 
 export default async function submitScore(request, context) {
     const body = await request.json();
     revive(body);
 
     //Make sure the results directory exists
-    const directoryPath = competitionDirectoryPath(body.competition);
+    const directoryPath = directoryFor(body.competition);
     mkdir(directoryPath, { recursive: true });
 
     //Generate a valid file name from the player.name
-    const filename = `${directoryPath}/${playerFileName(body.player)}`;
+    const filename = `${directoryPath}/${fileNameFor(body.player)}`;
 
     //Save the score to the filesystem
-    const playerScores = {
-        score:{
-            name: body.player.name,
-            scores: body.scores.gross
-        }
-    };
-        
-    await writeFile(filename, JSON.stringify(playerScores), 'utf8');
+    await writeFile(filename, JSON.stringify(body.scores), 'utf8');
 
     //Send the response
     const rbody = {

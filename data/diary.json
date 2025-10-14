@@ -1,5 +1,7 @@
 {
     "events": [
+        { "date": "2025-10-01", "name": "Stableford Cup",   "type": "stableford" },
+        { "date": "2025-10-08", "name": "Stableford",       "type": "stableford" },
         { "date": "2025-10-15", "name": "Stableford",       "type": "stableford" },
         { "date": "2025-10-22", "name": "6B/6W/6G",         "type": "other" },
         { "date": "2025-10-29", "name": "Stableford",       "type": "stableford" },

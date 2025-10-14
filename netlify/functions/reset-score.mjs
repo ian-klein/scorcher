@@ -3,14 +3,14 @@
 'use strict';
 
 import { unlink } from 'node:fs/promises';
-import { competitionDirectoryPath, playerFileName, revive } from '../functionsUtil.mjs';
+import { directoryFor, fileNameFor, revive } from '../functionsUtil.mjs';
 
 export default async function resetScore(request, context) {
     const body = await request.json();
     revive(body);
 
-    const directoryPath = competitionDirectoryPath(body.competition);
-    const filename = `${directoryPath}/${playerFileName(body.player)}`;
+    const directoryPath = directoryFor(body.competition);
+    const filename = `${directoryPath}/${fileNameFor(body.player)}`;
 
     await unlink(filename);
 

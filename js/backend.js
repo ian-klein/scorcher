@@ -3,71 +3,54 @@
 'use strict';
 
 export async function submitScore(competition, player, scores) {
-    const requestHeaders = {
-        'Content-Type': 'application/json'
-    };
-    
-    const requestBody = JSON.stringify({
+    await postRequest('submit-score', {
         competition: competition,
         player: player,
         scores: scores
     });
-
-    const requestUrl = new URL('./.netlify/functions/submit-score', window.location.origin);
-
-    try {
-        const response = await fetch(requestUrl, {
-            method: 'POST',
-            headers: requestHeaders,
-            body: requestBody
-        });
-
-        if (!response.ok) {
-            throw new Error('HTTP error, status = ' + response.status);
-        }
-    } catch (error) {
-        console.error('Error submitting score:', error);
-    }
 }
 
 export async function resetScore(competition, player) {
-    const requestHeaders = {
-        'Content-Type': 'application/json'
-    };
-    
-    const requestBody = JSON.stringify({
+    await postRequest('reset-score', {
         competition: competition,
         player: player
     });
-
-    const requestUrl = new URL('./.netlify/functions/reset-score', window.location.origin);
-
-    try {
-        const response = await fetch(requestUrl, {
-            method: 'POST',
-            headers: requestHeaders,
-            body: requestBody
-        });
-
-        if (!response.ok) {
-            throw new Error('HTTP error, status = ' + response.status);
-        }
-    } catch (error) {
-        console.error('Error resetting score:', error);
-    }
 }
 
 export async function scoreExists(competition, player) {
+    await postRequest('score-exists', {
+        competition: competition,
+        player: player
+    });
+}
+
+export async function emailScores(competition, player) {
+    await postRequest('email-scores', {
+        competition: competition,
+        player: player
+    });
+}
+
+export async function uploadFile(which, contents) {
+    await postRequest('upload-file', {
+        which: which,
+        contents: contents
+    });
+}
+
+export async function getScores(competition) {
+    await postRequest('get-scores', {
+        competition: competition
+    });
+}
+
+async function postRequest(urlSuffix, body) {
     const requestHeaders = {
         'Content-Type': 'application/json'
     };
     
-    const requestBody = JSON.stringify({
-        competition: competition,
-        player: player
-    });
-
-    const requestUrl = new URL('./.netlify/functions/score-exists', window.location.origin);
+    const requestBody = JSON.stringify(body);
+    const requestUrl = new URL('./.netlify/functions/' + urlSuffix, window.location.origin);
 
     try {
         const response = await fetch(requestUrl, {
@@ -79,39 +62,8 @@ export async function scoreExists(competition, player) {
         if (!response.ok) {
             throw new Error('HTTP error, status = ' + response.status);
         }
-
-        const body = await response.json();
-        return body.exists;
     } catch (error) {
-        console.error('Error checking score exists:', error);
-        return false;
+        console.error('Error on ' + urlSuffix + ':', error);
     }
 }
 
-export async function emailScores(competition, player) {
-        const requestHeaders = {
-            'Content-Type': 'application/json'
-        };
-        
-        const requestBody = JSON.stringify({
-            competition: competition,
-            player: player
-        });
-
-        const requestUrl = new URL('./.netlify/functions/email-scores', window.location.origin);
-
-        try {
-            const response = await fetch(requestUrl, {
-                method: 'POST',
-                headers: requestHeaders,
-                body: requestBody
-            });
-
-            if (!response.ok) {
-                throw new Error('HTTP error, status = ' + response.status);
-            }
-        } catch (error) {
-            console.error('Error emailing scores:', error);
-        }
-        
-}

@@ -43,9 +43,9 @@ async function loadCourse() {
     course = data;
 }
 
-export function getCompetition() {
-    const today = new Date();
-    const event = eventDiary.find(c => c.date >= today);
+export function getCompetition(date) {
+    const eventDate = date || new Date();
+    const event = eventDiary.find(c => c.date >= eventDate);
 
     return event ? event : new Competition();
 }
@@ -103,3 +103,16 @@ export function getPlayer(email, ph) {
     }
     return p;
 }
+
+export function getPlayers() {
+    return players;
+}  
+
+export function getAdmins() {
+    return admins;
+}
+
+export function getEventDiary() {
+    return eventDiary;
+}
+    
