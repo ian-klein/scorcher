@@ -20,9 +20,13 @@ class AdminPage {
         this.adminsTableBody = document.getElementById('adminsTableBody');
         this.uploadAdminsBtn = document.getElementById('uploadAdminsBtn');
         this.downloadAdminsBtn = document.getElementById('downloadAdminsBtn');
+        this.adminFileInput = document.getElementById('adminFileInput');
+        this.downloadAdminLink = document.getElementById('downloadAdminLink');
         this.diaryTableBody = document.getElementById('diaryTableBody');
         this.uploadDiaryBtn = document.getElementById('uploadDiaryBtn');
         this.downloadDiaryBtn = document.getElementById('downloadDiaryBtn');
+        this.diaryFileInput = document.getElementById('diaryFileInput');
+        this.downloadDiaryLink = document.getElementById('downloadDiaryLink');
     }
 
     renderScores() {
@@ -84,15 +88,17 @@ class AdminPage {
     }
 
     wireEvents() {
+        this.competitionSelect.addEventListener('change', () => this.onCompetitionSelectChange());
         this.getScoresBtn.addEventListener('click', () => this.onGetScoresBtnClick());
         this.uploadPlayersBtn.addEventListener('click', () => this.onUploadPlayersBtnClick());
         this.playersFileInput.addEventListener('change', () => this.onPlayersFileInputChange());
         this.downloadPlayersBtn.addEventListener('click', () => this.onDownloadPlayersBtnClick());
         this.uploadAdminsBtn.addEventListener('click', () => this.onUploadAdminsBtnClick());
+        this.adminFileInput.addEventListener('change', () => this.onAdminFileInputChange());
         this.downloadAdminsBtn.addEventListener('click', () => this.onDownloadAdminsBtnClick());
         this.uploadDiaryBtn.addEventListener('click', () => this.onUploadDiaryBtnClick());
+        this.diaryFileInput.addEventListener('change', () => this.onDiaryFileInputChange());
         this.downloadDiaryBtn.addEventListener('click', () => this.onDownloadDiaryBtnClick());
-        this.competitionSelect.addEventListener('change', () => this.onCompetitionSelectChange());
     }
 
     init() {
@@ -134,15 +140,43 @@ class AdminPage {
     }
 
     onUploadAdminsBtnClick() {
-    }ß
+        this.adminFileInput.click();
+    }
+
+    onAdminFileInputChange() {
+        const file = this.adminFileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = JSON.parse(e.target.result);
+                await uploadFile('admin', JSON.stringify(data));
+            };
+            reader.readAsText(file);
+        }
+    }
 
     onDownloadAdminsBtnClick() {
+        this.downloadAdminLink.click();
     }
 
     onUploadDiaryBtnClick() {
+        this.diaryFileInput.click();
+    }
+
+    onDiaryFileInputChange() {
+        const file = this.diaryFileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = JSON.parse(e.target.result);
+                await uploadFile('diary', JSON.stringify(data));
+            };
+            reader.readAsText(file);
+        }
     }
 
     onDownloadDiaryBtnClick() {
+        this.downloadDiaryLink.click();
     }
 }
 

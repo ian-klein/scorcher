@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 
 export default async function submitScore(request, context) {
     const body = await request.json();
@@ -10,12 +10,14 @@ export default async function submitScore(request, context) {
     const which = body.which; // players, admin or diary
     const contents = body.contents
 
-    if (which !== 'players' && which !== 'admins' && which !== 'diary') {
+    if (which !== 'players' && which !== 'admin' && which !== 'diary') {
         throw new Error('Invalid which: "' + which + '"');
     }
 
-    const fileName = `./data/${which}.json`;
+    const dirName = './data';
+    mkdir(dirName, { recursive: true });
 
+    const fileName = `${dirName}/${which}.json`;
     await writeFile(fileName, contents, 'utf8');
 
     //Send the response
