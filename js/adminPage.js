@@ -4,7 +4,7 @@
 
 import { pageNavigator } from './pageNavigator.js';
 import { getCompetition, getPlayers, getAdmins, getEventDiary } from './data.js';
-import { uploadFile, getScores } from './backend.js';
+import { uploadFile, getResults } from './backend.js';
 
 
 
@@ -110,7 +110,7 @@ class AdminPage {
     onGetScoresBtnClick() {
         const date = new Date(this.competitionSelect.value);
         const competition = getCompetition(date);
-        getScores(competition);
+        getResults(competition);
     }
 
     onUploadPlayersBtnClick() {

@@ -3,7 +3,7 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { directoryFor, resultsFileFor, revive } from '../functionsUtil.mjs';
 
-export default async function getScores(request, context) {
+export default async function getResults(request, context) {
     const body = await request.json();
     revive(body);
 

@@ -3,7 +3,7 @@
 'use strict';
 
 export async function submitScore(competition, player, scores) {
-    await postRequest('submit-score', {
+    const response = await postRequest('submit-score', {
         competition: competition,
         player: player,
         scores: scores
@@ -11,35 +11,37 @@ export async function submitScore(competition, player, scores) {
 }
 
 export async function resetScore(competition, player) {
-    await postRequest('reset-score', {
+    const response = await postRequest('reset-score', {
         competition: competition,
         player: player
     });
 }
 
-export async function scoreExists(competition, player) {
-    await postRequest('score-exists', {
+export async function getScore(competition, player) {
+    const response = await postRequest('get-score', {
         competition: competition,
         player: player
     });
+    const results = await response.json();
+    return results.scores;
 }
 
 export async function emailScores(competition, player) {
-    await postRequest('email-scores', {
+    const response = await postRequest('email-scores', {
         competition: competition,
         player: player
     });
 }
 
 export async function uploadFile(which, contents) {
-    await postRequest('upload-file', {
+    const response = await postRequest('upload-file', {
         which: which,
         contents: contents
     });
 }
 
-export async function getScores(competition) {
-    await postRequest('get-scores', {
+export async function getResults(competition) {
+    const response = await postRequest('get-results', {
         competition: competition
     });
 }
@@ -62,6 +64,8 @@ async function postRequest(urlSuffix, body) {
         if (!response.ok) {
             throw new Error('HTTP error, status = ' + response.status);
         }
+
+        return response;
     } catch (error) {
         console.error('Error on ' + urlSuffix + ':', error);
     }

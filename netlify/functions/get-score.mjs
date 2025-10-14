@@ -1,31 +1,31 @@
-//Check to see if a score exists for this plyaer and this competition
+//Get a submitted score for this plyaer and this competition
 
 'use strict';
 
-import { access } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { directoryFor, fileNameFor, revive } from '../functionsUtil.mjs';
 
-export default async function scoreExists(request, context) {
+export default async function getScore(request, context) {
     const body = await request.json();
     revive(body);
 
     const directoryPath = directoryFor(body.competition);
     const filename = `${directoryPath}/${fileNameFor(body.player)}`;
     
-    let exists = false;
+    let scores = null;
     try {
-        await access(filename);
-        exists = true;
+        const fileContents = await readFile(filename, 'utf8');
+        scores = JSON.parse(fileContents);
     } catch (error) {
-        exists = false;
+        scores = null;
     }
     
     //Send the response
     const rbody = {
         status: 'OK',
-        filename: filename,
-        exists: exists
+        scores: scores
     };
+    console.log(rbody);    
     const response = new Response(JSON.stringify(rbody), {
         status: 200,
         headers: {
@@ -36,5 +36,4 @@ export default async function scoreExists(request, context) {
     
     return response;
 }
-
 

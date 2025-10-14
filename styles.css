@@ -415,6 +415,13 @@ button[disabled],
     background: transparent;
 }
 
+.tick-mark {
+    color: #07d807;
+    font-size: clamp(0.7rem, 8vw, 1.2rem);
+    font-weight: bold;
+    text-align: center;
+}
+
 .score-row.total-row {
     margin-top: clamp(0.15rem, 0.4vh, 0.25rem);
     border-top: 1px solid var(--border-color);
