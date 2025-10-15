@@ -1,26 +1,24 @@
 'use strict';
 
-import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { directoryFor, resultsFileFor, revive } from '../functionsUtil.mjs';
+import { getStore } from '@netlify/blobs';
+import { storeFor, keyFor, revive } from '../functionsUtil.mjs';
 
 export default async function getResults(request, context) {
     const body = await request.json();
     revive(body);
 
-    const directoryPath = directoryFor(body.competition);
+    const storeName = storeFor(body.competition);
+    const store = getStore(storeName);
 
-    //Read the files in the results directory
-    const files = await readdir(directoryPath);
+    const { blobs } = await store.list();
+    const keys = blobs.map((blob) => blob.key);
 
-    const results = await Promise.all(files.map(async file => {
-        const filePath = `${directoryPath}/${file}`;
-        const fileContents = await readFile(filePath, 'utf8');
-        const scores = JSON.parse(fileContents);
+    const results = await Promise.all(keys.map(async key => {
+        const scores = await store.get(key, { type: "json" });
         return scores;
     }));
 
-    //Create the results file .CSV Each player gets two lines in the CSV: gross scores and points
-    const resultsFile = resultsFileFor(body.competition);
+    //Create the results CSV. Each player gets two lines in the CSV: gross scores and points
 
     const headers = ['Player', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Out','10', '11', '12', '13', '14', '15', '16', '17', '18', 'Back','Total'];
     
@@ -43,20 +41,15 @@ export default async function getResults(request, context) {
 
         csvContent += grossRow + pointsRow;
     }
-    
-    // Write the CSV file
-    await writeFile(resultsFile, csvContent, 'utf8');
 
-    //Send the response
-    const rbody = {
-        status: 'OK',
-        resultsFile: resultsFile
-    };
-    const response = new Response(JSON.stringify(rbody), {
+    const fileName = storeName + '.csv';
+
+    const response = new Response(csvContent, {
         status: 200,
         headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': JSON.stringify(rbody).length
+            'Content-Type': 'text/csv',
+            'Content-Disposition': `attachment; filename="${fileName}"`,
+            'Content-Length': csvContent.length
         }
     });
     

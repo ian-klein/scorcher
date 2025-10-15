@@ -1,7 +1,5 @@
 //utilities for netlify functions
 
-const RESULTS = './results';
-
 //Revive the competition date in the parsed request body
 export function revive(body) {
     if (body.competition.date) {
@@ -9,19 +7,13 @@ export function revive(body) {
     }
 }
 
-//Generate the folder name for a competition
-export function directoryFor(competition) {
+//Generate the store name for a competition
+export function storeFor(competition) {
     const date = competition.date.toISOString().slice(0, 10);
-    const name = competition.name.replace(/[^a-zA-Z0-9]/g, '-');
-    return `${RESULTS}/${date}-${name}`;
+    return `results-${date}`;
 }
 
-//Generate the score file name for a player
-export function fileNameFor(player) {
-    return `${player.name.replace(/[^a-zA-Z0-9]/g, '-')}.json`;
-}
-
-export function resultsFileFor(competition) {
-    const root = directoryFor(competition);
-    return `${root}-results.csv`;
+//Generate the key for a player
+export function keyFor(player) {
+    return player.name.replace(/[^a-zA-Z0-9]/g, '-');
 }

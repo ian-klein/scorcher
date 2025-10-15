@@ -2,9 +2,9 @@
 
 'use strict';
 
-import { mkdir, writeFile } from 'node:fs/promises';
+import { getStore } from '@netlify/blobs';
 
-export default async function submitScore(request, context) {
+export default async function uploadFile(request, context) {
     const body = await request.json();
 
     const which = body.which; // players, admin or diary
@@ -14,16 +14,14 @@ export default async function submitScore(request, context) {
         throw new Error('Invalid which: "' + which + '"');
     }
 
-    const dirName = './data';
-    mkdir(dirName, { recursive: true });
-
-    const fileName = `${dirName}/${which}.json`;
-    await writeFile(fileName, contents, 'utf8');
-
+    const store = getStore('data');
+    store.set(which, JSON.stringify(contents));
+    
     //Send the response
     const rbody = {
         status: 'OK',
-        filename: fileName
+        storeName: 'data',
+        key: which
     };
     const response = new Response(JSON.stringify(rbody), {
         status: 200,

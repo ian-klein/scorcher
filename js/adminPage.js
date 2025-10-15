@@ -2,11 +2,8 @@
 
 'use strict';
 
-import { pageNavigator } from './pageNavigator.js';
 import { getCompetition, getPlayers, getAdmins, getEventDiary } from './data.js';
-import { uploadFile, getResults } from './backend.js';
-
-
+import { uploadFile, downloadFile, getResults } from './backend.js';
 
 class AdminPage {
     constructor() {
@@ -117,10 +114,10 @@ class AdminPage {
     async onGetResultsBtnClick() {  
         const date = new Date(this.competitionSelect.value);
         const competition = getCompetition(date);
-        const resultsFile = await getResults(competition);
-        this.downloadResultsLink.href = resultsFile;
-        this.downloadResultsLink.download = resultsFile.split('/').pop();
-        this.downloadResultsLink.click();
+        const fileName = `results-${date.toISOString().slice(0, 10)}.csv`;
+
+        const response = await getResults(competition);
+        this.download(response, fileName);
     }
 
     onUploadPlayersBtnClick() {
@@ -140,7 +137,7 @@ class AdminPage {
     }
 
     onDownloadPlayersBtnClick() {
-        this.downloadPlayersLink.click();
+        this.downloadReferenceFile('players');
     }
 
     onUploadAdminsBtnClick() {
@@ -160,7 +157,7 @@ class AdminPage {
     }
 
     onDownloadAdminsBtnClick() {
-        this.downloadAdminLink.click();
+        this.downloadReferenceFile('admin');
     }
 
     onUploadDiaryBtnClick() {
@@ -180,7 +177,26 @@ class AdminPage {
     }
 
     onDownloadDiaryBtnClick() {
-        this.downloadDiaryLink.click();
+        this.downloadReferenceFile('diary');
+    }
+
+    async downloadReferenceFile(which) {
+        const response = await downloadFile(which);
+        this.download(response, which + '.json');
+    }
+
+    async download(response, fileName) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 }
 

@@ -2,30 +2,25 @@
 
 'use strict';
 
-import { readFile } from 'node:fs/promises';
-import { directoryFor, fileNameFor, revive } from '../functionsUtil.mjs';
+import { getStore } from '@netlify/blobs';
+import { storeFor, keyFor, revive } from '../functionsUtil.mjs';
 
 export default async function getScores(request, context) {
     const body = await request.json();
     revive(body);
 
-    const directoryPath = directoryFor(body.competition);
-    const filename = `${directoryPath}/${fileNameFor(body.player)}`;
-    
-    let scores = null;
-    try {
-        const fileContents = await readFile(filename, 'utf8');
-        scores = JSON.parse(fileContents);
-    } catch (error) {
-        scores = null;
-    }
+    const storeName = storeFor(body.competition);
+    const key = keyFor(body.player);
+
+    const store = getStore(storeName);
+    const scores = await store.get(key, { type: "json" });
+    console.log(scores);
     
     //Send the response
     const rbody = {
         status: 'OK',
         scores: scores
     };
-    console.log(rbody);    
     const response = new Response(JSON.stringify(rbody), {
         status: 200,
         headers: {

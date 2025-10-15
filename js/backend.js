@@ -40,13 +40,36 @@ export async function uploadFile(which, contents) {
     });
 }
 
+export async function downloadFile(which) {
+    const response = await postRequest('download-file', {
+        which: which
+    });
+   if (response.status === 200) {
+        return response;
+   } else {
+        throw new Error('HTTP error, status = ' + response.status);
+   }
+}
+
 export async function getResults(competition) {
     const response = await postRequest('get-results', {
         competition: competition
     });
-    const results = await response.json();
-    return results.resultsFile;
+    return response;
 }
+
+export async function readFile(which) {
+    const response = await postRequest('read-file', {
+        which: which
+    });
+   if (response.status === 200) {
+        const results = await response.json();
+        return results;
+   } else {
+        throw new Error('HTTP error, status = ' + response.status);
+   }
+}
+    
 
 async function postRequest(urlSuffix, body) {
     const requestHeaders = {

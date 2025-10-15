@@ -4,6 +4,7 @@
 
 import { Player, Competition } from './schema.js';
 import { bootstrap } from './bootstrap.js';
+import { readFile } from './backend.js';
 
 //Currently stubbed because golf genius API key is suspended
 //Current approach is to assum the Golf Genius is unavailble
@@ -21,9 +22,8 @@ export async function loadData() {
 
 async function loadEventDiary() {
     try {
-        const res = await fetch('data/diary.json');
-        const data = await res.json();
-        eventDiary = Array.isArray(data.events) ? data.events : bootstrap.diary.events;
+        const result = await readFile('diary');
+        eventDiary = result.events;
     } catch (error) {
         eventDiary = bootstrap.diary.events;
     }
@@ -34,35 +34,27 @@ async function loadEventDiary() {
 
 async function loadPlayers() {
     try {
-        const res = await fetch('data/players.json');
-        const data = await res.json();
-        players = Array.isArray(data.players) ? data.players : bootstrap.players.players;
+        const result = await readFile('players');
+        players = result.players;
     } catch (error) {
         players = bootstrap.players.players;
     }
 
     try {
-        const res2 = await fetch('data/admin.json');
-        const data2 = await res2.json();
-        admins = Array.isArray(data2.admins) ? data2.admins : bootstrap.admins;
+        const result = await readFile('admin');
+        admins = result.admins;
     } catch (error) {
         admins = bootstrap.admins;
     }
 }
 
 async function loadCourse() {
-    try {
-        const res = await fetch('data/course.json');
-        const data = await res.json();
-        course = data || bootstrap.course;
-    } catch (error) {
-        course = bootstrap.course;
-    }
+    course = bootstrap.course; //For now, this can only be canged by code
 }
 
 export function getCompetition(date) {
     const eventDate = date || new Date();
-    const event = eventDiary.find(c => c.date >= eventDate);
+    const event = eventDiary.find(c => c.date.toISOString().slice(0, 10) >= eventDate.toISOString().slice(0, 10));
 
     return event ? event : new Competition();
 }
