@@ -73,7 +73,7 @@ class Data {
 
         if (p) {
             //Add caluculated fields to the player (tees, playing handicap and shots given per hole)
-            if (p.gender === null) {
+            if (!p.gender) {
                 p.gender = 'male';
             }
 
