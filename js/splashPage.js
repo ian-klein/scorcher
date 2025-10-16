@@ -44,7 +44,7 @@ class SplashPage {
             //Warn if the competition is in the past
             const today = new Date();
             if (comp.date.toISOString().slice(0, 10) !== today.toISOString().slice(0, 10)) {
-                this.displayMessage('This competition has already taken place, so probably entering scores now is awaste of your time!');
+                this.displayMessage('This competition has already taken place, so no need to enter scores now');
             }
 
             //Must have email and PH in order to score
@@ -81,6 +81,7 @@ class SplashPage {
         this.renderPlayer();
         this.renderButtons();
         this.wireEvents();
+        this.splashControls.style.display = 'block';
     }
 
     hide() {
