@@ -13,7 +13,7 @@ export default async function resetScores(request, context) {
     const key = keyFor(body.player);
 
     const store = getStore(storeName);
-    store.delete(key);
+    await store.delete(key);
 
     //Send the response
     const rbody = {

@@ -3,6 +3,7 @@
 'use strict';
 
 import { getStore } from '@netlify/blobs';
+import { isDebug } from '../functionsUtil.mjs';
 
 export default async function uploadFile(request, context) {
     const body = await request.json();
