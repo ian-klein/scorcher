@@ -12,7 +12,7 @@ class SplashPage {
     constructor() {
         this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
-        this.competitionName = document.getElementById('competitionName');
+        this.splashCompetitionName = document.getElementById('splashCompetitionName');
         this.emailInput = document.getElementById('emailInput');
         this.handicapValue = document.getElementById('handicapValue');
         this.emailInputGroup = document.getElementById('emailInputGroup');
@@ -62,7 +62,7 @@ class SplashPage {
 
     renderCompetitionName() {
         const comp = data.getCompetition();
-        this.competitionName.textContent = data.competitionDisplayName(comp);
+        this.splashCompetitionName.textContent = data.competitionDisplayName(comp);
     }
 
     renderPlayer() {

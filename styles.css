@@ -790,7 +790,7 @@ button,
     background-color: var(--primary-dark);
 }
 
-.competition-name {
+.splash-competition-name {
     font-size: 1rem;
     font-weight: 600;
     color: #2c5f2d;

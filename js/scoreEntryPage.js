@@ -73,11 +73,18 @@ class ScoreEntryPage {
 
     wireEvents() {
         // Navigation arrows
-        this.prevHole.addEventListener('click', () => this.navigateHole(-1));
-        this.nextHole.addEventListener('click', () => this.navigateHole(1));
+        this.prevHole.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.navigateHole(-1);
+        });
+        this.nextHole.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.navigateHole(1);
+        });
         
         // Keypad buttons
         this.keypad.addEventListener('click', (e) => {
+            e.preventDefault();
             const btn = e.target.closest('.key-btn');
             if (!btn) return;
             
@@ -95,6 +102,7 @@ class ScoreEntryPage {
     }
 
     navigateHole(direction) {
+
         let newHole = this.currentHole + direction;
         
         if (newHole < 1) newHole = 18;
@@ -102,19 +110,16 @@ class ScoreEntryPage {
         
         this.currentHole = newHole;
         this.renderHoleScore();
-        
-        // Add haptic feedback on mobile devices
-        if (navigator.vibrate) {
-            navigator.vibrate(10);
-        }
     }
 
     handleKeypadInput(value) {
         const currentScore = this.scoreInput.value;
+        let autoNavigate = true;
         
         if (value === 'DEL') {
             // Delete last character
             this.scoreInput.value = currentScore.slice(0, -1);
+            autoNavigate = false;
         } else if (value === 'X') {
             // X typically means no score or not played
             this.scoreInput.value = 'X';
@@ -126,6 +131,7 @@ class ScoreEntryPage {
             if (currentScore === 'X' || currentScore === '') {
                 // Set score as the number
                 this.scoreInput.value = value;
+                autoNavigate = value !== '1';
             } else if (currentScore === '1') {
                 // Add digit (max 2 digits)
                 this.scoreInput.value = currentScore + value;
@@ -133,10 +139,10 @@ class ScoreEntryPage {
         }
 
         this.saveCurrentScore();
-        
-        // Add haptic feedback on mobile devices
-        if (navigator.vibrate) {
-            navigator.vibrate(10);
+
+        //If the next hole is not yet scored, navigate to it
+        if (autoNavigate && this.currentHole < 18 && !this.scores.gross[this.currentHole]) {
+            this.navigateHole(1);
         }
     }
 
