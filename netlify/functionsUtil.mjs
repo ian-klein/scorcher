@@ -17,3 +17,8 @@ export function storeFor(competition) {
 export function keyFor(player) {
     return player.name.replace(/[^a-zA-Z0-9]/g, '-');
 }
+
+export function isDebug() {
+    return process.env.DEBUG === 'true';
+}
+    

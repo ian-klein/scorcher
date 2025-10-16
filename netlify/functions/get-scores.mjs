@@ -3,7 +3,7 @@
 'use strict';
 
 import { getStore } from '@netlify/blobs';
-import { storeFor, keyFor, revive } from '../functionsUtil.mjs';
+import { storeFor, keyFor, revive, isDebug } from '../functionsUtil.mjs';
 
 export default async function getScores(request, context) {
     const body = await request.json();
@@ -11,6 +11,12 @@ export default async function getScores(request, context) {
 
     const storeName = storeFor(body.competition);
     const key = keyFor(body.player);
+
+    if (isDebug()) {
+        console.log('====== getScores ======');
+        console.log('storeName: ' + storeName);
+        console.log('key: ' + key);
+    }
 
     const store = getStore(storeName);
     const scores = await store.get(key, { type: "json" });
