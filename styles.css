@@ -131,6 +131,35 @@ body {
     box-shadow: var(--shadow);
     margin-bottom: clamp(0.6rem, 1.4vh, 0.9rem);
     flex-shrink: 0;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr auto;
+    align-items: center;
+}
+
+.hole-section button:first-of-type {
+    grid-column: 1;
+}
+
+.hole-section button:last-of-type {
+    grid-column: 5;
+}
+
+.hole-section input {
+    grid-column: 3;
+}   
+
+.hole-section span:nth-of-type(1),
+.hole-section span:nth-of-type(4) {
+    grid-column: 2;
+}
+
+.hole-section span:nth-of-type(3),
+.hole-section span:nth-of-type(5) {
+    grid-column: 4;
+}
+
+.hole-section button:nth-of-type(3) {
+    grid-column: 3;
 }
 
 .hole-label {
@@ -138,8 +167,18 @@ body {
     margin-bottom: clamp(0.75rem, 1.8vh, 1.1rem);
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.5em;
+}
+
+.context-item {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    font-weight: 400;
+    color: rgba(128, 128, 128, 0.727);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0 2vw;
 }
 
 .hole-text {
@@ -150,16 +189,18 @@ body {
 }
 
 .hole-number {
+    width: clamp(4.5rem, 16vw, 5.5rem);
     font-size: clamp(1.5rem, 6vw, 2rem);
     font-weight: 700;
     color: var(--primary-color);
     line-height: 1;
+    text-align: center;
 }
 
 .hole-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: clamp(0.6rem, 2.5vw, 1rem);
 }
 
@@ -190,7 +231,8 @@ body {
 
 .score-input {
     width: clamp(4.5rem, 16vw, 5.5rem);
-    height: clamp(3.6rem, 13vw, 4.6rem);
+    height: auto;
+    padding: 0.4rem 0;
     font-size: clamp(1.6rem, 6vw, 1.9rem);
     font-weight: 700;
     text-align: center;

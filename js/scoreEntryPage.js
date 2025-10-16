@@ -24,7 +24,11 @@ class ScoreEntryPage {
         
         // Hole elements
         this.holeNumber = document.getElementById('holeNumber');
+        this.priorHoleNumber = document.getElementById('priorHoleNumber');
+        this.nextHoleNumber = document.getElementById('nextHoleNumber');
         this.scoreInput = document.getElementById('scoreInput');
+        this.priorScore = document.getElementById('priorScore');
+        this.nextScore = document.getElementById('nextScore');
         this.prevHole = document.getElementById('prevHole');
         this.nextHole = document.getElementById('nextHole');
         
@@ -196,11 +200,29 @@ class ScoreEntryPage {
 
     renderHoleScore() {
         // Update hole number
-        this.holeNumber.textContent = this.currentHole;
+        this.holeNumber.textContent = '- ' + this.currentHole + ' -';
+
+        // Update prior hole number
+        if (this.currentHole === 1) {
+            this.priorHoleNumber.textContent = '';
+            this.priorScore.textContent = '';
+        } else {
+            this.priorHoleNumber.textContent = '- ' + (this.currentHole - 1) + ' -';
+            this.priorScore.textContent = this.scores.gross[this.currentHole - 2];
+        }
         
         // Update score input with saved score for this hole
         const score = this.scores.gross[this.currentHole - 1];
         this.scoreInput.value = `${score ?? ''}`;
+
+        // Update next score
+        if (this.currentHole === 18 || !this.scores.gross[this.currentHole]) {
+            this.nextHoleNumber.textContent = '';
+            this.nextScore.textContent = '';
+        } else {
+            this.nextHoleNumber.textContent = '- ' + (this.currentHole + 1) + ' -';
+            this.nextScore.textContent = this.scores.gross[this.currentHole];
+        }
     }
 
 }
