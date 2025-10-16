@@ -5,7 +5,7 @@
 import { pageNavigator } from './pageNavigator.js';
 import { reviewPage } from './reviewPage.js'
 import { Scores } from './schema.js';
-import { competitionDisplayName } from './data.js';
+import { data } from './data.js';
 
 const SAVED_SCORES_KEY = 'saved_scores_v1';
 
@@ -181,7 +181,7 @@ class ScoreEntryPage {
     }
 
     renderHeader() {
-        this.competitionName.textContent = competitionDisplayName(pageNavigator.competition);
+        this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
         this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
         this.playerName.textContent = pageNavigator.player.name;
         this.handicapIndex.textContent = pageNavigator.player.hi;

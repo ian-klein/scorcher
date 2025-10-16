@@ -1,7 +1,7 @@
 // Logic for the splash screen (which also prompts for email if we did not already have it)
 'use strict';
 
-import { getCompetition, getPlayer } from './data.js';
+import { data } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
 import { adminPage } from './adminPage.js';
@@ -12,10 +12,11 @@ class SplashPage {
     constructor() {
         this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
+        this.competitionName = document.getElementById('competitionName');
         this.emailInput = document.getElementById('emailInput');
         this.handicapValue = document.getElementById('handicapValue');
         this.emailInputGroup = document.getElementById('emailInputGroup');
-        this.submitEmail = document.getElementById('submitEmail');
+        this.continueBtn = document.getElementById('continueBtn');
         this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
         this.adminBtn = document.getElementById('adminBtn');
     }
@@ -23,7 +24,7 @@ class SplashPage {
     renderAdminButton() {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
-        const player = getPlayer(email,ph);
+        const player = data.getPlayer(email,ph);
         const isAdmin = player && player.admin;
 
         if (isAdmin) {
@@ -34,18 +35,37 @@ class SplashPage {
     }
 
     renderSubmitButton() {
-        const email = this.emailInput.value.trim();
-        const ph = this.handicapValue.value.trim();
-        this.submitEmail.disabled = !email || email.length === 0 || !ph || ph.length === 0;
+        //Only score Stableford and strokeplay competitions
+        const comp = data.getCompetition();
+        if (comp.type === 'other') {
+            this.displayMessage('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
+            this.continueBtn.disabled = true;
+        } else {
+            //Warn if the competition is in the past
+            const today = new Date();
+            if (comp.date.toISOString().slice(0, 10) !== today.toISOString().slice(0, 10)) {
+                this.displayMessage('This competition has already taken place, so probably entering scores now is awaste of your time!');
+            }
+
+            //Must have email and PH in order to score
+            const email = this.emailInput.value.trim();
+            const ph = this.handicapValue.value.trim();
+            this.continueBtn.disabled = !email || email.length === 0 || !ph || ph.length === 0;
+        }
     }
 
-    renderPage() {
+
+    renderButtons() {
         this.renderAdminButton();
         this.renderSubmitButton();
-        this.displayMessage('');
     }
 
-    init() {
+    renderCompetitionName() {
+        const comp = data.getCompetition();
+        this.competitionName.textContent = data.competitionDisplayName(comp);
+    }
+
+    renderPlayer() {
         //Get email & PH from local storage
         const raw = localStorage.getItem(PLAYER_STORAGE_KEY);
         if (raw) {
@@ -54,8 +74,12 @@ class SplashPage {
             this.emailInput.value = storedPlayer.email;
             this.handicapValue.value = storedPlayer.ph;            
         }
+    }
 
-        this.renderPage();
+    init() {
+        this.renderCompetitionName();
+        this.renderPlayer();
+        this.renderButtons();
         this.wireEvents();
     }
 
@@ -68,28 +92,14 @@ class SplashPage {
         this.splashMessage.textContent = message;
     }
 
-    onSubmitEmailClick() {
+    onContinueBtnClick() {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
         if (email && ph) {
-            const player = getPlayer(email,ph);
+            const player = data.getPlayer(email,ph);
             if (!player) {  
-                this.displayMessage('That email address is not in the player database');
+                alert('Email address is not in the player database');
                 return;
-            }
-
-            //Check that today is a Wednesday (but only for non-admin users)
-            const today = new Date();
-            const day = today.getDay();
-            if (day !== 3 && !player.admin) {
-                this.displayMessage('There is no competition today - it is not a Wednesday!');
-                return;
-            }
-
-            //Only score Stableford and strokeplay
-            const comp = getCompetition();
-            if (comp.type === 'other') {
-                this.displayMessage('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
             }
 
             const storedPlayer = {
@@ -99,7 +109,7 @@ class SplashPage {
             localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(storedPlayer));
 
             pageNavigator.player = player;
-            pageNavigator.competition = comp;
+            pageNavigator.competition = data.getCompetition();
     
             this.hide();
             scoreEntryPage.init();
@@ -108,7 +118,7 @@ class SplashPage {
     }
 
     onEmailInputInput() {
-        this.renderPage();
+        this.renderButtons();
     }
 
     onHandicapValueInput() {
@@ -118,7 +128,7 @@ class SplashPage {
     onAdminBtnClick() {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
-        const player = getPlayer(email,ph);
+        const player = data.getPlayer(email,ph);
         this.hide();
         pageNavigator.player = player;
 
@@ -127,7 +137,7 @@ class SplashPage {
     }
 
     wireEvents() {
-        this.submitEmail.addEventListener('click', () => this.onSubmitEmailClick());
+        this.continueBtn.addEventListener('click', () => this.onContinueBtnClick());
         this.emailInput.addEventListener('input', () => this.onEmailInputInput());
         this.handicapValue.addEventListener('input', () => this.onHandicapValueInput());
         this.adminBtn.addEventListener('click', () => this.onAdminBtnClick());

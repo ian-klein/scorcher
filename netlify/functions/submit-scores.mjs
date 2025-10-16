@@ -1,11 +1,11 @@
-//Delete the score for this player and this competition
+//Save a score to the results blob store for this competiton
 
 'use strict';
 
 import { getStore } from '@netlify/blobs';
 import { storeFor, keyFor, revive } from '../functionsUtil.mjs';
 
-export default async function resetScore(request, context) {
+export default async function submitScores(request, context) {
     const body = await request.json();
     revive(body);
 
@@ -13,7 +13,7 @@ export default async function resetScore(request, context) {
     const key = keyFor(body.player);
 
     const store = getStore(storeName);
-    store.delete(key);
+    store.set(key, JSON.stringify(body.scores));
 
     //Send the response
     const rbody = {
@@ -21,12 +21,13 @@ export default async function resetScore(request, context) {
         storeName: storeName,
         key: key
     };
-   const response = new Response(JSON.stringify(rbody), {
+    const response = new Response(JSON.stringify(rbody), {
         status: 200,
         headers: {
             'Content-Type': 'application/json',
             'Content-Length': JSON.stringify(rbody).length
         }
     });
+    
     return response;
 }

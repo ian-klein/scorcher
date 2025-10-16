@@ -1,9 +1,9 @@
-//Logic for the admn page
+//Logic for the admin page
 
 'use strict';
 
-import { getCompetition, getPlayers, getAdmins, getEventDiary } from './data.js';
-import { uploadFile, downloadFile, getResults } from './backend.js';
+import { data } from './data.js';
+import { backend } from './backend.js';
 
 class AdminPage {
     constructor() {
@@ -28,7 +28,7 @@ class AdminPage {
     }
 
     renderScores() {
-        const diary = getEventDiary();
+        const diary = data.getEventDiary();
 
         const today = new Date();
         const competitions = diary.filter(e => e.date <= today && e.type !== 'other').slice(0, 3);
@@ -45,7 +45,7 @@ class AdminPage {
     }
 
     renderPlayers() {
-        const players = getPlayers();
+        const players = data.getPlayers();
         this.playersTableBody.innerHTML = '';
         for (const player of players) {
             const row = document.createElement('tr');
@@ -60,7 +60,7 @@ class AdminPage {
     }
 
     renderAdmins() {
-        const admins = getAdmins();
+        const admins = data.getAdmins();
         this.adminsTableBody.innerHTML = '';
         for (const email of admins) {
             const row = document.createElement('tr');
@@ -72,7 +72,7 @@ class AdminPage {
     }
 
     renderDiary() {
-        const diary = getEventDiary();
+        const diary = data.getEventDiary();
         this.diaryTableBody.innerHTML = '';
         for (const event of diary) {
             const row = document.createElement('tr');
@@ -113,10 +113,10 @@ class AdminPage {
 
     async onGetResultsBtnClick() {  
         const date = new Date(this.competitionSelect.value);
-        const competition = getCompetition(date);
+        const competition = data.getCompetition(date);
         const fileName = `results-${date.toISOString().slice(0, 10)}.csv`;
 
-        const response = await getResults(competition);
+        const response = await backend.getResults(competition);
         this.download(response, fileName);
     }
 
@@ -130,7 +130,7 @@ class AdminPage {
             const reader = new FileReader();
             reader.onload = async (e) => {
                 const data = JSON.parse(e.target.result);
-                await uploadFile('players', JSON.stringify(data));
+                await backend.uploadFile('players', JSON.stringify(data));
             };
             reader.readAsText(file);
         }
@@ -150,7 +150,7 @@ class AdminPage {
             const reader = new FileReader();
             reader.onload = async (e) => {
                 const data = JSON.parse(e.target.result);
-                await uploadFile('admin', JSON.stringify(data));
+                await backend.uploadFile('admin', JSON.stringify(data));
             };
             reader.readAsText(file);
         }
@@ -170,7 +170,7 @@ class AdminPage {
             const reader = new FileReader();
             reader.onload = async (e) => {
                 const data = JSON.parse(e.target.result);
-                await uploadFile('diary', JSON.stringify(data));
+                await backend.uploadFile('diary', JSON.stringify(data));
             };
             reader.readAsText(file);
         }
@@ -181,7 +181,7 @@ class AdminPage {
     }
 
     async downloadReferenceFile(which) {
-        const response = await downloadFile(which);
+        const response = await backend.downloadFile(which);
         this.download(response, which + '.json');
     }
 

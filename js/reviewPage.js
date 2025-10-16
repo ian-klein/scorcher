@@ -3,8 +3,8 @@
 'use strict';
 
 import { pageNavigator } from './pageNavigator.js';
-import { submitScore, getScores } from './backend.js';
-import { competitionDisplayName } from './data.js';
+import { backend } from './backend.js';
+import { data } from './data.js';
 
 class ReviewPage {
     constructor() {
@@ -51,12 +51,12 @@ class ReviewPage {
             return;
         }
 
-        await submitScore(pageNavigator.competition, pageNavigator.player, pageNavigator.scores);
+        await backend.submitScores(pageNavigator.competition, pageNavigator.player, pageNavigator.scores);
         this.renderSubmitButton();
     }
 
     renderHeader() {
-        this.competitionName.textContent = competitionDisplayName(pageNavigator.competition);
+        this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
         this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
         this.playerName.textContent = pageNavigator.player.name;
         this.handicapIndex.textContent = pageNavigator.player.hi;
@@ -164,7 +164,7 @@ class ReviewPage {
     async renderSubmitButton() {
         this.submitBtn.disabled = false;
         this.scoreSubmitted.style.display = 'none';
-        const scores = await getScores(pageNavigator.competition, pageNavigator.player);
+        const scores = await backend.getScores(pageNavigator.competition, pageNavigator.player);
         if (scores) {
             for (let i = 0; i < 18; i++) {
                 if (scores.gross[i] !== pageNavigator.scores.gross[i]) {
