@@ -9,6 +9,11 @@ export default async function downloadFile(request, context) {
 
     const which = body.which; // players, admin or diary
 
+    if (isDebug()) {
+        console.log('====== downloadFile ======');
+        console.log('which: ' + which);
+    }
+
     if (which !== 'players' && which !== 'admin' && which !== 'diary') {
         throw new Error('Invalid which: "' + which + '"');
     }

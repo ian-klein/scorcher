@@ -10,12 +10,17 @@ export default async function uploadFile(request, context) {
     const which = body.which; // players, admin or diary
     const contents = body.contents
 
+    if (isDebug()) {
+        console.log('====== uploadFile ======');
+        console.log('which: ' + which);
+    }
+
     if (which !== 'players' && which !== 'admin' && which !== 'diary') {
         throw new Error('Invalid which: "' + which + '"');
     }
 
     const store = getStore('data');
-    store.set(which, JSON.stringify(contents));
+    await store.set(which, JSON.stringify(contents));
     
     //Send the response
     const rbody = {
