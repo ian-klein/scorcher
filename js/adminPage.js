@@ -41,7 +41,11 @@ class AdminPage {
             this.competitionSelect.appendChild(option);
         }
 
-        this.getResultsBtn.disabled = true;
+        this.getResultsBtn.disabled = (competitions.length === 0)
+        if (competitions.length > 0) {
+            const defaultComp = competitions[competitions.length - 1];  
+            this.competitionSelect.value = defaultComp.date.toISOString();
+        }
     }
 
     renderPlayers() {
