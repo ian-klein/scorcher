@@ -3,7 +3,6 @@
 'use strict';
 
 import { getStore } from '@netlify/blobs';
-import { isDebug } from '../functionsUtil.mjs';
 
 export default async function uploadFile(request, context) {
     const body = await request.json();
@@ -11,10 +10,8 @@ export default async function uploadFile(request, context) {
     const which = body.which; // players, admin or diary
     const contents = body.contents
 
-    if (isDebug()) {
-        console.log('====== uploadFile ======');
-        console.log('which: ' + which);
-    }
+    console.log('====== uploadFile ======');
+    console.log('which: ' + which);
 
     if (which !== 'players' && which !== 'admin' && which !== 'diary') {
         throw new Error('Invalid which: "' + which + '"');

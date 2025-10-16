@@ -10,6 +10,9 @@ export default async function getResults(request, context) {
     const storeName = storeFor(body.competition);
     const store = getStore(storeName);
 
+    console.log('====== getResults ======');
+    console.log('storeName: ' + storeName);
+    
     const { blobs } = await store.list();
     const keys = blobs.map((blob) => blob.key);
 

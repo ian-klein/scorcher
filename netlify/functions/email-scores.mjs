@@ -10,6 +10,10 @@ export default async function emailScores(request, context) {
     revive(body);
 
     const toEmail = body.player.email;
+
+    console.log('====== emailScores ======');
+    console.log('toEmail: ' + toEmail);
+
     const transportConfig = {
       host: 'smtp.gmail.com',
       port: 587,

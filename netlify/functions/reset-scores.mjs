@@ -12,6 +12,10 @@ export default async function resetScores(request, context) {
     const storeName = storeFor(body.competition);
     const key = keyFor(body.player);
 
+    console.log('====== resetScores ======');
+    console.log('storeName: ' + storeName);
+    console.log('key: ' + key);
+
     const store = getStore(storeName);
     await store.delete(key);
 

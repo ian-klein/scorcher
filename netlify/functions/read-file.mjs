@@ -9,6 +9,9 @@ export default async function readFile(request, context) {
 
     const which = body.which; // players, admin or diary
 
+    console.log('====== readFile ======');
+    console.log('which: ' + which);
+
     if (which !== 'players' && which !== 'admin' && which !== 'diary') {
         throw new Error('Invalid which: "' + which + '"');
     }

@@ -3,17 +3,14 @@
 'use strict';
 
 import { getStore } from '@netlify/blobs';
-import { isDebug } from '../functionsUtil.mjs';
 
 export default async function downloadFile(request, context) {
     const body = await request.json();
 
     const which = body.which; // players, admin or diary
 
-    if (isDebug()) {
-        console.log('====== downloadFile ======');
-        console.log('which: ' + which);
-    }
+    console.log('====== downloadFile ======');
+    console.log('which: ' + which);
 
     if (which !== 'players' && which !== 'admin' && which !== 'diary') {
         throw new Error('Invalid which: "' + which + '"');
