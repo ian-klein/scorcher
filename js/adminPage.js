@@ -28,7 +28,7 @@ class AdminPage {
     }
 
     renderScores() {
-        const diary = data.getEventDiary();
+        const diary = data.eventDiary;
 
         const today = new Date();
         const competitions = diary.filter(e => e.date <= today && e.type !== 'other').slice(0, 3);
@@ -49,7 +49,7 @@ class AdminPage {
     }
 
     renderPlayers() {
-        const players = data.getPlayers();
+        const players = data.players;
         this.playersTableBody.innerHTML = '';
         for (const player of players) {
             const row = document.createElement('tr');
@@ -64,7 +64,7 @@ class AdminPage {
     }
 
     renderAdmins() {
-        const admins = data.getAdmins();
+        const admins = data.admins;
         this.adminsTableBody.innerHTML = '';
         for (const email of admins) {
             const row = document.createElement('tr');
@@ -76,7 +76,7 @@ class AdminPage {
     }
 
     renderDiary() {
-        const diary = data.getEventDiary();
+        const diary = data.eventDiary;
         this.diaryTableBody.innerHTML = '';
         for (const event of diary) {
             const row = document.createElement('tr');

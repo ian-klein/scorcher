@@ -115,18 +115,6 @@ class Data {
         }
         return p;
     }
-
-    getPlayers() {
-        return this.players;
-    }  
-
-    getAdmins() {
-        return this.admins;
-    }
-
-    getEventDiary() {
-        return this.eventDiary;
-    }
 }
 
 export const data = new Data();
