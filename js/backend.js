@@ -31,8 +31,8 @@ class Backend {
         });
 
         if (response && response.status === 200) {
-            const results = await response.json();
-            return results.scores;
+            const scores = await response.json();
+            return scores;
         } else {
             return null;
         }

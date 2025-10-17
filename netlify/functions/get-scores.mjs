@@ -18,17 +18,14 @@ export default async function getScores(request, context) {
 
     const store = getStore(storeName);
     const scores = await store.get(key, { type: "json" });
+
+    console.log('scores: ' + JSON.stringify(scores? scores.gross : null));
     
-    //Send the response
-    const rbody = {
-        status: 'OK',
-        scores: scores
-    };
-    const response = new Response(JSON.stringify(rbody), {
+    const response = new Response(JSON.stringify(scores), {
         status: 200,
         headers: {
             'Content-Type': 'application/json',
-            'Content-Length': JSON.stringify(rbody).length
+            'Content-Length': JSON.stringify(scores).length
         }
     });
     
