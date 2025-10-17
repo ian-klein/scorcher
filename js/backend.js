@@ -13,6 +13,12 @@ class Backend {
             player: player,
             scores: scores
         });
+
+        if (response && response.status === 200) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Delete a score for a player in a competition (not currently used)
@@ -21,6 +27,12 @@ class Backend {
             competition: competition,
             player: player
         });
+
+        if (response && response.status === 200) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Get the submitted scores for a player in a competition
@@ -44,6 +56,12 @@ class Backend {
             competition: competition,
             player: player
         });
+
+        if (response && response.status === 200) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Upload a file to the blob store
@@ -52,6 +70,12 @@ class Backend {
             which: which,
             contents: contents
         });
+
+        if (response && response.status === 200) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Download a file from the blob store

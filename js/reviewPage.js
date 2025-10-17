@@ -51,8 +51,8 @@ class ReviewPage {
             return;
         }
 
-        await backend.submitScores(pageNavigator.competition, pageNavigator.player, pageNavigator.scores);
-        this.renderSubmitButton();
+        const isSubmitSuccess = await backend.submitScores(pageNavigator.competition, pageNavigator.player, pageNavigator.scores);
+        this.renderSubmitButton(isSubmitSuccess);
     }
 
     renderHeader() {
@@ -161,27 +161,33 @@ class ReviewPage {
         });
     }
    
-    async renderSubmitButton() {
-        this.submitBtn.disabled = false;
-        this.scoreSubmitted.style.display = 'none';
-        const scores = await backend.getScores(pageNavigator.competition, pageNavigator.player);
-        if (scores) {
-            for (let i = 0; i < 18; i++) {
-                if (scores.gross[i] !== pageNavigator.scores.gross[i]) {
-                    return;
-                }
-            }
-
-            //Scores are the same - all good
+    async renderSubmitButton(isOnSubmit) {
+        if (isOnSubmit) {
             this.submitBtn.disabled = true;
             this.scoreSubmitted.style.display = 'block';
+        } else {
+            this.submitBtn.disabled = false;
+            this.scoreSubmitted.style.display = 'none';
+
+            const scores = await backend.getScores(pageNavigator.competition, pageNavigator.player);
+            if (scores) {
+                for (let i = 0; i < 18; i++) {
+                    if (scores.gross[i] !== pageNavigator.scores.gross[i]) {
+                        return;
+                    }
+                }
+
+                //Scores are the same - all good
+                this.submitBtn.disabled = true;
+                this.scoreSubmitted.style.display = 'block';
+            }
         }
     }
     init() {
         this.renderHeader();
         this.renderHoleNumbers();
         this.renderScores();
-        this.renderSubmitButton();
+        this.renderSubmitButton(false);
     }
 }
 
