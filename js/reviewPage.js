@@ -51,7 +51,10 @@ class ReviewPage {
             return;
         }
 
+        backend.showSpinner();
         const isSubmitSuccess = await backend.submitScores(pageNavigator.competition, pageNavigator.player, pageNavigator.scores);
+        backend.hideSpinner();
+
         this.renderSubmitButton(isSubmitSuccess);
     }
 
@@ -169,7 +172,10 @@ class ReviewPage {
             this.submitBtn.disabled = false;
             this.scoreSubmitted.style.display = 'none';
 
+            backend.showSpinner();
             const scores = await backend.getScores(pageNavigator.competition, pageNavigator.player);
+            backend.hideSpinner();
+            
             if (scores) {
                 for (let i = 0; i < 18; i++) {
                     if (scores.gross[i] !== pageNavigator.scores.gross[i]) {

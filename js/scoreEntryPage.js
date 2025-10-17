@@ -186,8 +186,8 @@ class ScoreEntryPage {
 
     onReviewBtnClick() {
         pageNavigator.scores = this.scores;
-        reviewPage.init();
         pageNavigator.showPage('review');
+        reviewPage.init();
     }
 
     renderHeader() {

@@ -4,8 +4,16 @@
 
 class Backend {
     constructor() {
+        this.spinnerOverlay = document.getElementById('spinnerOverlay');
     }
-    
+
+    showSpinner() {
+        this.spinnerOverlay.style.display = 'flex';
+    }
+
+    hideSpinner() {
+        this.spinnerOverlay.style.display = 'none';
+    }
     //Submit the score for a player in a competition
     async submitScores(competition, player, scores) {
         const response = await this.#postRequest('submit-scores', {
