@@ -133,8 +133,7 @@ class AdminPage {
         if (file) {
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const data = JSON.parse(e.target.result);
-                await backend.uploadFile('players', JSON.stringify(data));
+                await this.upload('players', e.target.result);
             };
             reader.readAsText(file);
         }
@@ -153,8 +152,7 @@ class AdminPage {
         if (file) {
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const data = JSON.parse(e.target.result);
-                await backend.uploadFile('admin', JSON.stringify(data));
+                await this.upload('admin', e.target.result);
             };
             reader.readAsText(file);
         }
@@ -173,8 +171,7 @@ class AdminPage {
         if (file) {
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const data = JSON.parse(e.target.result);
-                await backend.uploadFile('diary', JSON.stringify(data));
+                await this.upload('diary', e.target.result);
             };
             reader.readAsText(file);
         }
@@ -201,6 +198,12 @@ class AdminPage {
 
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    async upload(which, data) {
+        backend.showSpinner();
+        const response = await backend.uploadFile(which, data);
+        backend.hideSpinner();
     }
 }
 

@@ -25,7 +25,7 @@ class Data {
 
     async #loadEventDiary() {
         const result = await backend.readFile('diary');
-        if (result) {
+        if (result && Array.isArray(result.events)) {
             this.eventDiary = result.events;
         } else {
             this.eventDiary = bootstrap.diary.events;
@@ -37,14 +37,14 @@ class Data {
 
     async #loadPlayers() {
         const result = await backend.readFile('players');
-        if (result) {
+        if (result && Array.isArray(result.players)) {
             this.players = result.players;
         } else {
             this.players = bootstrap.players.players;
         }
 
         const result2 = await backend.readFile('admin');
-        if (result2) {
+        if (result2 && Array.isArray(result2.admins)) {
             this.admins = result2.admins;
         } else {
             this.admins = bootstrap.admins;
