@@ -67,9 +67,9 @@ class ReviewPage {
     }
 
     renderScores() {
-        if (pageNavigator.competition.type === 'stableford') {
+        if (pageNavigator.competition.type === CompetitionType.STABLEFORD) {
             this.renderStablefordScores();
-        } else if (pageNavigator.competition.type === 'strokeplay') {
+        } else if (pageNavigator.competition.type === CompetitionType.STROKEPLAY) {
             this.renderStrokeplayScores();
         }
     }
