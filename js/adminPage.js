@@ -4,6 +4,7 @@
 
 import { data } from './data.js';
 import { backend } from './backend.js';
+import { CompetitionType } from './schema.js';
 
 class AdminPage {
     constructor() {
@@ -31,7 +32,7 @@ class AdminPage {
         const diary = data.eventDiary;
 
         const today = new Date();
-        const competitions = diary.filter(e => e.date <= today && e.type !== 'other').slice(0, 3);
+        const competitions = diary.filter(e => e.date <= today && e.type !== CompetitionType.OTHER).slice(0, 3);
         for (const c of competitions) {
             const textContent = c.date.toISOString().slice(0, 10) + ' ' + c.name;
             const value = c.date.toISOString();

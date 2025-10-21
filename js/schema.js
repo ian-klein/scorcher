@@ -13,11 +13,22 @@ export class Player {
     }
 }
 
+export const CompetitionType = Object.freeze({
+    STABLEFORD: 'stableford',
+    STROKEPLAY: 'strokeplay',
+    WALTZ: 'walz',
+    YELLOW_BALL: 'yellow ball',
+    GREENSOMES: 'greensomes',
+    PAIRS: 'pairs',
+    SCRAMBLE: 'scramble',
+    OTHER: 'other'
+});
+    
 export class Competition {
     constructor() {
         this.name = 'Unknown';
         this.date = new Date('1993-01-01');
-        this.type = 'stableford'; // Options: 'stableford', 'strokeplay', 'other'
+        this.type = CompetitionType.STABLEFORD;
     }
 }
 

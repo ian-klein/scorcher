@@ -5,6 +5,7 @@ import { data } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
 import { adminPage } from './adminPage.js';
+import { CompetitionType } from './schema.js';
 
 const PLAYER_STORAGE_KEY= 'player_v1'
 
@@ -19,6 +20,11 @@ class SplashPage {
         this.continueBtn = document.getElementById('continueBtn');
         this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
         this.adminBtn = document.getElementById('adminBtn');
+
+        this.supportedCompetitionTypes = [
+            CompetitionType.STABLEFORD,
+            CompetitionType.STROKEPLAY
+        ];
     }
 
     renderAdminButton() {
@@ -35,10 +41,10 @@ class SplashPage {
     }
 
     renderSubmitButton() {
-        //Only score Stableford and strokeplay competitions
+        //Only score supported competitions
         const comp = data.getCompetition();
-        if (comp.type === 'other') {
-            this.displayMessage('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
+        if (!this.supportedCompetitionTypes.includes(comp.type)) {
+            this.displayMessage('Supported competitions are ' + this.supportedCompetitionTypes.join(', ') + '. For this competition just put your signed, completed card in the box');
             this.continueBtn.disabled = true;
         } else {
             //Warn if the competition is in the past
