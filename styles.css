@@ -1103,3 +1103,75 @@ button,
     transform: rotate(360deg);
   }
 }
+
+.team-info {
+    background: var(--card-bg);
+    padding: clamp(0.7rem, 1.6vh, 1rem);
+    border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
+    box-shadow: var(--shadow);
+    margin-bottom: clamp(0.6rem, 1.4vh, 0.9rem);
+    flex-shrink: 0;
+}
+
+/* Team page styles */
+.page[data-page="team"] {
+    padding: clamp(0.6rem, 1.2vh, 0.9rem) clamp(0.9rem, 4vw, 1.2rem);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.team-handicap-controls {
+    background: var(--card-bg);
+    padding: clamp(0.7rem, 1.6vh, 1rem);
+    border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
+    box-shadow: var(--shadow);
+    margin-bottom: clamp(0.6rem, 1.4vh, 0.9rem);
+    flex-shrink: 0;
+}
+
+
+.team-player {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    margin: 0 auto 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.team-name {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.team-ph {
+    width: 60px;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.team-banner {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2c5f2d;
+    text-align: center;
+    margin: 10px 0 15px 0;
+    padding: 0 20px;
+}

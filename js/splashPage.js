@@ -5,7 +5,8 @@ import { data } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
 import { adminPage } from './adminPage.js';
-import { CompetitionType } from './schema.js';
+import { teamPage } from './teampage.js';
+import { Competition } from './schema.js';
 
 const PLAYER_STORAGE_KEY= 'player_v1'
 
@@ -13,6 +14,7 @@ class SplashPage {
     constructor() {
         this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
+        this.handicapControls = document.getElementById('handicapControls');
         this.splashCompetitionName = document.getElementById('splashCompetitionName');
         this.emailInput = document.getElementById('emailInput');
         this.handicapValue = document.getElementById('handicapValue');
@@ -20,11 +22,6 @@ class SplashPage {
         this.continueBtn = document.getElementById('continueBtn');
         this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
         this.adminBtn = document.getElementById('adminBtn');
-
-        this.supportedCompetitionTypes = [
-            CompetitionType.STABLEFORD,
-            CompetitionType.STROKEPLAY
-        ];
     }
 
     renderAdminButton() {
@@ -40,11 +37,11 @@ class SplashPage {
         }
     }
 
-    renderSubmitButton() {
+    renderContinueButton() {
         //Only score supported competitions
         const comp = data.getCompetition();
-        if (!this.supportedCompetitionTypes.includes(comp.type)) {
-            this.displayMessage('Supported competitions are ' + this.supportedCompetitionTypes.join(', ') + '. For this competition just put your signed, completed card in the box');
+        if (!comp.isSupported()) {
+            this.displayMessage('Supported competitions are ' + Competition.supportedTypes.join(', ') + '. For this competition just put your signed, completed card in the box');
             this.continueBtn.disabled = true;
         } else {
             //Warn if the competition is in the past
@@ -56,14 +53,14 @@ class SplashPage {
             //Must have email and PH in order to score
             const email = this.emailInput.value.trim();
             const ph = this.handicapValue.value.trim();
-            this.continueBtn.disabled = !email || email.length === 0 || !ph || ph.length === 0;
+            this.continueBtn.disabled = !email || email.length === 0 || (comp.isIndividualCompetition() && (!ph || ph.length === 0));
         }
     }
 
 
     renderButtons() {
         this.renderAdminButton();
-        this.renderSubmitButton();
+        this.renderContinueButton();
     }
 
     renderCompetitionName() {
@@ -79,6 +76,13 @@ class SplashPage {
 
             this.emailInput.value = storedPlayer.email;
             this.handicapValue.value = storedPlayer.ph;            
+        }
+
+        const comp = data.getCompetition();
+        if (comp.isIndividualCompetition()) {
+            this.handicapControls.style.display = 'flex';
+        } else {
+            this.handicapControls.style.display = 'none';
         }
     }
 
@@ -102,7 +106,7 @@ class SplashPage {
     onContinueBtnClick() {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
-        if (email && ph) {
+        if (email) {
             const player = data.getPlayer(email,ph);
             if (!player) {  
                 alert('Email address is not in the player database');
@@ -115,12 +119,19 @@ class SplashPage {
             }
             localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(storedPlayer));
 
+            const comp = data.getCompetition();
             pageNavigator.player = player;
-            pageNavigator.competition = data.getCompetition();
-    
+            pageNavigator.competition = comp;
+
             this.hide();
-            scoreEntryPage.init();
-            pageNavigator.showPage('scoreEntry');
+
+            if (comp.isIndividualCompetition()) {
+                scoreEntryPage.init();
+                pageNavigator.showPage('scoreEntry');
+            } else {
+                teamPage.init();
+                pageNavigator.showPage('team');
+            }            
         }
     }
 
@@ -129,7 +140,7 @@ class SplashPage {
     }
 
     onHandicapValueInput() {
-        this.renderSubmitButton();
+        this.renderContinueButton();
     }
 
     onAdminBtnClick() {

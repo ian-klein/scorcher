@@ -16,19 +16,42 @@ export class Player {
 export const CompetitionType = Object.freeze({
     STABLEFORD: 'stableford',
     STROKEPLAY: 'strokeplay',
-    WALTZ: 'walz',
+    WALTZ: 'waltz',
     YELLOW_BALL: 'yellow ball',
     GREENSOMES: 'greensomes',
-    PAIRS: 'pairs',
+    FOURSOMES: 'foursomes',
+    FOURBALLS: 'fourballs',
     SCRAMBLE: 'scramble',
     OTHER: 'other'
 });
     
 export class Competition {
+    static supportedTypes = [
+        CompetitionType.STABLEFORD,
+        CompetitionType.STROKEPLAY,
+        CompetitionType.WALTZ
+    ];
+
     constructor() {
         this.name = 'Unknown';
         this.date = new Date('1993-01-01');
         this.type = CompetitionType.STABLEFORD;
+    }
+
+    isSupported() {
+        return Competition.supportedTypes.includes(this.type);
+    }
+
+    isIndividualCompetition() {
+        return this.type === CompetitionType.STABLEFORD || this.type === CompetitionType.STROKEPLAY;
+    }
+
+    isTeamCompetition() {
+        return this.type === CompetitionType.PAIRS || 
+               this.type === CompetitionType.SCRAMBLE ||
+               this.type === CompetitionType.WALTZ ||
+               this.type === CompetitionType.GREENSOMES ||
+               this.type === CompetitionType.YELLOW_BALL;
     }
 }
 

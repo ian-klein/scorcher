@@ -52,14 +52,21 @@ class Data {
     }
 
     async #loadCourse() {
-        this.course = bootstrap.course; //For now, this can only be canged by code
+        this.course = bootstrap.course; //For now, this can only be changed by code
     }
 
     getCompetition(date) {
         const eventDate = date || new Date();
         const event = this.eventDiary.findLast(c => c.date.toISOString().slice(0, 10) <= eventDate.toISOString().slice(0, 10));
 
-        return event ? event : new Competition();
+        const comp = new Competition();
+        if (event) {
+            comp.name = event.name
+            comp.date = event.date;
+            comp.type = event.type;
+        }    
+
+        return comp;
     }
 
     competitionDisplayName(c) {
@@ -69,51 +76,55 @@ class Data {
     }
 
     getPlayer(email, ph) {
-        const p = this.players.find(p => p.email === email);
+        const p = this.players.find(player => player.email === email);
 
+        const player = new Player();
         if (p) {
-            //Add caluculated fields to the player (tees, playing handicap and shots given per hole)
-            if (!p.gender) {
-                p.gender = 'male';
-            }
+            //Create player using the raw data
+            player.firstName = p.firstName;
+            player.lastName = p.lastName;
+            player.email = p.email;
+            player.gender = p.gender || 'male';
+            player.hi = p.hi;
 
-            p.name = p.firstName + ' ' + p.lastName;
+            //Add calclated fields
+            player.name = player.firstName + ' ' + player.lastName;
 
             //Set tees based on gender
-            if (p.gender === 'male') {
-                p.tees = this.course.male.white;
+            if (player.gender === 'male') {
+                player.tees = this.course.male.white;
             } else {
-                p.tees = this.course.female.gold;
+                player.tees = this.course.female.gold;
             }
 
             //Set playing handicap
             if (ph) {
-                p.ph = ph;
-            } else if (p.hi) {
-                p.ph = Math.round((p.hi * p.tees.sr / 113 + (p.tees.cr - p.tees.parTotal)) * 0.95);
+                player.ph = ph;
+            } else if (player.hi) {
+                player.ph = Math.round((player.hi * player.tees.sr / 113 + (player.tees.cr - player.tees.parTotal)) * 0.95);
             }
             else {
-                p.ph = 0;
+                player.ph = 0;
             }
 
             //Check if this player is an admin
-            p.admin = this.admins.includes(email);
+            player.admin = this.admins.includes(email);
 
             //Calculate how many shots are given on each hole for this player
-            p.shots = new Array(18).fill(0);
-            
-            const base = Math.trunc(p.ph/18);   // Get this many shots for all holes
-            const modulo = p.ph % 18;           // Get 1 extra shot on holes with si up to and includiong "modulo"
+            player.shots = new Array(18).fill(0);
+
+            const base = Math.trunc(player.ph/18);   // Get this many shots for all holes
+            const modulo = player.ph % 18;           // Get 1 extra shot on holes with si up to and includiong "modulo"
             for (let i = 0; i < 18; i++) {
-                const si = p.tees.si[i];
+                const si = player.tees.si[i];
                 if (modulo >= si) {
-                    p.shots[i] = base + 1;
+                    player.shots[i] = base + 1;
                 } else {
-                    p.shots[i] = base;
+                    player.shots[i] = base;
                 }
             }
         }
-        return p;
+        return player;
     }
 }
 

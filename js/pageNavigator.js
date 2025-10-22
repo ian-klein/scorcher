@@ -7,7 +7,8 @@ class PageNavigator {
         this.pages = {
             scoreEntry: document.querySelector('[data-page="score-entry"]'),
             review: document.querySelector('[data-page="review"]'),
-            admin: document.querySelector('[data-page="admin"]')
+            admin: document.querySelector('[data-page="admin"]'),
+            team: document.querySelector('[data-page="team"]')
         };
         this.player = null;
         this.competition = null;
