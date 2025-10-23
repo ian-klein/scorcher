@@ -13,6 +13,7 @@ class PageNavigator {
         this.player = null;
         this.competition = null;
         this.scores = null;
+        this.teamScores = null; // For team comps, the player names and scores are stored here
     }
 
     showPage(pageName) {

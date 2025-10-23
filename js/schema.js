@@ -1,41 +1,45 @@
+//Major entities in scorcher
+
+'use strict';
+
 export class Player {
     constructor() {
         this.email = '';
         this.firstName = '';
         this.lastName = '';
         this.gender = '';
+        this.hi = 0;
         this.admin = false;
         this.name = '';
-        this.hi = 0;
         this.ph = null;
         this.tees = null;
         this.shots = null;
     }
 }
 
-export const CompetitionType = Object.freeze({
-    STABLEFORD: 'stableford',
-    STROKEPLAY: 'strokeplay',
-    WALTZ: 'waltz',
-    YELLOW_BALL: 'yellow ball',
-    GREENSOMES: 'greensomes',
-    FOURSOMES: 'foursomes',
-    FOURBALLS: 'fourballs',
-    SCRAMBLE: 'scramble',
-    OTHER: 'other'
-});
-    
 export class Competition {
+        static Type = Object.freeze({
+        STABLEFORD: 'stableford',
+        STROKEPLAY: 'strokeplay',
+        WALTZ: 'waltz',
+        YELLOW_BALL: 'yellow ball',
+        GREENSOMES: 'greensomes',
+        FOURSOMES: 'foursomes',
+        FOURBALLS: 'fourballs',
+        SCRAMBLE: 'scramble',
+        OTHER: 'other'
+    });
+    
     static supportedTypes = [
-        CompetitionType.STABLEFORD,
-        CompetitionType.STROKEPLAY,
-        CompetitionType.WALTZ
+        Competition.Type.STABLEFORD,
+        Competition.Type.STROKEPLAY,
+        Competition.Type.WALTZ
     ];
 
     constructor() {
         this.name = 'Unknown';
         this.date = new Date('1993-01-01');
-        this.type = CompetitionType.STABLEFORD;
+        this.type = Competition.Type.STABLEFORD;
     }
 
     isSupported() {
@@ -43,15 +47,37 @@ export class Competition {
     }
 
     isIndividualCompetition() {
-        return this.type === CompetitionType.STABLEFORD || this.type === CompetitionType.STROKEPLAY;
+        return this.type === Competition.Type.STABLEFORD || this.type === Competition.Type.STROKEPLAY;
     }
 
     isTeamCompetition() {
-        return this.type === CompetitionType.PAIRS || 
-               this.type === CompetitionType.SCRAMBLE ||
-               this.type === CompetitionType.WALTZ ||
-               this.type === CompetitionType.GREENSOMES ||
-               this.type === CompetitionType.YELLOW_BALL;
+        return this.type !== Competition.Type.OTHER && !this.isIndividualCompetition();
+    }
+
+    teamSize() {
+        switch(this.type) {
+            case Competition.Type.FOURSOMES:
+            case Competition.Type.GREENSOMES:
+            case Competition.Type.FOURBALLS:
+                return 2;   
+            case Competition.Type.SCRAMBLE:
+            case Competition.Type.WALTZ:
+            case Competition.Type.YELLOW_BALL:
+                return 3;
+            case Competition.Type.STABLEFORD:
+            case Competition.Type.STROKEPLAY:
+                return 1;
+            case Competition.Type.OTHER:
+                return 0;
+            default:
+                return 0;
+        }
+    }
+
+    isTeamHandicap() {
+        return this.type === Competition.Type.FOURSOMES || 
+               this.type === Competition.Type.GREENSOMES ||
+               this.type === Competition.Type.SCRAMBLE;
     }
 }
 

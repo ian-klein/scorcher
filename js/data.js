@@ -55,6 +55,10 @@ class Data {
         this.course = bootstrap.course; //For now, this can only be changed by code
     }
 
+    #fullName(p) {
+        return p.firstName + ' ' + p.lastName;
+    }
+
     getCompetition(date) {
         const eventDate = date || new Date();
         const event = this.eventDiary.findLast(c => c.date.toISOString().slice(0, 10) <= eventDate.toISOString().slice(0, 10));
@@ -88,7 +92,7 @@ class Data {
             player.hi = p.hi;
 
             //Add calclated fields
-            player.name = player.firstName + ' ' + player.lastName;
+            player.name = this.#fullName(p);
 
             //Set tees based on gender
             if (player.gender === 'male') {
@@ -125,6 +129,15 @@ class Data {
             }
         }
         return player;
+    }
+
+    findPlayer(prefix) {
+        const matches = this.players.filter(p => this.#fullName(p).toLowerCase().startsWith(prefix.toLowerCase()));
+        if (matches.length === 1) {
+            return matches[0];
+        } else {
+            return null;
+        }
     }
 }
 

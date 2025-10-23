@@ -5,6 +5,7 @@
 import { pageNavigator } from './pageNavigator.js';
 import { backend } from './backend.js';
 import { data } from './data.js';
+import { Competition } from './schema.js';
 
 class ReviewPage {
     constructor() {
@@ -67,9 +68,9 @@ class ReviewPage {
     }
 
     renderScores() {
-        if (pageNavigator.competition.type === CompetitionType.STABLEFORD) {
+        if (pageNavigator.competition.type === Competition.Type.STABLEFORD) {
             this.renderStablefordScores();
-        } else if (pageNavigator.competition.type === CompetitionType.STROKEPLAY) {
+        } else if (pageNavigator.competition.type === Competition.Type.STROKEPLAY) {
             this.renderStrokeplayScores();
         }
     }
