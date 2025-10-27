@@ -138,7 +138,7 @@ class Data {
 
     getTeamPlayer(comp, players, th) { //Comp is required if ph is not given but hi is.
         const teamPlayer = new Player();
-        teamPlayer.name = players.map(p => p.name).join(', ');
+        teamPlayer.team = players
         teamPlayer.ph = th;
 
         if (players.every(p => p.gender === 'female')) {

@@ -11,6 +11,7 @@ export class Player {
         this.hi = 0;
         this.admin = false;
         this.name = '';
+        this.team = null; // When a player represents a team with a single score, the player names are stored here
         this.ph = null;
         this.tees = null;
         this.shots = null;
@@ -18,21 +19,27 @@ export class Player {
 }
 
 export class Competition {
-        static Type = Object.freeze({
+    static Type = Object.freeze({
         STABLEFORD: 'stableford',
         STROKEPLAY: 'strokeplay',
-        WALTZ: 'waltz',
-        YELLOW_BALL: 'yellow ball',
+        AKQ:        'akq',
+        FLAG:       'flag',
         GREENSOMES: 'greensomes',
-        FOURSOMES: 'foursomes',
-        FOURBALLS: 'fourballs',
-        SCRAMBLE: 'scramble',
-        OTHER: 'other'
+        FOURSOMES:  'foursomes',
+        SCRAMBLE:   'scramble',
+        FOURBALLS:  'fourballs',
+        WALTZ:      'waltz',
+        YELLOW_BALL:'yellow ball',
+        OTHER:      'other'
     });
     
     static supportedTypes = [
         Competition.Type.STABLEFORD,
         Competition.Type.STROKEPLAY,
+        Competition.Type.GREENSOMES,
+        Competition.Type.FOURSOMES,
+        Competition.Type.SCRAMBLE,
+        Competition.Type.FOURBALLS,
         Competition.Type.WALTZ
     ];
 
