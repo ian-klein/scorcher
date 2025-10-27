@@ -4,10 +4,10 @@
 
 import { pageNavigator } from './pageNavigator.js';
 import { reviewPage } from './reviewPage.js'
-import { Scores } from './schema.js';
+import { Score } from './schema.js';
 import { data } from './data.js';
 
-const SAVED_SCORES_KEY = 'saved_scores_v1';
+const SAVED_SCORES_KEY = 'saved_scores_v2';
 
 class ScoreEntryPage {
     constructor() {
@@ -19,8 +19,6 @@ class ScoreEntryPage {
         this.competitionName = document.getElementById('competitionName');
         this.competitionDate = document.getElementById('competitionDate');
         this.playerName = document.getElementById('playerName');
-        this.handicapIndex = document.getElementById('handicapIndex');
-        this.playingHandicap = document.getElementById('playingHandicap');
         
         // Hole elements
         this.holeNumber = document.getElementById('holeNumber');
@@ -41,7 +39,7 @@ class ScoreEntryPage {
         // Action buttons
         this.reviewBtn = document.getElementById('reviewBtn');
 
-        this.scores = null;
+        this.scores = [];
         this.wireEvents();
     }
 
@@ -50,20 +48,28 @@ class ScoreEntryPage {
     }
 
     loadScores() {
-        const playerName = pageNavigator.player.name;
-        const date = pageNavigator.competition.date;
-    
-        const savedScores = localStorage.getItem(SAVED_SCORES_KEY);
-        if (savedScores) {
-            this.scores = JSON.parse(savedScores, (key,value) => { if (key === 'date') { return new Date(value); } else { return value; } } );
+        const comp = pageNavigator.competition;
+        const players = pageNavigator.players;
+        this.scores = [];
 
-            //Make sure the saved scores are for this player for this competition
-            if (!this.scores || this.scores.name !== playerName || this.scores.date.toISOString().slice(0, 10) !== date.toISOString().slice(0, 10)) {
-                this.scores = new Scores(playerName, date);
+        const savedScores = localStorage.getItem(SAVED_SCORES_KEY);
+        if (!savedScores) {
+            for(const player of players) {
+                this.scores.push(new Score(player, comp.date));
             }
         }
         else {
-            this.scores = new Scores(playerName, date);
+            const scores = JSON.parse(savedScores, (key,value) => { if (key === 'date') { return new Date(value); } else { return value; } } );
+            
+            for(const player of players) {
+                const score = scores.find(s => s.email === player.email);
+                if (score && score.date.toISOString().slice(0, 10) === comp.date.toISOString().slice(0, 10)) {
+                    this.scores.push(score);
+                }
+                else {
+                    this.scores.push(new Score(player, comp.date));
+                }
+            }
         }
     }
 
@@ -145,42 +151,42 @@ class ScoreEntryPage {
         this.saveCurrentScore();
 
         //If the next hole is not yet scored, navigate to it
-        if (autoNavigate && this.currentHole < 18 && !this.scores.gross[this.currentHole]) {
+        if (autoNavigate && this.currentHole < 18 && !this.scores[0].gross[this.currentHole]) {
             this.navigateHole(1);
         }
     }
 
     saveCurrentScore() {
-        const score = this.scoreInput.value;
-        this.scores.gross[this.currentHole - 1] = score;
-        this.scores.points[this.currentHole - 1] = this.calculatePoints();
-        this.scores.adjusted[this.currentHole - 1] = this.calculateAdjusted();
+        const gross = this.scoreInput.value;
+        this.scores[0].gross[this.currentHole - 1] = gross;
+        this.scores[0].points[this.currentHole - 1] = this.calculatePoints(0);
+        this.scores[0].adjusted[this.currentHole - 1] = this.calculateAdjusted(0);
         this.saveScores();
     }
 
-    calculatePoints() {
-        const score = this.scores.gross[this.currentHole - 1]
+    calculatePoints(index) {
+        const gross = this.scores[index].gross[this.currentHole - 1];
 
-        if (!score || score === 'X' || score === '' || score === 0) {
+        if (!gross || gross === 'X' || gross === '' || gross === 0) {
             return 0;
         } else {
-            const par = pageNavigator.player.tees.par[this.currentHole - 1];
-            const nett = score - pageNavigator.player.shots[this.currentHole - 1];
+            const par = pageNavigator.players[index].tees.par[this.currentHole - 1];
+            const nett = gross - pageNavigator.players[index].shots[this.currentHole - 1];
 
             const points = Math.max(0,  par-nett + 2);
             return points;
         }
     }
     
-    calculateAdjusted() {
-        const score = this.scores.gross[this.currentHole - 1];
-        const par = pageNavigator.player.tees.par[this.currentHole - 1];
-        const shots = pageNavigator.player.shots[this.currentHole - 1];
+    calculateAdjusted(index) {
+        const gross = this.scores[index].gross[this.currentHole - 1];
+        const par = pageNavigator.players[index].tees.par[this.currentHole - 1];
+        const shots = pageNavigator.players[index].shots[this.currentHole - 1];
 
-        if (!score || score === 'X' || score === '' || score === 0) {
+        if (!gross || gross === 'X' || gross === '' || gross === 0) {
             return par + shots + 2;
         } else {
-            return Math.min(par + shots + 2, score);
+            return Math.min(par + shots + 2, gross);
         }
     }
 
@@ -193,9 +199,13 @@ class ScoreEntryPage {
     renderHeader() {
         this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
         this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
-        this.playerName.textContent = pageNavigator.player.name;
-        this.handicapIndex.textContent = pageNavigator.player.hi;
-        this.playingHandicap.textContent = pageNavigator.player.ph;
+
+
+        const labels = ['A:', 'B:', 'C:', 'D:']
+        const team = pageNavigator.players.map((p, index) => {
+            return `${labels[index]} ${p.name}(${p.ph})`;
+        });
+        this.playerName.textContent = team.join(', ');
     }
 
     renderHoleScore() {
@@ -208,20 +218,20 @@ class ScoreEntryPage {
             this.priorScore.textContent = '';
         } else {
             this.priorHoleNumber.textContent = this.currentHole - 1;
-            this.priorScore.textContent = this.scores.gross[this.currentHole - 2];
+            this.priorScore.textContent = this.scores[0].gross[this.currentHole - 2];
         }
         
         // Update score input with saved score for this hole
-        const score = this.scores.gross[this.currentHole - 1];
+        const score = this.scores[0].gross[this.currentHole - 1];
         this.scoreInput.value = `${score ?? ''}`;
 
         // Update next score
-        if (this.currentHole === 18 || !this.scores.gross[this.currentHole]) {
+        if (this.currentHole === 18 || !this.scores[0].gross[this.currentHole]) {
             this.nextHoleNumber.textContent = '';
             this.nextScore.textContent = '';
         } else {
             this.nextHoleNumber.textContent = this.currentHole + 1;
-            this.nextScore.textContent = this.scores.gross[this.currentHole];
+            this.nextScore.textContent = this.scores[0].gross[this.currentHole];
         }
     }
 

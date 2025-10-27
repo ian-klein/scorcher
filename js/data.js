@@ -79,6 +79,22 @@ class Data {
         return `${day}/${month} Millers ${c.name}`;
     }
 
+    #getShots(tees, ph) {
+        const base = Math.trunc(ph/18);   // Get this many shots for all holes
+        const modulo = ph % 18;           // Get 1 extra shot on holes with si up to and includiong "modulo"
+
+        const shots = new Array(18).fill(0);
+        for (let i = 0; i < 18; i++) {
+            const si = tees.si[i];
+            if (modulo >= si) {
+                shots[i] = base + 1;
+            } else {
+                shots[i] = base;
+            }
+        }
+        return shots;
+    }
+
     getPlayer(email, ph) {
         const p = this.players.find(player => player.email === email);
 
@@ -115,20 +131,25 @@ class Data {
             player.admin = this.admins.includes(email);
 
             //Calculate how many shots are given on each hole for this player
-            player.shots = new Array(18).fill(0);
-
-            const base = Math.trunc(player.ph/18);   // Get this many shots for all holes
-            const modulo = player.ph % 18;           // Get 1 extra shot on holes with si up to and includiong "modulo"
-            for (let i = 0; i < 18; i++) {
-                const si = player.tees.si[i];
-                if (modulo >= si) {
-                    player.shots[i] = base + 1;
-                } else {
-                    player.shots[i] = base;
-                }
-            }
+            player.shots = this.#getShots(player.tees, player.ph);
         }
         return player;
+    }
+
+    getTeamPlayer(comp, players, th) { //Comp is required if ph is not given but hi is.
+        const teamPlayer = new Player();
+        teamPlayer.name = players.map(p => p.name).join(', ');
+        teamPlayer.ph = th;
+
+        if (players.every(p => p.gender === 'female')) {
+            teamPlayer.tees = this.course.female.gold;
+        } else {
+            teamPlayer.tees = this.course.male.white;
+        }
+
+        teamPlayer.admin = false;
+        teamPlayer.shots = this.#getShots(teamPlayer.tees, th);
+        return teamPlayer;
     }
 
     findPlayer(prefix) {

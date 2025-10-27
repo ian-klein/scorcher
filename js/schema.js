@@ -47,11 +47,11 @@ export class Competition {
     }
 
     isIndividualCompetition() {
-        return this.type === Competition.Type.STABLEFORD || this.type === Competition.Type.STROKEPLAY;
+        return this.teamSize() === 1;
     }
 
     isTeamCompetition() {
-        return this.type !== Competition.Type.OTHER && !this.isIndividualCompetition();
+        return this.teamSize() > 1;
     }
 
     teamSize() {
@@ -74,17 +74,34 @@ export class Competition {
         }
     }
 
-    isTeamHandicap() {
-        return this.type === Competition.Type.FOURSOMES || 
-               this.type === Competition.Type.GREENSOMES ||
-               this.type === Competition.Type.SCRAMBLE;
+    numberOfScores() {
+        switch(this.type) {
+            case Competition.Type.STABLEFORD:
+            case Competition.Type.STROKEPLAY:
+            case Competition.Type.FOURSOMES:
+            case Competition.Type.GREENSOMES:
+            case Competition.Type.SCRAMBLE:
+                return 1;   
+            case Competition.Type.FOURBALLS:
+                return 2;
+            case Competition.Type.WALTZ:
+            case Competition.Type.YELLOW_BALL:
+                return 3;
+            case Competition.Type.OTHER:
+                return 0;
+            default:
+                return 1;
+        }
     }
 }
 
-export class Scores {
-    constructor(name, date) {
-        this.name = name;   //Player name
-        this.date = date;   //Competition date
+export class Score {
+    constructor(player, date) {
+        //These 3 fields are used to identify the score in case the team changes
+        this.email = player.email;
+        this.name = player.name;
+        this.date = date; //of competition
+
         this.gross = new Array(18).fill(null);      //Gross score for each hole
         this.points = new Array(18).fill(null);     //Stableford points for each hole
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole

@@ -789,6 +789,15 @@ button,
     font-size: 1.2rem;
 }
 
+.test-select {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+
 #continueBtn {
     display: block;
     width: 100%;
@@ -1158,7 +1167,27 @@ button,
     font-size: 1rem;
 }
 
+.team-ph-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    white-space: nowrap;
+}
 .team-ph {
+    width: 60px;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.team-handicap-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.team-handicap-ph {
     width: 60px;
     padding: 0.5rem;
     border: 1px solid var(--border-color);

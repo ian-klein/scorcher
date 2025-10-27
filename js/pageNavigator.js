@@ -10,10 +10,11 @@ class PageNavigator {
             admin: document.querySelector('[data-page="admin"]'),
             team: document.querySelector('[data-page="team"]')
         };
-        this.player = null;
+
+        //Context data passed between pages - players[0]/scores[0] is player A, players[1]/scores[1] is player B, etc
         this.competition = null;
-        this.scores = null;
-        this.teamScores = null; // For team comps, the player names and scores are stored here
+        this.players = [];
+        this.scores = [];
     }
 
     showPage(pageName) {

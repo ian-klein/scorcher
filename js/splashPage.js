@@ -22,6 +22,9 @@ class SplashPage {
         this.continueBtn = document.getElementById('continueBtn');
         this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
         this.adminBtn = document.getElementById('adminBtn');
+        this.testSelect = document.getElementById('testSelect');
+
+        this.wireEvents();
     }
 
     renderAdminButton() {
@@ -86,11 +89,26 @@ class SplashPage {
         }
     }
 
+    renderTestSelect() {
+        const email = this.emailInput.value.trim();
+        if (email === 'ian.klein14@gmail.com') {
+            this.testSelect.style.display = 'block';
+            for (const type of Object.values(Competition.Type)) {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                this.testSelect.appendChild(option);
+            }
+        } else {
+            this.testSelect.style.display = 'none';
+        }
+    }                
+
     init() {
         this.renderCompetitionName();
         this.renderPlayer();
         this.renderButtons();
-        this.wireEvents();
+        this.renderTestSelect();
         this.splashControls.style.display = 'block';
     }
 
@@ -120,11 +138,14 @@ class SplashPage {
             localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(storedPlayer));
 
             const comp = data.getCompetition();
-            pageNavigator.player = player;
+            //For testing only ...
+            if (this.testSelect.style.display === 'block') {
+                comp.type = this.testSelect.value;
+            }
             pageNavigator.competition = comp;
+            pageNavigator.players = [ player ]; //Even for teams, pass this player as the first one!
 
             this.hide();
-
             if (comp.isIndividualCompetition()) {
                 scoreEntryPage.init();
                 pageNavigator.showPage('scoreEntry');
@@ -137,6 +158,7 @@ class SplashPage {
 
     onEmailInputInput() {
         this.renderButtons();
+        this.renderTestSelect();
     }
 
     onHandicapValueInput() {
@@ -144,12 +166,7 @@ class SplashPage {
     }
 
     onAdminBtnClick() {
-        const email = this.emailInput.value.trim();
-        const ph = this.handicapValue.value.trim();
-        const player = data.getPlayer(email,ph);
         this.hide();
-        pageNavigator.player = player;
-
         adminPage.init();
         pageNavigator.showPage('admin');
     }
