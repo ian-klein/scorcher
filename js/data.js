@@ -63,13 +63,7 @@ class Data {
         const eventDate = date || new Date();
         const event = this.eventDiary.findLast(c => c.date.toISOString().slice(0, 10) <= eventDate.toISOString().slice(0, 10));
 
-        const comp = new Competition();
-        if (event) {
-            comp.name = event.name
-            comp.date = event.date;
-            comp.type = event.type;
-        }    
-
+        const comp = new Competition(event);
         return comp;
     }
 
@@ -98,16 +92,8 @@ class Data {
     getPlayer(email, ph) {
         const p = this.players.find(player => player.email === email);
 
-        const player = new Player();
+        const player = new Player(p);
         if (p) {
-            //Create player using the raw data
-            player.firstName = p.firstName;
-            player.lastName = p.lastName;
-            player.email = p.email;
-            player.gender = p.gender || 'male';
-            player.hi = p.hi;
-
-            //Add calclated fields
             player.name = this.#fullName(p);
 
             //Set tees based on gender
@@ -155,7 +141,7 @@ class Data {
     findPlayer(prefix) {
         const matches = this.players.filter(p => this.#fullName(p).toLowerCase().startsWith(prefix.toLowerCase()));
         if (matches.length === 1) {
-            return matches[0];
+            return this.getPlayer(matches[0].email);
         } else {
             return null;
         }

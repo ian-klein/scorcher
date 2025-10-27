@@ -5,8 +5,9 @@
 import { data } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
-import { Competition } from './schema.js';
+import { Competition, Player } from './schema.js';
 
+const SAVED_TEAM_KEY = 'team_v1';
 
 class TeamPage {
     constructor() {
@@ -25,6 +26,13 @@ class TeamPage {
         this.teamNameD = document.getElementById('teamNameD');
         this.teamPhD = document.getElementById('teamPhD');
 
+        this.teamPlayers = [
+            { name: this.teamNameA, ph: this.teamPhA },
+            { name: this.teamNameB, ph: this.teamPhB },
+            { name: this.teamNameC, ph: this.teamPhC },
+            { name: this.teamNameD, ph: this.teamPhD }
+        ];
+
         this.teamHandicap = document.getElementById('teamHandicap');
         this.teamHandicapValue = document.getElementById('teamHandicapValue');
 
@@ -34,6 +42,7 @@ class TeamPage {
         this.teamNextBtn = document.getElementById('teamNextBtn');
 
         this.players = [];
+        this.th = null;
         this.wireEvents();
     }
 
@@ -78,12 +87,19 @@ class TeamPage {
             this.teamPhLabels.forEach(label => label.style.display = 'none');
             this.teamPhInputs.forEach(input => input.style.display = 'none');
             this.teamHandicap.style.display = 'block';
+            this.teamHandicapValue.value = this.th;
         } else {
             this.teamPhLabels.forEach(label => label.style.display = 'block');
             this.teamPhInputs.forEach(input => input.style.display = 'block');
             this.teamHandicap.style.display = 'none';
         }
 
+        for (let i = 0; i < teamSize; i++) {
+            if (this.players[i]) {
+                this.teamPlayers[i].name.value = this.players[i].name;
+                this.teamPlayers[i].ph.value = this.players[i].ph;
+            }
+        }
     }
 
     renderContinueButton() {
@@ -104,12 +120,18 @@ class TeamPage {
     }
 
     onNextBtnClick() {
+        this.saveTeam();
+
         const comp = pageNavigator.competition;
         const numberOfScores = comp.numberOfScores();
 
+        /*
+         * The number of scores dictates how the team is represented. For team games with a single score
+         * like a scramble, the team is represented by a single player whose name is a concatenation of the
+         * team members. For team games with multiple scores, the team is represented by a player for each score.
+         */
         if (numberOfScores == 1) {
-            const th = Number(this.teamHandicapValue.value?.trim());
-            const teamPlayer = data.getTeamPlayer(comp, this.players, th);
+            const teamPlayer = data.getTeamPlayer(comp, this.players, this.th);
             pageNavigator.players = [ teamPlayer ];
         }
         else {
@@ -128,9 +150,8 @@ class TeamPage {
             }
             else {
                 const name = e.target.value;
-                const p = data.findPlayer(name);
-                if (p) {
-                    const player = data.getPlayer(p.email);
+                const player = data.findPlayer(name);
+                if (player) {
                     e.target.value = player.name;
                     this.players[index] = player;
                     this.renderContinueButton();
@@ -149,22 +170,53 @@ class TeamPage {
     }
 
     onTeamHandicapValueInput() {
+        this.th = Number(this.teamHandicapValue.value?.trim());
         this.renderContinueButton();
     }
 
-    init() {
-        /*
-         * The number of scores dictates how the team is represented. For team games with a single score
-         * like a scramble, the team is represented by a single player whose name is a concatenation of the
-         * team members. For team games with multiple scores, the team is represented by a player for each score.
-         */
-        this.players = new Array(pageNavigator.competition.teamSize()).fill(null);
+    saveTeam() {
+        const savedTeam = {
+            competition: pageNavigator.competition,
+            players: this.players,
+            th: this.th
+        };
+        localStorage.setItem(SAVED_TEAM_KEY, JSON.stringify(savedTeam));
+    }
+
+    savedTeamReviver(key, value) {
+        if (key === 'competition') {
+            return new Competition(value);
+        }
+        else if (key === 'players') {
+            return value.map(p => new Player(p));
+        }
+        else {
+            return value;
+        }
+    }
+    
+    loadTeam() {
+        const comp = pageNavigator.competition;
+        this.players = new Array(comp.teamSize()).fill(null);
 
         //Initialze the first player from the splash screen
         this.teamNameA.value = pageNavigator.players[0].name;
         this.teamPhA.value = pageNavigator.players[0].ph;
         this.players[0] = pageNavigator.players[0];
 
+        const rawTeam = localStorage.getItem(SAVED_TEAM_KEY);
+        if (rawTeam) {
+            const savedTeam = JSON.parse(rawTeam, this.savedTeamReviver);
+
+            if (savedTeam.competition.date.toISOString().slice(0, 10) === comp.date.toISOString().slice(0, 10)) {
+                this.players = savedTeam.players;
+                this.th = savedTeam.th;
+            }
+        }
+    }
+
+    init() {
+        this.loadTeam();
         this.renderHeader();
         this.renderPlayers();
         this.renderContinueButton();

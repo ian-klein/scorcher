@@ -3,18 +3,22 @@
 'use strict';
 
 export class Player {
-    constructor() {
-        this.email = '';
-        this.firstName = '';
-        this.lastName = '';
-        this.gender = '';
-        this.hi = 0;
-        this.admin = false;
-        this.name = '';
-        this.team = null; // When a player represents a team with a single score, the player names are stored here
-        this.ph = null;
-        this.tees = null;
-        this.shots = null;
+    constructor(obj) {
+        if (obj) {
+            Object.assign(this, obj);
+        } else {
+            this.email = '';
+            this.firstName = '';
+            this.lastName = '';
+            this.gender = '';
+            this.hi = 0;
+            this.admin = false;
+            this.name = '';
+            this.team = null; // When a player represents a team with a single score, the player names are stored here
+            this.ph = null;
+            this.tees = null;
+            this.shots = null;
+        }
     }
 }
 
@@ -43,10 +47,15 @@ export class Competition {
         Competition.Type.WALTZ
     ];
 
-    constructor() {
-        this.name = 'Unknown';
-        this.date = new Date('1993-01-01');
-        this.type = Competition.Type.STABLEFORD;
+    constructor(obj) {
+        if (obj) {
+            Object.assign(this, obj);
+            this.date = new Date(this.date);
+        } else {
+            this.name = 'Unknown';
+            this.date = new Date('1993-01-01');
+            this.type = Competition.Type.STABLEFORD;
+        }
     }
 
     isSupported() {
@@ -107,10 +116,11 @@ export class Score {
         //These 3 fields are used to identify the score in case the team changes
         this.email = player.email;
         this.name = player.name;
-        this.date = date; //of competition
+        this.date = date;           // ... of the Competition for which this score is being entered
 
         this.gross = new Array(18).fill(null);      //Gross score for each hole
         this.points = new Array(18).fill(null);     //Stableford points for each hole
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
+        this.teeShot = new Array(18).fill(null);    //For scrambles, who took the tee shot for each hole
     }
 }
