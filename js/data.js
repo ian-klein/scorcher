@@ -1,4 +1,4 @@
-//Functions to get the data from golf genius
+//Functions related to the data used by the application
 
 'use strict';
 

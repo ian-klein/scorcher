@@ -6,12 +6,20 @@ import { pageNavigator } from './pageNavigator.js';
 import { backend } from './backend.js';
 import { data } from './data.js';
 import { Competition } from './schema.js';
+import { ui } from './ui.js';
 
 class ReviewPage {
     constructor() {
         this.competitionName = document.getElementById('reviewCompetitionName');
         this.competitionDate = document.getElementById('reviewCompetitionDate');
-        this.playerName = document.getElementById('reviewPlayerName');
+        
+        this.playerHeader = [    
+            {name: document.getElementById('reviewPlayerNameA'), ph: document.getElementById('reviewPlayerPhA')},
+            {name: document.getElementById('reviewPlayerNameB'), ph: document.getElementById('reviewPlayerPhB')},
+            {name: document.getElementById('reviewPlayerNameC'), ph: document.getElementById('reviewPlayerPhC')},
+            {name: document.getElementById('reviewPlayerNameD'), ph: document.getElementById('reviewPlayerPhD')}
+        ];
+
         this.backBtn = document.getElementById('backBtn');
         this.submitBtn = document.getElementById('submitBtn');
 
@@ -61,11 +69,7 @@ class ReviewPage {
         this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
         this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
 
-        const labels = ['A:', 'B:', 'C:', 'D:']
-        const team = pageNavigator.players.map((p, index) => {
-            return `${labels[index]} ${p.name}(${p.ph})`;
-        });
-        this.playerName.textContent = team.join(', ');
+        ui.renderPlayerHeader(pageNavigator.players, this.playerHeader);
     }
 
     renderScores() {

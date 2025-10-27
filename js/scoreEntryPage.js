@@ -6,6 +6,7 @@ import { pageNavigator } from './pageNavigator.js';
 import { reviewPage } from './reviewPage.js'
 import { Score } from './schema.js';
 import { data } from './data.js';
+import { ui } from './ui.js';
 
 const SAVED_SCORES_KEY = 'saved_scores_v2';
 
@@ -18,13 +19,13 @@ class ScoreEntryPage {
         // Header elements
         this.competitionName = document.getElementById('competitionName');
         this.competitionDate = document.getElementById('competitionDate');
-        this.playerNames = [    
-            document.getElementById('scorePlayerNameA'),
-            document.getElementById('scorePlayerNameB'),
-            document.getElementById('scorePlayerNameC'),
-            document.getElementById('scorePlayerNameD')
+
+        this.playerHeader = [    
+            {name: document.getElementById('scorePlayerNameA'), ph: document.getElementById('scorePlayerPhA')},
+            {name: document.getElementById('scorePlayerNameB'), ph: document.getElementById('scorePlayerPhB')},
+            {name: document.getElementById('scorePlayerNameC'), ph: document.getElementById('scorePlayerPhC')},
+            {name: document.getElementById('scorePlayerNameD'), ph: document.getElementById('scorePlayerPhD')}
         ];
-        this.teamHandicap = document.getElementById('scoreTeamHandicap');
         
         // Hole elements
         this.holeNumber = document.getElementById('holeNumber');
@@ -206,31 +207,7 @@ class ScoreEntryPage {
         this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
         this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
 
-        const labels = ['A:', 'B:', 'C:', 'D:'];
-        const players = pageNavigator.players;
-        if (players.length === 1 && players[0].team) {
-            //This is a team with a single score
-            this.teamHandicap.textContent = `TH: ${players[0].ph}`;
-            for (let i = 0; i < 4; i++) {
-                if (i < players[0].team.length) {
-                    this.playerNames[i].textContent = `${labels[i]} ${players[0].team[i].name}`;
-                }
-                else {
-                    this.playerNames[i].textContent = labels[i]
-                }
-            }
-        }
-        else {
-            this.teamHandicap.textContent = '';
-            for (let i = 0; i < 4; i++) {
-                if (i < players.length) {
-                    this.playerNames[i].textContent = `${labels[i]} ${players[i].name}(${players[i].ph})`;
-                }
-                else {
-                    this.playerNames[i].textContent = labels[i]
-                }
-            }
-        }
+        ui.renderPlayerHeader(pageNavigator.players, this.playerHeader);
     }
 
     renderHoleScore() {

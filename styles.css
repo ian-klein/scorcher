@@ -68,7 +68,7 @@ body {
 }
 
 .competition-name {
-    font-size: clamp(1.045rem, 4.4vw, 1.265rem);
+    font-size: clamp(0.99rem, 3.85vw, 1.21rem);
     font-weight: 700;
     margin-bottom: clamp(0.15rem, 0.3vh, 0.25rem);
 }
@@ -80,45 +80,79 @@ body {
 
 .player-info {
     display: grid;
-    grid-template-columns: 45%, 45%, 10%;
+    grid-template-columns: minmax(0,5%) minmax(0,35%) minmax(0,10%) minmax(0,5%) minmax(0,35%) minmax(0,10%);
     gap: clamp(0.25rem, 0.6vh, 0.4rem);
 }
 
-.player-info span:nth-of-type(1) {
+.player-info label:nth-of-type(1) {
     grid-column: 1;
+    grid-row: 1;
+}
+.player-info label:nth-of-type(2) {
+    grid-column: 4;
+    grid-row: 1;
+}
+.player-info label:nth-of-type(3) {
+    grid-column: 1;
+    grid-row: 2;
+}
+.player-info label:nth-of-type(4) {
+    grid-column: 4;
+    grid-row: 2;
+}
+.player-info span:nth-of-type(1) {
+    grid-column: 2;
     grid-row: 1;
 }
 .player-info span:nth-of-type(2) {
-    grid-column: 2;
-    grid-row: 1;
-}
-.player-info span:nth-of-type(3) {
-    grid-column: 1;
-    grid-row: 2;
-}
-.player-info span:nth-of-type(4) {
-    grid-column: 2;
-    grid-row: 2;
-}
-
-.player-info span:nth-of-type(5) {
     grid-column: 3;
     grid-row: 1;
 }
+.player-info span:nth-of-type(3) {
+    grid-column: 5;
+    grid-row: 1;
+}
+.player-info span:nth-of-type(4) {
+    grid-column: 6;
+    grid-row: 1;
+}
+.player-info span:nth-of-type(5) {
+    grid-column: 2;
+    grid-row: 2;
+}
+.player-info span:nth-of-type(6) {
+    grid-column: 3;
+    grid-row: 2;
+}
+.player-info span:nth-of-type(7) {
+    grid-column: 5;
+    grid-row: 2;
+}
+.player-info span:nth-of-type(8) {
+    grid-column: 6;
+    grid-row: 2;
+}
 
 .player-name {
-    font-size: clamp(0.99rem, 3.85vw, 1.21rem);
-    font-weight: 600;
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    font-weight: 700;
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis; 
 }
 
-.handicap-info {
-    font-size: clamp(0.88rem, 3.3vw, 1.045rem);
-    display: flex;
-    align-items: center;
-    gap: clamp(0.25rem, 1.5vw, 0.4rem);
+.player-ph {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    font-weight: 700;
+    white-space: nowrap; 
+    overflow: hidden; 
+}
+
+.player-label {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    font-weight: 700;
+    white-space: nowrap; 
+    overflow: hidden; 
 }
 
 /* General handicap label (used in score entry page) */
