@@ -208,7 +208,7 @@ class TeamPage {
         if (rawTeam) {
             const savedTeam = JSON.parse(rawTeam, this.savedTeamReviver);
 
-            if (savedTeam.competition.date.toISOString().slice(0, 10) === comp.date.toISOString().slice(0, 10)) {
+            if (savedTeam.competition.type === comp.type && savedTeam.competition.date.toISOString().slice(0, 10) === comp.date.toISOString().slice(0, 10)) {
                 this.players = savedTeam.players;
                 this.th = savedTeam.th;
             }

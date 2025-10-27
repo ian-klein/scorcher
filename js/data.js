@@ -122,9 +122,11 @@ class Data {
         return player;
     }
 
-    getTeamPlayer(comp, players, th) { //Comp is required if ph is not given but hi is.
+    getTeamPlayer(comp, players, th) { //TODO Comp is required if th is not given but hi is.
         const teamPlayer = new Player();
-        teamPlayer.team = players
+
+        teamPlayer.team = players;
+        teamPlayer.name = players.map(p => p.lastName).join(' ');
         teamPlayer.ph = th;
 
         if (players.every(p => p.gender === 'female')) {
@@ -133,7 +135,6 @@ class Data {
             teamPlayer.tees = this.course.male.white;
         }
 
-        teamPlayer.admin = false;
         teamPlayer.shots = this.#getShots(teamPlayer.tees, th);
         return teamPlayer;
     }

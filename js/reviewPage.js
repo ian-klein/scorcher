@@ -73,9 +73,9 @@ class ReviewPage {
     }
 
     renderScores() {
-        if (pageNavigator.competition.type === Competition.Type.STABLEFORD) {
+        if (pageNavigator.competition.scoring() === Competition.Type.STABLEFORD) {
             this.renderStablefordScores();
-        } else if (pageNavigator.competition.type === Competition.Type.STROKEPLAY) {
+        } else if (pageNavigator.competition.scoring() === Competition.Type.STROKEPLAY) {
             this.renderStrokeplayScores();
         }
     }

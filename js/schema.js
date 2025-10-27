@@ -36,17 +36,21 @@ export class Competition {
         YELLOW_BALL:'yellow ball',
         OTHER:      'other'
     });
-    
-    static supportedTypes = [
-        Competition.Type.STABLEFORD,
-        Competition.Type.STROKEPLAY,
-        Competition.Type.GREENSOMES,
-        Competition.Type.FOURSOMES,
-        Competition.Type.SCRAMBLE,
-        Competition.Type.FOURBALLS,
-        Competition.Type.WALTZ
-    ];
 
+    static Info = [
+        {type: Competition.Type.STABLEFORD,  teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.STROKEPLAY,  teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.AKQ,         teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.AKQ },
+        {type: Competition.Type.FLAG,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.FLAG },
+        {type: Competition.Type.GREENSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.FOURSOMES,   teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.SCRAMBLE,    teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.FOURBALLS,   teamSize: 2, numberOfScores: 2, isSupported: false, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.WALTZ,       teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.WALTZ },
+        {type: Competition.Type.YELLOW_BALL, teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.YELLOW_BALL },
+        {type: Competition.Type.OTHER,       teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
+    ];
+    
     constructor(obj) {
         if (obj) {
             Object.assign(this, obj);
@@ -59,7 +63,7 @@ export class Competition {
     }
 
     isSupported() {
-        return Competition.supportedTypes.includes(this.type);
+        return Competition.Info.find(i => i.type === this.type).isSupported;
     }
 
     isIndividualCompetition() {
@@ -71,43 +75,15 @@ export class Competition {
     }
 
     teamSize() {
-        switch(this.type) {
-            case Competition.Type.FOURSOMES:
-            case Competition.Type.GREENSOMES:
-            case Competition.Type.FOURBALLS:
-                return 2;   
-            case Competition.Type.SCRAMBLE:
-            case Competition.Type.WALTZ:
-            case Competition.Type.YELLOW_BALL:
-                return 3;
-            case Competition.Type.STABLEFORD:
-            case Competition.Type.STROKEPLAY:
-                return 1;
-            case Competition.Type.OTHER:
-                return 0;
-            default:
-                return 0;
-        }
+        return Competition.Info.find(i => i.type === this.type).teamSize;
     }
 
     numberOfScores() {
-        switch(this.type) {
-            case Competition.Type.STABLEFORD:
-            case Competition.Type.STROKEPLAY:
-            case Competition.Type.FOURSOMES:
-            case Competition.Type.GREENSOMES:
-            case Competition.Type.SCRAMBLE:
-                return 1;   
-            case Competition.Type.FOURBALLS:
-                return 2;
-            case Competition.Type.WALTZ:
-            case Competition.Type.YELLOW_BALL:
-                return 3;
-            case Competition.Type.OTHER:
-                return 0;
-            default:
-                return 1;
-        }
+        return Competition.Info.find(i => i.type === this.type).numberOfScores;
+    }
+
+    scoring() {
+        return Competition.Info.find(i => i.type === this.type).scoring;
     }
 }
 
