@@ -14,10 +14,10 @@ class ReviewPage {
         this.competitionDate = document.getElementById('reviewCompetitionDate');
         
         this.playerHeader = [    
-            {name: document.getElementById('reviewPlayerNameA'), ph: document.getElementById('reviewPlayerPhA')},
-            {name: document.getElementById('reviewPlayerNameB'), ph: document.getElementById('reviewPlayerPhB')},
-            {name: document.getElementById('reviewPlayerNameC'), ph: document.getElementById('reviewPlayerPhC')},
-            {name: document.getElementById('reviewPlayerNameD'), ph: document.getElementById('reviewPlayerPhD')}
+            {label: document.getElementById('reviewPlayerLabelA'), name: document.getElementById('reviewPlayerNameA'), ph: document.getElementById('reviewPlayerPhA')},
+            {label: document.getElementById('reviewPlayerLabelB'), name: document.getElementById('reviewPlayerNameB'), ph: document.getElementById('reviewPlayerPhB')},
+            {label: document.getElementById('reviewPlayerLabelC'), name: document.getElementById('reviewPlayerNameC'), ph: document.getElementById('reviewPlayerPhC')},
+            {label: document.getElementById('reviewPlayerLabelD'), name: document.getElementById('reviewPlayerNameD'), ph: document.getElementById('reviewPlayerPhD')}
         ];
 
         this.backBtn = document.getElementById('backBtn');

@@ -21,10 +21,10 @@ class ScoreEntryPage {
         this.competitionDate = document.getElementById('competitionDate');
 
         this.playerHeader = [    
-            {name: document.getElementById('scorePlayerNameA'), ph: document.getElementById('scorePlayerPhA')},
-            {name: document.getElementById('scorePlayerNameB'), ph: document.getElementById('scorePlayerPhB')},
-            {name: document.getElementById('scorePlayerNameC'), ph: document.getElementById('scorePlayerPhC')},
-            {name: document.getElementById('scorePlayerNameD'), ph: document.getElementById('scorePlayerPhD')}
+            {label: document.getElementById('scorePlayerLabelA'), name: document.getElementById('scorePlayerNameA'), ph: document.getElementById('scorePlayerPhA')},
+            {label: document.getElementById('scorePlayerLabelB'), name: document.getElementById('scorePlayerNameB'), ph: document.getElementById('scorePlayerPhB')},
+            {label: document.getElementById('scorePlayerLabelC'), name: document.getElementById('scorePlayerNameC'), ph: document.getElementById('scorePlayerPhC')},
+            {label: document.getElementById('scorePlayerLabelD'), name: document.getElementById('scorePlayerNameD'), ph: document.getElementById('scorePlayerPhD')}
         ];
         
         // Hole elements
