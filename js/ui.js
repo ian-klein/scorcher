@@ -21,7 +21,7 @@ class UI {
                 }
             }
             //Display the team handicap where player B's handicap would be
-            playerHeader[1].ph.textContent = players[0].ph;
+            playerHeader[3].ph.textContent = players[0].ph;
         }
         else {
             for (let i = 0; i < 4; i++) {

@@ -219,7 +219,7 @@ class ScoreEntryPage {
             this.priorHoleNumber.textContent = '';
             this.priorScore.textContent = '';
         } else {
-            this.priorHoleNumber.textContent = this.currentHole - 1;
+            this.priorHoleNumber.textContent = '- ' + (this.currentHole - 1) + ' -';
             this.priorScore.textContent = this.scores[0].gross[this.currentHole - 2];
         }
         
@@ -232,7 +232,7 @@ class ScoreEntryPage {
             this.nextHoleNumber.textContent = '';
             this.nextScore.textContent = '';
         } else {
-            this.nextHoleNumber.textContent = this.currentHole + 1;
+            this.nextHoleNumber.textContent = '- ' + (this.currentHole + 1) + ' -';
             this.nextScore.textContent = this.scores[0].gross[this.currentHole];
         }
     }
