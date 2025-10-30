@@ -936,6 +936,29 @@ button,
     box-sizing: border-box;
 }
 
+.akq-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.akq-controls select {
+    width: 50px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #2c5f2d;
+    font-size: 1rem;
+    font-weight: 500;
+}
+.akq-controls span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2c5f2d;
+}
 
 #continueBtn {
     display: block;

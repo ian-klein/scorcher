@@ -22,9 +22,23 @@ class SplashPage {
         this.continueBtn = document.getElementById('continueBtn');
         this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
         this.adminBtn = document.getElementById('adminBtn');
-        this.testSelect = document.getElementById('testSelect');
+        this.akqControls = document.getElementById('akqControls');
+        this.aceHole = document.getElementById('aceHole');
+        this.kingHole = document.getElementById('kingHole');
+        this.queenHole = document.getElementById('queenHole');
+        this.testSelect = document.getElementById('testSelect'); //For testing only
+
+        this.competition = null;
 
         this.wireEvents();
+    }
+
+    wireEvents() {
+        this.continueBtn.addEventListener('click', () => this.onContinueBtnClick());
+        this.emailInput.addEventListener('input', () => this.onEmailInputInput());
+        this.handicapValue.addEventListener('input', () => this.onHandicapValueInput());
+        this.adminBtn.addEventListener('click', () => this.onAdminBtnClick());
+        this.testSelect.addEventListener('change', () => this.onTestSelectChange());
     }
 
     renderAdminButton() {
@@ -41,22 +55,20 @@ class SplashPage {
     }
 
     renderContinueButton() {
-        //Only score supported competitions
-        const comp = data.getCompetition();
-        if (!comp.isSupported()) {
-            this.displayMessage('Supported competitions are ' + Competition.supportedTypes.join(', ') + '. For this competition just put your signed, completed card in the box');
+        if (!this.competition.isSupported()) {
+            this.displayMessage('Supported competitions are ' + Competition.supportedTypes().join(', ') + '. For this competition just put your signed, completed card in the box');
             this.continueBtn.disabled = true;
         } else {
             //Warn if the competition is in the past
             const today = new Date();
-            if (comp.date.toISOString().slice(0, 10) !== today.toISOString().slice(0, 10)) {
+            if (this.competition.date.toISOString().slice(0, 10) !== today.toISOString().slice(0, 10)) {
                 this.displayMessage('This competition has already taken place, so no need to enter scores now');
             }
 
             //Must have email and PH in order to score
             const email = this.emailInput.value.trim();
             const ph = this.handicapValue.value.trim();
-            this.continueBtn.disabled = !email || email.length === 0 || (comp.isIndividualCompetition() && (!ph || ph.length === 0));
+            this.continueBtn.disabled = !email || email.length === 0 || (this.competition.isIndividualCompetition() && (!ph || ph.length === 0));
         }
     }
 
@@ -67,8 +79,7 @@ class SplashPage {
     }
 
     renderCompetitionName() {
-        const comp = data.getCompetition();
-        this.splashCompetitionName.textContent = data.competitionDisplayName(comp);
+        this.splashCompetitionName.textContent = data.competitionDisplayName(this.competition);
     }
 
     renderPlayer() {
@@ -81,11 +92,16 @@ class SplashPage {
             this.handicapValue.value = storedPlayer.ph;            
         }
 
-        const comp = data.getCompetition();
-        if (comp.isIndividualCompetition()) {
+        if (this.competition.isIndividualCompetition()) {
             this.handicapControls.style.display = 'flex';
         } else {
             this.handicapControls.style.display = 'none';
+        }
+
+        if (this.competition.type === Competition.Type.AKQ) {
+            this.akqControls.style.display = 'flex';
+        } else {
+            this.akqControls.style.display = 'none';
         }
     }
 
@@ -103,14 +119,6 @@ class SplashPage {
             this.testSelect.style.display = 'none';
         }
     }                
-
-    init() {
-        this.renderCompetitionName();
-        this.renderPlayer();
-        this.renderButtons();
-        this.renderTestSelect();
-        this.splashControls.style.display = 'block';
-    }
 
     hide() {
         this.splashScreen.style.display = 'none';
@@ -137,16 +145,22 @@ class SplashPage {
             }
             localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(storedPlayer));
 
-            const comp = data.getCompetition();
-            //For testing only ...
-            if (this.testSelect.style.display === 'block') {
-                comp.type = this.testSelect.value;
+            if (this.competition.type === Competition.Type.AKQ) {
+                if (this.aceHole.value === '' || this.kingHole.value === '' || this.queenHole.value === '') {
+                    alert('Please choose all three Ace, King and Queen holes');
+                    return;
+                }
+
+                player.akq.ace = Number(this.aceHole.value);
+                player.akq.king = Number(this.kingHole.value);
+                player.akq.queen = Number(this.queenHole.value);
             }
-            pageNavigator.competition = comp;
+
+            pageNavigator.competition = this.competition;
             pageNavigator.players = [ player ]; //Even for teams, pass this player as the first one!
 
             this.hide();
-            if (comp.isIndividualCompetition()) {
+            if (this.competition.isIndividualCompetition()) {
                 scoreEntryPage.init();
                 pageNavigator.showPage('scoreEntry');
             } else {
@@ -171,11 +185,20 @@ class SplashPage {
         pageNavigator.showPage('admin');
     }
 
-    wireEvents() {
-        this.continueBtn.addEventListener('click', () => this.onContinueBtnClick());
-        this.emailInput.addEventListener('input', () => this.onEmailInputInput());
-        this.handicapValue.addEventListener('input', () => this.onHandicapValueInput());
-        this.adminBtn.addEventListener('click', () => this.onAdminBtnClick());
+    onTestSelectChange() {
+        this.competition.type = this.testSelect.value;
+        this.renderPlayer();
+        this.renderButtons();
+    }
+
+    init() {
+        this.competition = data.getCompetition();
+
+        this.renderCompetitionName();
+        this.renderPlayer();
+        this.renderButtons();
+        this.renderTestSelect();
+        this.splashControls.style.display = 'block';
     }
 }
 

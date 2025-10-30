@@ -21,14 +21,6 @@ const SCORE_ENTRY_METHODS = [
 
 const STYLE_SUFFIX = '-score-grid';  //Suffix for the grid styles defined in styles.css
 
-const FLAG_VALUES= [
-    { value: 'X', text: '' },
-    { value: 'F', text: 'F' },
-    { value: 'L', text: 'L' },
-    { value: 'A', text: 'A' },
-    { value: 'G', text: 'G' }
-];
-
 class ScoreEntryPage {
     constructor() {
         // DOM elements
@@ -272,7 +264,7 @@ class ScoreEntryPage {
         }
 
         if (comp.type == Competition.Type.FLAG) {
-            for (const value of FLAG_VALUES) {
+            for (const value of Score.FLAG_VALUES) {
                 const option = document.createElement('option');
                 option.value = value.value;
                 option.textContent = value.text;
