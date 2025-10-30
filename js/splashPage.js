@@ -33,6 +33,10 @@ class SplashPage {
         this.wireEvents();
     }
 
+    isTesting() {
+        return this.emailInput.value === 'ian.klein14@gmail.com';
+    }
+
     wireEvents() {
         this.continueBtn.addEventListener('click', () => this.onContinueBtnClick());
         this.emailInput.addEventListener('input', () => this.onEmailInputInput());
@@ -57,7 +61,7 @@ class SplashPage {
     renderContinueButton() {
         if (!this.competition.isSupported()) {
             this.displayMessage('Supported competitions are ' + Competition.supportedTypes().join(', ') + '. For this competition just put your signed, completed card in the box');
-            this.continueBtn.disabled = true;
+            this.continueBtn.disabled = !this.isTesting();
         } else {
             //Warn if the competition is in the past
             const today = new Date();
@@ -106,8 +110,7 @@ class SplashPage {
     }
 
     renderTestSelect() {
-        const email = this.emailInput.value.trim();
-        if (email === 'ian.klein14@gmail.com') {
+        if (this.isTesting()) {
             this.testSelect.style.display = 'block';
             for (const type of Object.values(Competition.Type)) {
                 const option = document.createElement('option');
@@ -154,6 +157,11 @@ class SplashPage {
                 player.akq.ace = Number(this.aceHole.value);
                 player.akq.king = Number(this.kingHole.value);
                 player.akq.queen = Number(this.queenHole.value);
+
+                if (player.akq.ace === player.akq.king || player.akq.ace === player.akq.queen || player.akq.king === player.akq.queen) {
+                    alert('Ace, King and Queen holes must be different');
+                    return;
+                }
             }
 
             pageNavigator.competition = this.competition;

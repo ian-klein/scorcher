@@ -4,25 +4,25 @@
 
 export class Player {
     constructor(obj) {
+        this.email = '';
+        this.firstName = '';
+        this.lastName = '';
+        this.gender = '';
+        this.hi = 0;
+        this.admin = false;
+        this.name = '';
+        this.team = null; // When a player represents a team with a single score, the player names are stored here
+        this.ph = null;
+        this.tees = null;
+        this.shots = null;
+        this.akq = {     //The AKQ hole numbers for an AKQ comp
+            ace: -1, 
+            king: -1, 
+            queen: -1
+        };
+
         if (obj) {
             Object.assign(this, obj);
-        } else {
-            this.email = '';
-            this.firstName = '';
-            this.lastName = '';
-            this.gender = '';
-            this.hi = 0;
-            this.admin = false;
-            this.name = '';
-            this.team = null; // When a player represents a team with a single score, the player names are stored here
-            this.ph = null;
-            this.tees = null;
-            this.shots = null;
-            this.akq = {     //The AKQ hole numbers for an AKQ comp
-                ace: -1, 
-                king: -1, 
-                queen: -1
-            };
         }
     }
 }
@@ -38,22 +38,22 @@ export class Competition {
         SCRAMBLE:   'scramble',
         FOURBALL:   'fourball',
         WALTZ:      'waltz',
-        YELLOW_BALL:'yellowball',
+        YELLOWBALL:'yellowball',
         OTHER:      'other'
     });
 
     static INFO = [
-        {type: Competition.Type.STABLEFORD,  teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.STROKEPLAY,  teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.AKQ,         teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.AKQ },
-        {type: Competition.Type.FLAG,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.GREENSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.FOURSOMES,   teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.SCRAMBLE,    teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.FOURBALL,    teamSize: 2, numberOfScores: 2, isSupported: false, scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.WALTZ,       teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.WALTZ },
-        {type: Competition.Type.YELLOW_BALL, teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.YELLOW_BALL },
-        {type: Competition.Type.OTHER,       teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.STABLEFORD, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.STROKEPLAY, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.AKQ },
+        {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.GREENSOMES, teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.FOURSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.SCRAMBLE,   teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.FOURBALL,   teamSize: 2, numberOfScores: 2, isSupported: false, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.WALTZ,      teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.WALTZ },
+        {type: Competition.Type.YELLOWBALL, teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.YELLOWBALL },
+        {type: Competition.Type.OTHER,      teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
     ];
     
     constructor(obj) {
