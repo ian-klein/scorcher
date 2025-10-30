@@ -4,17 +4,33 @@
 
 import { pageNavigator } from './pageNavigator.js';
 import { reviewPage } from './reviewPage.js'
-import { Score } from './schema.js';
+import { Competition, Score } from './schema.js';
 import { data } from './data.js';
 import { ui } from './ui.js';
 
 const SAVED_SCORES_KEY = 'saved_scores_v2';
 
+//The differnt score entry methods
+const SCORE_ENTRY_METHODS = [
+    'basic',                        //Individual, single score
+    Competition.Type.SCRAMBLE,      //Also used for flag - adds a dropdown
+    Competition.Type.WALTZ,         //3 scores
+    Competition.Type.YELLOW_BALL,   //3 scores, with lost ball checkbox
+    Competition.Type.FOURBALL       //2 scores
+];
+
+const STYLE_SUFFIX = '-score-grid';  //Suffix for the grid styles defined in styles.css
+
+const FLAG_VALUES= [
+    { value: 'X', text: '' },
+    { value: 'F', text: 'F' },
+    { value: 'L', text: 'L' },
+    { value: 'A', text: 'A' },
+    { value: 'G', text: 'G' }
+];
+
 class ScoreEntryPage {
     constructor() {
-        this.currentHole = 1;
-        this.maxHoles = 18;
-        
         // DOM elements
         // Header elements
         this.competitionName = document.getElementById('competitionName');
@@ -28,14 +44,22 @@ class ScoreEntryPage {
         ];
         
         // Hole elements
+        this.holeSection = document.getElementById('holeSection');
         this.holeNumber = document.getElementById('holeNumber');
         this.priorHoleNumber = document.getElementById('priorHoleNumber');
         this.nextHoleNumber = document.getElementById('nextHoleNumber');
-        this.scoreInput = document.getElementById('scoreInput');
         this.priorScore = document.getElementById('priorScore');
         this.nextScore = document.getElementById('nextScore');
+        this.scoreInputA = document.getElementById('scoreInputA');
+        this.scoreInputB = document.getElementById('scoreInputB');
+        this.scoreInputC = document.getElementById('scoreInputC');
         this.prevHole = document.getElementById('prevHole');
         this.nextHole = document.getElementById('nextHole');
+        this.scoreEntrySelect = document.getElementById('scoreEntrySelect');
+        this.scoreEntryLabel = document.getElementById('scoreEntryLabel');
+        this.scoreGrid = document.getElementById('scoreGrid');
+        this.lostYellowBallCheckbox = document.getElementById('lostYellowBallCheckbox');
+
         
         // Keypad elements
         this.keypad = document.querySelector('.keypad');
@@ -47,6 +71,10 @@ class ScoreEntryPage {
         this.reviewBtn = document.getElementById('reviewBtn');
 
         this.scores = [];
+        this.currentPlayer = 0;     //Index of the player scoring
+        this.currentHole = 1;       //Hole number being scored
+        this.scoreEntryMethod = null;
+
         this.wireEvents();
     }
 
@@ -80,13 +108,19 @@ class ScoreEntryPage {
         }
     }
 
-    init() {
-        this.loadScores()
-
-        this.renderHeader();
-        this.renderHoleScore();
+    gridStyleFor(scoreEntryMethod) {
+        return scoreEntryMethod + STYLE_SUFFIX;
     }
 
+    scoreEntryMethodFor(comp) {
+        const type = comp.type === 'flag' ? 'scramble' : comp.type;
+        if (SCORE_ENTRY_METHODS.includes(type)) {
+            return type;
+        }
+        else {
+            return 'basic';
+        }
+    }
 
     wireEvents() {
         // Navigation arrows
@@ -113,7 +147,13 @@ class ScoreEntryPage {
         this.reviewBtn.addEventListener('click', () => this.onReviewBtnClick());
         
         // Prevent manual input on score field
-        this.scoreInput.addEventListener('keydown', (e) => {
+        this.scoreInputA.addEventListener('keydown', (e) => {
+            e.preventDefault();
+        });
+        this.scoreInputB.addEventListener('keydown', (e) => {
+            e.preventDefault();
+        });
+        this.scoreInputC.addEventListener('keydown', (e) => {
             e.preventDefault();
         });
     }
@@ -130,28 +170,28 @@ class ScoreEntryPage {
     }
 
     handleKeypadInput(value) {
-        const currentScore = this.scoreInput.value;
+        const currentScore = this.scoreInputA.value;
         let autoNavigate = true;
         
         if (value === 'DEL') {
             // Delete last character
-            this.scoreInput.value = currentScore.slice(0, -1);
+            this.scoreInputA.value = currentScore.slice(0, -1);
             autoNavigate = false;
         } else if (value === 'X') {
             // X typically means no score or not played
-            this.scoreInput.value = 'X';
+            this.scoreInputA.value = 'X';
         } else if (value === '0' && currentScore === '') {
             // 0 typically means no score or not played
-            this.scoreInput.value = 'X';
+            this.scoreInputA.value = 'X';
         } else {
             // Number key pressed
             if (currentScore === 'X' || currentScore === '') {
                 // Set score as the number
-                this.scoreInput.value = value;
+                this.scoreInputA.value = value;
                 autoNavigate = value !== '1';
             } else if (currentScore === '1') {
                 // Add digit (max 2 digits)
-                this.scoreInput.value = currentScore + value;
+                this.scoreInputA.value = currentScore + value;
             }
         }
 
@@ -164,7 +204,7 @@ class ScoreEntryPage {
     }
 
     saveCurrentScore() {
-        const gross = this.scoreInput.value;
+        const gross = this.scoreInputA.value;
         this.scores[0].gross[this.currentHole - 1] = gross;
         this.scores[0].points[this.currentHole - 1] = this.calculatePoints(0);
         this.scores[0].adjusted[this.currentHole - 1] = this.calculateAdjusted(0);
@@ -210,6 +250,38 @@ class ScoreEntryPage {
         ui.renderPlayerHeader(pageNavigator.players, this.playerHeader);
     }
 
+    renderScoreEntryStyle() {
+        const comp = pageNavigator.competition;
+        for (const method of SCORE_ENTRY_METHODS) {
+            this.scoreGrid.classList.remove(this.gridStyleFor(method));
+        };
+
+        this.scoreEntryMethod = this.scoreEntryMethodFor(comp);
+        this.scoreGrid.classList.add(this.gridStyleFor(this.scoreEntryMethod));
+
+        //Add rendering for scramble/flag select boxes
+        if (comp.type === Competition.Type.SCRAMBLE) {
+            const team = pageNavigator.players[0].team;
+            for (let i = 0; i < team.length; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = ['A', 'B', 'C', 'D'][i];
+                this.scoreEntrySelect.appendChild(option);
+            }
+            this.scoreEntryLabel.textContent = 'Teeshot';
+        }
+
+        if (comp.type == Competition.Type.FLAG) {
+            for (const value of FLAG_VALUES) {
+                const option = document.createElement('option');
+                option.value = value.value;
+                option.textContent = value.text;
+                this.scoreEntrySelect.appendChild(option);
+            }
+            this.scoreEntryLabel.textContent = 'Flag';
+        }
+    }
+
     renderHoleScore() {
         // Update hole number
         this.holeNumber.textContent = '- ' + this.currentHole + ' -';
@@ -225,7 +297,7 @@ class ScoreEntryPage {
         
         // Update score input with saved score for this hole
         const score = this.scores[0].gross[this.currentHole - 1];
-        this.scoreInput.value = `${score ?? ''}`;
+        this.scoreInputA.value = `${score ?? ''}`;
 
         // Update next score
         if (this.currentHole === 18 || !this.scores[0].gross[this.currentHole]) {
@@ -237,6 +309,13 @@ class ScoreEntryPage {
         }
     }
 
+    init() {
+        this.loadScores()
+
+        this.renderHeader();
+        this.renderScoreEntryStyle();
+        this.renderHoleScore();
+    }
 }
 
 export const scoreEntryPage = new ScoreEntryPage();

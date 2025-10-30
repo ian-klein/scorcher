@@ -32,7 +32,7 @@ class AdminPage {
         const diary = data.eventDiary;
 
         const today = new Date();
-        const competitions = diary.filter(e => e.date <= today && e.type !== Competition.Type.OTHER).slice(0, 3);
+        const competitions = diary.filter(e => e.date <= today && e.type !== Competition.Type.OTHER).slice(-3);
         for (const c of competitions) {
             const textContent = c.date.toISOString().slice(0, 10) + ' ' + c.name;
             const value = c.date.toISOString();

@@ -147,6 +147,16 @@ class Data {
             return null;
         }
     }
+
+    firstNameOf(player, players)
+    {
+        if (players.find(p => p.firstName === player.firstName && p.email !== player.email)) {
+            return player.firstName + ' ' + player.lastName.charAt(0);
+        }
+        else {
+            return player.firstName;
+        }
+    }
 }
 
 export const data = new Data();

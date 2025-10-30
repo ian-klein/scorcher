@@ -31,9 +31,9 @@ export class Competition {
         GREENSOMES: 'greensomes',
         FOURSOMES:  'foursomes',
         SCRAMBLE:   'scramble',
-        FOURBALLS:  'fourballs',
+        FOURBALL:   'fourball',
         WALTZ:      'waltz',
-        YELLOW_BALL:'yellow ball',
+        YELLOW_BALL:'yellowball',
         OTHER:      'other'
     });
 
@@ -41,11 +41,11 @@ export class Competition {
         {type: Competition.Type.STABLEFORD,  teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.STROKEPLAY,  teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.AKQ,         teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.AKQ },
-        {type: Competition.Type.FLAG,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.FLAG },
+        {type: Competition.Type.FLAG,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.GREENSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.FOURSOMES,   teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.SCRAMBLE,    teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.FOURBALLS,   teamSize: 2, numberOfScores: 2, isSupported: false, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.FOURBALL,   teamSize: 2, numberOfScores: 2, isSupported: false, scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.WALTZ,       teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.WALTZ },
         {type: Competition.Type.YELLOW_BALL, teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.YELLOW_BALL },
         {type: Competition.Type.OTHER,       teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
