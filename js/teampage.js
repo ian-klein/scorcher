@@ -40,6 +40,7 @@ class TeamPage {
         this.teamPhInputs = document.querySelectorAll('.team-ph');
 
         this.teamNextBtn = document.getElementById('teamNextBtn');
+        this.teamBackBtn = document.getElementById('teamBackBtn');
 
         this.players = [];
         this.th = null;
@@ -48,6 +49,7 @@ class TeamPage {
 
     wireEvents() {
         this.teamNextBtn.addEventListener('click', () => this.onNextBtnClick());
+        this.teamBackBtn.addEventListener('click', () => this.onBackBtnClick());
 
         this.teamNameA.addEventListener('input', (e) => this.onNameInput(e,0));
         this.teamNameB.addEventListener('input', (e) => this.onNameInput(e,1));
@@ -139,6 +141,10 @@ class TeamPage {
         }
         scoreEntryPage.init();
         pageNavigator.showPage('scoreEntry');
+    }
+
+    onBackBtnClick() {
+        pageNavigator.showPage("splash");
     }
 
     onNameInput(e,index) {

@@ -72,6 +72,7 @@ class ScoreEntryPage {
         
         // Action buttons
         this.reviewBtn = document.getElementById('reviewBtn');
+        this.backBtn = document.getElementById('scoreEntryBackBtn');
 
         this.scores = [];
         this.currentPlayer = 0;     //Index of the player scoring
@@ -148,6 +149,7 @@ class ScoreEntryPage {
         
         // Action buttons
         this.reviewBtn.addEventListener('click', () => this.onReviewBtnClick());
+        this.backBtn.addEventListener('click', () => this.onBackBtnClick());
         
         // Prevent manual input on score fields
         this.scoreInputA.addEventListener('keydown', (e) => {
@@ -257,6 +259,15 @@ class ScoreEntryPage {
         pageNavigator.scores = this.scores;
         pageNavigator.showPage('review');
         reviewPage.init();
+    }
+
+    onBackBtnClick() {
+        if (pageNavigator.competition.isIndividualCompetition()) {
+            pageNavigator.showPage('splash');
+        }
+        else {
+            pageNavigator.showPage('team');
+        }
     }
 
     renderHeader() {

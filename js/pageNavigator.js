@@ -5,6 +5,7 @@
 class PageNavigator {
     constructor() {
         this.pages = {
+            splash: document.querySelector('[data-page="splash"]'),
             scoreEntry: document.querySelector('[data-page="score-entry"]'),
             review: document.querySelector('[data-page="review"]'),
             admin: document.querySelector('[data-page="admin"]'),
@@ -27,6 +28,7 @@ class PageNavigator {
         if (this.pages[pageName]) {
             this.pages[pageName].style.display = 'flex';
         }
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
     }
 }
 

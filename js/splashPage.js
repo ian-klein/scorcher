@@ -12,7 +12,6 @@ const PLAYER_STORAGE_KEY= 'player_v1'
 
 class SplashPage {
     constructor() {
-        this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
         this.handicapControls = document.getElementById('handicapControls');
         this.splashCompetitionName = document.getElementById('splashCompetitionName');
@@ -123,11 +122,6 @@ class SplashPage {
         }
     }                
 
-    hide() {
-        this.splashScreen.style.display = 'none';
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-    }
-
     displayMessage(message) {
         this.splashMessage.textContent = message;
     }
@@ -167,7 +161,6 @@ class SplashPage {
             pageNavigator.competition = this.competition;
             pageNavigator.players = [ player ]; //Even for teams, pass this player as the first one!
 
-            this.hide();
             if (this.competition.isIndividualCompetition()) {
                 scoreEntryPage.init();
                 pageNavigator.showPage('scoreEntry');
@@ -188,7 +181,6 @@ class SplashPage {
     }
 
     onAdminBtnClick() {
-        this.hide();
         adminPage.init();
         pageNavigator.showPage('admin');
     }
