@@ -151,7 +151,7 @@ class ScoreEntryPage {
         this.reviewBtn.addEventListener('click', () => this.onReviewBtnClick());
         this.backBtn.addEventListener('click', () => this.onBackBtnClick());
         
-        // Prevent manual input on score fields
+        // Prevent score fields from being edited
         this.scoreInputA.addEventListener('keydown', (e) => {
             e.preventDefault();
         });
@@ -165,6 +165,8 @@ class ScoreEntryPage {
         this.scoreInputA.addEventListener('focus', (e) => this.onScoreInputFocus(e));
         this.scoreInputB.addEventListener('focus', (e) => this.onScoreInputFocus(e));
         this.scoreInputC.addEventListener('focus', (e) => this.onScoreInputFocus(e));
+
+        this.lostYellowBallCheckbox.addEventListener('change', () => this.onLostYellowBallCheckboxChange());
     }
 
     navigateHole(direction) {
@@ -270,6 +272,21 @@ class ScoreEntryPage {
         }
     }
 
+    onLostYellowBallCheckboxChange() {
+        if (this.lostYellowBallCheckbox.checked) {
+            this.scores[0].lostYellowBall = this.currentHole;
+            const yellowBallIndex = (this.currentHole - 1) % 3;
+            const yellowBallInput = this.scoreInputArray[yellowBallIndex];
+            yellowBallInput.focus();
+            yellowBallInput.value = 'X';
+        }
+        else {
+            this.scores[0].lostYellowBall = null;
+        }
+        this.saveCurrentScore();
+        this.renderHoleScore();
+    }
+
     renderHeader() {
         this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
         this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
@@ -325,7 +342,30 @@ class ScoreEntryPage {
                 this.priorScore.textContent = this.scores[0].gross[this.currentHole - 2];
             }
         }
-        
+
+        //Format yellow ball entry
+        if (this.scoreEntryMethod === YELLOWBALL_SCORE_ENTRY) {
+            const yellowBallIndex = (this.currentHole - 1) % 3;
+            const lostYellowBall = this.scores[0].lostYellowBall;
+            for (let i = 0; i < 3; i++){
+                if (i === yellowBallIndex && (!lostYellowBall || this.currentHole < lostYellowBall)) {
+                    this.scoreInputArray[i].style.backgroundColor = 'yellow';
+                }
+                else {
+                    this.scoreInputArray[i].style.backgroundColor = 'white';
+                }
+            }
+
+            //If the yellow ball was lost, only enable the control for the hole it was lost on
+            if (!this.scores[0].lostYellowBall) {
+                this.lostYellowBallCheckbox.disabled = false;
+            }
+            else {
+                this.lostYellowBallCheckbox.disabled = this.scores[0].lostYellowBall !== this.currentHole; 
+                this.lostYellowBallCheckbox.checked = this.scores[0].lostYellowBall === this.currentHole; 
+            }
+        }
+
         // Update score input with saved score for this hole
         for(let i =0; i < pageNavigator.players.length; i++) {
             const score = this.scores[i].gross[this.currentHole - 1];

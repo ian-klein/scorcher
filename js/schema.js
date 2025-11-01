@@ -116,6 +116,6 @@ export class Score {
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
         this.teeShot = new Array(18).fill(null);    //For scrambles, who took the tee shot for each hole
         this.flag = Score.FLAG_VALUES[0].value;     //For flag competitions
-        this.lostBall = null;                       //For yellow ball competitions, the hole the yellow ball was lost
+        this.lostYellowBall = null;                 //For yellow ball competitions, the hole the yellow ball was lost
     }
 }
