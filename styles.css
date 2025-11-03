@@ -651,6 +651,22 @@ button[disabled],
     min-width: 0;
 }
 
+.multi-score-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.2rem, 1vw, 0.4rem);     
+    width: 100%;  
+    text-align: center;
+}
+
+.mulit-score-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: clamp(0.2rem, 1vw, 0.4rem);     
+    width: 100%;  
+    text-align: center;
+}
+
 .score-cell.hole-num {
     font-weight: 600;
     color: var(--text-secondary);

@@ -100,11 +100,16 @@ class TeamPage {
             if (this.players[i]) {
                 this.teamPlayers[i].name.value = this.players[i].name;
                 this.teamPlayers[i].ph.value = this.players[i].ph;
+            } else {
+                this.teamPlayers[i].name.value = '';
+                this.teamPlayers[i].ph.value = '';
             }
         }
     }
 
     renderContinueButton() {
+        this.teamNextBtn.disabled = false;
+
         if (this.players.some(p => !p) || this.players.some(p => !p.name || p.name.length ===0)) {
             this.teamNextBtn.disabled = true;
         }
@@ -116,12 +121,23 @@ class TeamPage {
                 this.teamNextBtn.disabled = !teamHandicap || teamHandicap.length === 0;
             }
             else {
-                this.teamNextBtn.disabled = this.players.some(p => !p.ph || p.ph.length === 0);
+                const numberOfPlayers = pageNavigator.scorecard.competition.teamSize();
+                for (let i = 0; i < numberOfPlayers; i++) {
+                    if (!this.teamPlayers[i].ph.value || this.teamPlayers[i].ph.value.length === 0) {
+                        this.teamNextBtn.disabled = true;
+                        break;
+                    }
+                }
             }
         }
     }
 
     onNextBtnClick() {
+        for (let i = 0; i < this.players.length; i++) {
+            const ph = Number(this.teamPlayers[i].ph.value.trim());
+            this.players[i] = data.getPlayer(this.players[i].email, ph);
+        }
+
         this.saveTeam();
 
         const comp = pageNavigator.scorecard.competition;
@@ -166,12 +182,12 @@ class TeamPage {
         }
         else {
             this.players[index] = null;
+            this.teamPlayers[index].ph.value = '';
             this.renderContinueButton();
         }
     }
 
     onPhInput(e,index) {
-        this.players[index].ph = Number(e.target.value);
         this.renderContinueButton();
     }
 

@@ -126,14 +126,17 @@ class Data {
     getTeamPlayer(comp, players, th) { //TODO Comp is required if th is not given but hi is.
         const teamPlayer = new Player();
 
+        teamPlayer.email = '*team*';
         teamPlayer.team = players;
         teamPlayer.name = players.map(p => p.lastName).join(' ');
         teamPlayer.ph = th;
 
         if (players.every(p => p.gender === 'female')) {
             teamPlayer.tees = this.course.female.gold;
+            teamPlayer.gender = 'female';
         } else {
             teamPlayer.tees = this.course.male.white;
+            teamPlayer.gender = 'male';
         }
 
         teamPlayer.shots = this.#getShots(teamPlayer.tees, th);

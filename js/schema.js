@@ -7,7 +7,7 @@ export class Player {
         this.email = '';
         this.firstName = '';
         this.lastName = '';
-        this.gender = '';
+        this.gender = 'male';
         this.hi = 0;
         this.admin = false;
         this.name = '';
@@ -45,14 +45,14 @@ export class Competition {
     static INFO = [
         {type: Competition.Type.STABLEFORD, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.STROKEPLAY, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.AKQ },
+        {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.GREENSOMES, teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.FOURSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.SCRAMBLE,   teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.FOURBALL,   teamSize: 2, numberOfScores: 2, isSupported: false, scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.WALTZ,      teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.WALTZ },
-        {type: Competition.Type.YELLOWBALL, teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.YELLOWBALL },
+        {type: Competition.Type.WALTZ,      teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.YELLOWBALL, teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.OTHER,      teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
     ];
     
@@ -98,7 +98,7 @@ export class Competition {
 export class Score {
     constructor() {
         this.gross = new Array(18).fill(null);      //Gross score for each hole
-        this.points = new Array(18).fill(null);     //Stableford points for each hole
+        this.points = new Array(18).fill(0);        //Stableford points for each hole
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
     }
 }
@@ -122,13 +122,42 @@ export class Scorecard {
         }
     }
 
-    constructor(competition, players) {
-        this.competition = competition;
-        this.players = players;
-        this.scores = new Array(players.length).fill(null).map(() => new Score());
-        this.points = new Array(18).fill(null);     //Total points for each hole
-        this.lostYellowBall = null;
-        this.flag = Scorecard.FLAG_VALUES[0].value;
+    static fromJSON(jsonString) {
+        const obj = JSON.parse(jsonString, Scorecard.reviver);
+        return new Scorecard(obj);
+    }
+
+    constructor(obj) {
+        if (obj) {
+            Object.assign(this, obj);
+        } else {
+            this.competition = new Competition();
+            this.players = [ new Player() ];
+        }
+
+        if (!this.scores) {
+            this.scores = new Array(this.players.length).fill(null).map(() => new Score());
+        }
+
+        if (!this.points) {
+            this.points = new Array(18).fill(0);     //Total points for each hole
+        }
+
+        if (!this.lostYellowBall) {
+            this.lostYellowBall = null;
+        }
+
+        if (!this.flag) {
+            this.flag = Scorecard.FLAG_VALUES[0].value;
+        }
+
+        if (!this.teeShot) {
+            this.teeShot = new Array(18).fill(null);    //For scrambles, who took the tee shot for each hole
+        }
+    }
+
+    validate() {
+        const missingScores = [];
         this.teeShot = new Array(18).fill(null);    //For scrambles, who took the tee shot for each hole
     }
 
@@ -173,10 +202,11 @@ export class Scorecard {
             }            
         } else {
             for (let hole = 1; hole <= 18; hole++) {
-                if (!this.scores[0].gross[hole-1]) {
+                const grossScores = this.scores.map(s => s.gross[hole-1]);
+                if (grossScores.includes(null)) {
                     missingScores.push(hole);
                 }
-            }            
+            }
         }
 
         //Return the errors message - null means the scorecard is valid

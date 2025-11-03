@@ -86,23 +86,23 @@ class ScoreEntryPage {
     }
 
     loadScorecard() {
-        const savedScores = localStorage.getItem(SAVED_SCORES_KEY);
-        if (savedScores) {
+        const rawScorecard = localStorage.getItem(SAVED_SCORES_KEY);
 
-            const scoreCard = JSON.parse(savedScores, Scorecard.reviver);
-            if (scoreCard.competition.type === pageNavigator.scorecard.competition.type && scoreCard.competition.date === pageNavigator.scorecard.competition.date) {
+        if (rawScorecard) {
+            const scorecard = Scorecard.fromJSON(rawScorecard);
+            if (scorecard.competition.type === pageNavigator.scorecard.competition.type && scorecard.competition.date === pageNavigator.scorecard.competition.date) {
                 //Same date and type - zeroize scores for players that are not in the page context
-                for (let i = 0; i < scoreCard.players.length; i++) {
-                    const player = scoreCard.players[i];
+                for (let i = 0; i < scorecard.players.length; i++) {
+                    const player = scorecard.players[i];
                     if (!pageNavigator.scorecard.players.find(p => p.name === player.name)) {
-                        scoreCard.scores[i] = new Score();
+                        scorecard.scores[i] = new Score();
                     }
                 }
-                pageNavigator.scorecard = scoreCard;
+                pageNavigator.scorecard = scorecard;
             }
             else {
                 //Different date or type - reset scores
-                pageNavigator.scorecard = new Scorecard(pageNavigator.scorecard.competition, pageNavigator.scorecard.players);
+                pageNavigator.scorecard = new Scorecard({competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players});
             }
         }
     }
@@ -167,7 +167,6 @@ class ScoreEntryPage {
     }
 
     navigateHole(direction) {
-
         let newHole = this.currentHole + direction;
         
         if (newHole < 1) newHole = 18;
@@ -216,31 +215,50 @@ class ScoreEntryPage {
 
     saveCurrentScore() {
         const scoreInput = this.scoreInputArray[this.currentPlayer];
-        const gross = scoreInput.value;
-        pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1] = gross;
-        pageNavigator.scorecard.scores[this.currentPlayer].points[this.currentHole - 1] = this.calculatePoints(this.currentPlayer);
-        pageNavigator.scorecard.scores[this.currentPlayer].adjusted[this.currentHole - 1] = this.calculateAdjusted(this.currentPlayer);
+        const gross = scoreInput.value.trim();
+        if (gross === '') {
+            pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1] = null;
+        } else {
+            pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1] = gross;
+        }
+
+        pageNavigator.scorecard.scores[this.currentPlayer].points[this.currentHole - 1] = this.calculatePoints();
+        pageNavigator.scorecard.scores[this.currentPlayer].adjusted[this.currentHole - 1] = this.calculateAdjusted();
         this.saveScorecard();
     }
 
-    calculatePoints(index) {
-        const gross = pageNavigator.scorecard.scores[index].gross[this.currentHole - 1];
+    calculatePoints() {
+        const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1];
 
         if (!gross || gross === 'X' || gross === '' || gross === 0) {
             return 0;
         } else {
-            const par = pageNavigator.scorecard.players[index].tees.par[this.currentHole - 1];
-            const nett = gross - pageNavigator.scorecard.players[index].shots[this.currentHole - 1];
+            const par = pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1];
+            const nett = gross - pageNavigator.scorecard.players[this.currentPlayer].shots[this.currentHole - 1];
 
-            const points = Math.max(0,  par-nett + 2);
+            let points = Math.max(0,  par-nett + 2);
+
+            if (pageNavigator.scorecard.competition.type === Competition.Type.AKQ) {
+                if (this.currentHole == pageNavigator.scorecard.players[this.currentPlayer].akq.ace) {
+                    points = points * 4;
+                }
+                if (this.currentHole == pageNavigator.scorecard.players[this.currentPlayer].akq.king) {
+                    points = points * 3;
+                }
+                if (this.currentHole == pageNavigator.scorecard.players[this.currentPlayer].akq.queen) {
+                    points = points * 2;
+                }
+            }
+
+
             return points;
         }
     }
     
-    calculateAdjusted(index) {
-        const gross = pageNavigator.scorecard.scores[index].gross[this.currentHole - 1];
-        const par = pageNavigator.scorecard.players[index].tees.par[this.currentHole - 1];
-        const shots = pageNavigator.scorecard.players[index].shots[this.currentHole - 1];
+    calculateAdjusted() {
+        const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1];
+        const par = pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1];
+        const shots = pageNavigator.scorecard.players[this.currentPlayer].shots[this.currentHole - 1];
 
         if (!gross || gross === 'X' || gross === '' || gross === 0) {
             return par + shots + 2;
@@ -322,7 +340,7 @@ class ScoreEntryPage {
             }
 
             if (comp.type === Competition.Type.FLAG) {
-                for (const value of Score.FLAG_VALUES) {
+                for (const value of Scorecard.FLAG_VALUES) {
                     const option = document.createElement('option');
                     option.value = value.value;
                     option.textContent = value.text;
@@ -372,6 +390,11 @@ class ScoreEntryPage {
             else {
                 this.lostYellowBallCheckbox.disabled = pageNavigator.scorecard.lostYellowBall !== this.currentHole; 
                 this.lostYellowBallCheckbox.checked = pageNavigator.scorecard.lostYellowBall === this.currentHole; 
+            }
+        }
+        else {
+            for(let i =0; i < pageNavigator.scorecard.players.length; i++) {
+                this.scoreInputArray[i].style.backgroundColor = 'white';
             }
         }
 

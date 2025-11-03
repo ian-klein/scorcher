@@ -157,7 +157,7 @@ class SplashPage {
                 }
             }
 
-            pageNavigator.scorecard = new Scorecard(this.competition, [ player ]);
+            pageNavigator.scorecard = new Scorecard({competition: this.competition, players: [ player ]});
 
             if (this.competition.isIndividualCompetition()) {
                 scoreEntryPage.init();
