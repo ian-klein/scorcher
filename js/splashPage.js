@@ -6,7 +6,7 @@ import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
 import { adminPage } from './adminPage.js';
 import { teamPage } from './teampage.js';
-import { Competition } from './schema.js';
+import { Competition, Scorecard } from './schema.js';
 
 const PLAYER_STORAGE_KEY= 'player_v1'
 
@@ -63,8 +63,7 @@ class SplashPage {
             this.continueBtn.disabled = !this.isTesting();
         } else {
             //Warn if the competition is in the past
-            const today = new Date();
-            if (this.competition.date.toISOString().slice(0, 10) !== today.toISOString().slice(0, 10)) {
+            if (this.competition.date !== data.today) {
                 this.displayMessage('This competition has already taken place, so no need to enter scores now');
             }
 
@@ -158,15 +157,14 @@ class SplashPage {
                 }
             }
 
-            pageNavigator.competition = this.competition;
-            pageNavigator.players = [ player ]; //Even for teams, pass this player as the first one!
+            pageNavigator.scorecard = new Scorecard(this.competition, [ player ]);
 
             if (this.competition.isIndividualCompetition()) {
                 scoreEntryPage.init();
-                pageNavigator.showPage('scoreEntry');
+                pageNavigator.goto('scoreEntry');
             } else {
                 teamPage.init();
-                pageNavigator.showPage('team');
+                pageNavigator.goto('team');
             }            
         }
     }
@@ -182,7 +180,7 @@ class SplashPage {
 
     onAdminBtnClick() {
         adminPage.init();
-        pageNavigator.showPage('admin');
+        pageNavigator.goto('admin');
     }
 
     onTestSelectChange() {

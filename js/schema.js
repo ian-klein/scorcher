@@ -38,7 +38,7 @@ export class Competition {
         SCRAMBLE:   'scramble',
         FOURBALL:   'fourball',
         WALTZ:      'waltz',
-        YELLOWBALL:'yellowball',
+        YELLOWBALL: 'yellowball',
         OTHER:      'other'
     });
 
@@ -59,10 +59,9 @@ export class Competition {
     constructor(obj) {
         if (obj) {
             Object.assign(this, obj);
-            this.date = new Date(this.date);
         } else {
             this.name = 'Unknown';
-            this.date = new Date('1993-01-01');
+            this.date = '1993-01-01';   //date is represented by a 10 character ISO string
             this.type = Competition.Type.STABLEFORD;
         }
     }
@@ -97,6 +96,14 @@ export class Competition {
 }
 
 export class Score {
+    constructor() {
+        this.gross = new Array(18).fill(null);      //Gross score for each hole
+        this.points = new Array(18).fill(null);     //Stableford points for each hole
+        this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
+    }
+}
+
+export class Scorecard {    
     static FLAG_VALUES= [
         { value: 'X', text: '' },
         { value: 'F', text: 'F' },
@@ -105,17 +112,105 @@ export class Score {
         { value: 'G', text: 'G' }
     ];
 
-    constructor(player, date) {
-        //These 3 fields are used to identify the score in case the team changes
-        this.email = player.email;
-        this.name = player.name;
-        this.date = date;           // ... of the Competition for which this score is being entered
+    static reviver(key, value) {
+        if (key === 'competition') {
+            return new Competition(value);
+        } else if (key === 'players' || key === 'team') {
+            return value?.map(v => new Player(v));
+        } else {
+            return value;
+        }
+    }
 
-        this.gross = new Array(18).fill(null);      //Gross score for each hole
-        this.points = new Array(18).fill(null);     //Stableford points for each hole
-        this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
+    constructor(competition, players) {
+        this.competition = competition;
+        this.players = players;
+        this.scores = new Array(players.length).fill(null).map(() => new Score());
+        this.points = new Array(18).fill(null);     //Total points for each hole
+        this.lostYellowBall = null;
+        this.flag = Scorecard.FLAG_VALUES[0].value;
         this.teeShot = new Array(18).fill(null);    //For scrambles, who took the tee shot for each hole
-        this.flag = Score.FLAG_VALUES[0].value;     //For flag competitions
-        this.lostYellowBall = null;                 //For yellow ball competitions, the hole the yellow ball was lost
+    }
+
+    validate() {
+        const missingScores = [];
+        const excessScores = [];
+
+        if (this.competition.type === Competition.Type.FOURBALL) {
+            for (let hole = 1; hole <= 18; hole++) {
+                if (!this.scores[0].gross[hole-1] && !this.scores[1].gross[hole-1]) {
+                    missingScores.push(hole);
+                }
+                if (this.scores[0].gross[hole-1] && this.scores[1].gross[hole-1]) {
+                    excessScores.push(hole);
+                }
+            }            
+        } else if (this.competition.type === Competition.Type.WALTZ) {
+            for (let hole = 1; hole <= 18; hole++) {
+                const numRequired = ((hole-1) % 3) + 1;
+                const numEntered = (this.scores[0].gross[hole-1] ? 1 : 0) + (this.scores[1].gross[hole-1] ? 1 : 0) + (this.scores[2].gross[hole-1] ? 1 : 0);
+                if (numEntered < numRequired) {
+                    missingScores.push(hole);
+                }
+                if (numEntered > numRequired) {
+                    excessScores.push(hole);
+                }
+            }
+            
+        } else if (this.competition.type === Competition.Type.FLAG) {
+            let shotsRemaining = this.players[0].ph;
+            let hole = 1;
+            while (hole <= 18 && shotsRemaining > 0) {
+                if (!this.scores[0].gross[hole-1]) {
+                    missingScores.push(hole);
+                } else if (this.scores[0].gross[hole-1] === 'X' ) {
+                    this.flag = Scorecard.FLAG_VALUES[0].value;
+                    break;
+                } else {
+                    shotsRemaining -= (this.scores[0].gross[hole-1] - this.players[0].tees[hole-1].par);
+                }
+                hole++;                 
+            }            
+        } else {
+            for (let hole = 1; hole <= 18; hole++) {
+                if (!this.scores[0].gross[hole-1]) {
+                    missingScores.push(hole);
+                }
+            }            
+        }
+
+        //Return the errors message - null means the scorecard is valid
+        let msg = null;
+        if (missingScores.length > 0 || excessScores.length > 0) {
+            const missingholes = missingScores.join(', ');
+            const excessholes = excessScores.join(', ');
+
+            if (missingScores.length > 0) {
+                msg = 'Missing scores on hole(s) ' + missingholes + '\n';
+            }
+            if (excessScores.length > 0) {
+                msg = msg + 'Excess scores on hole(s) ' + excessholes + '\n';
+            }
+        }
+
+        if (!msg && (this.competition.type === Competition.Type.SCRAMBLE)) {
+            const a = this.teeShot.filter(t => t === 'A').length;
+            const b = this.teeShot.filter(t => t === 'B').length;
+            const c = this.teeShot.filter(t => t === 'C').length;
+            if (a < 5 || b < 5 || c < 5) {
+                let msg = '';
+                if (a < 5) {
+                    msg = msg + 'Player A only has ' + a + ' tee shots\n';
+                }
+                if (b < 5) {
+                    msg = msg + 'Player B only has ' + b + ' tee shots\n';
+                }
+                if (c < 5) {
+                    msg = msg + 'Player C only has ' + c + ' tee shots';
+                }
+            }
+        }
+
+        return msg;
     }
 }

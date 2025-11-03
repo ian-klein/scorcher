@@ -9,16 +9,29 @@ class PageNavigator {
             scoreEntry: document.querySelector('[data-page="score-entry"]'),
             review: document.querySelector('[data-page="review"]'),
             admin: document.querySelector('[data-page="admin"]'),
-            team: document.querySelector('[data-page="team"]')
+            team: document.querySelector('[data-page="team"]'),
+            akq: document.querySelector('[data-page="akq"]')
         };
 
-        //Context data passed between pages - players[0]/scores[0] is player A, players[1]/scores[1] is player B, etc
-        this.competition = null;
-        this.players = [];
-        this.scores = [];
+        this.scorecard = null;
+        this.breadcrumbs = [];
+        this.breadcrumbs.push("splash");
+
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
     }
 
-    showPage(pageName) {
+    goto(pageName) {
+        this.breadcrumbs.push(pageName);
+        this.#showPage(pageName);
+    }
+
+    back() {
+        this.breadcrumbs.pop();
+        this.#showPage(this.breadcrumbs[this.breadcrumbs.length - 1]);
+    }   
+
+    //Display the page
+    #showPage(pageName) {
         // Hide all pages
         Object.values(this.pages).forEach(page => {
             if (page) page.style.display = 'none';
@@ -28,8 +41,7 @@ class PageNavigator {
         if (this.pages[pageName]) {
             this.pages[pageName].style.display = 'flex';
         }
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
     }
-}
 
+}
 export const pageNavigator = new PageNavigator();

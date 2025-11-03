@@ -47,53 +47,52 @@ class ReviewPage {
     }
 
     onBackBtnClick() {
-        pageNavigator.showPage('scoreEntry');
+        pageNavigator.back();
     }
 
     async onSubmitBtnClick() {
-        const isAnyGrossScoreNull = pageNavigator.scores.some(s => s.gross.some(score => score === null));
-
-        if (isAnyGrossScoreNull) {
-            alert('Please enter all scores before submitting');
+        const msg = pageNavigator.scorecard.validate();
+        if (msg) {
+            alert(msg);
             return;
         }
-
+ 
         backend.showSpinner();
-        const isSubmitSuccess = await backend.submitScores(pageNavigator.competition, pageNavigator.players[0], pageNavigator.scores[0]);
+        const isSubmitSuccess = await backend.submitScores(pageNavigator.scorecard.competition, pageNavigator.scorecard.players[0], pageNavigator.scorecard.scores[0]);
         backend.hideSpinner();
 
         this.renderSubmitButton(isSubmitSuccess);
     }
 
     renderHeader() {
-        this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
-        this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
+        this.competitionName.textContent = data.competitionDisplayName(pageNavigator.scorecard.competition);
+        this.competitionDate.textContent = new Date(pageNavigator.scorecard.competition.date).toLocaleDateString('en-GB');
 
-        ui.renderPlayerHeader(pageNavigator.players, this.playerHeader);
+        ui.renderPlayerHeader(pageNavigator.scorecard.players, this.playerHeader);
     }
 
     renderScores() {
-        if (pageNavigator.competition.scoring() === Competition.Type.STABLEFORD) {
+        if (pageNavigator.scorecard.competition.scoring() === Competition.Type.STABLEFORD) {
             this.renderStablefordScores();
-        } else if (pageNavigator.competition.scoring() === Competition.Type.STROKEPLAY) {
+        } else if (pageNavigator.scorecard.competition.scoring() === Competition.Type.STROKEPLAY) {
             this.renderStrokeplayScores();
         }
     }
 
     renderStablefordScores() {
         this.scoreControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scores[0].gross[index];
+            control.textContent = pageNavigator.scorecard.scores[0].gross[index];
         });
 
-        const outScoreTotal = pageNavigator.scores[0].adjusted.slice(0, 9).reduce((total, value) => total + value, 0);
-        const backScoreTotal = pageNavigator.scores[0].adjusted.slice(9).reduce((total, value) => total + value, 0);
+        const outScoreTotal = pageNavigator.scorecard.scores[0].adjusted.slice(0, 9).reduce((total, value) => total + value, 0);
+        const backScoreTotal = pageNavigator.scorecard.scores[0].adjusted.slice(9).reduce((total, value) => total + value, 0);
         const overallScoreTotal = outScoreTotal + backScoreTotal;
-        const nettScoreTotal = overallScoreTotal - pageNavigator.players[0].ph;
+        const nettScoreTotal = overallScoreTotal - pageNavigator.scorecard.players[0].ph;
 
         let star = '';
         for (let i = 0; i < 18; i++) {
-            const adjusted = pageNavigator.scores[0].adjusted[i]?.toString();
-            const gross = pageNavigator.scores[0].gross[i]?.toString();
+            const adjusted = pageNavigator.scorecard.scores[0].adjusted[i]?.toString();
+            const gross = pageNavigator.scorecard.scores[0].gross[i]?.toString();
             if (!adjusted || !gross || adjusted !== gross) {
                 star = '*';
                 break;
@@ -106,11 +105,11 @@ class ReviewPage {
         this.nettScoreTotal.textContent = nettScoreTotal + star;
 
         this.pointsControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scores[0].points[index];
+            control.textContent = pageNavigator.scorecard.scores[0].points[index];
         });
 
-        const outPointsTotal = pageNavigator.scores[0].points.slice(0, 9).reduce((total, value) => total + value, 0);
-        const backPointsTotal = pageNavigator.scores[0].points.slice(9).reduce((total, value) => total + value, 0);
+        const outPointsTotal = pageNavigator.scorecard.scores[0].points.slice(0, 9).reduce((total, value) => total + value, 0);
+        const backPointsTotal = pageNavigator.scorecard.scores[0].points.slice(9).reduce((total, value) => total + value, 0);
         const overallPointsTotal = outPointsTotal + backPointsTotal;
 
         this.outPointsTotal.textContent = outPointsTotal;
@@ -120,14 +119,14 @@ class ReviewPage {
 
     renderStrokeplayScores() {
         this.scoreControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scores[0].gross[index];
+            control.textContent = pageNavigator.scorecard.scores[0].gross[index];
         });
 
         let outScoreTotal = 0;
         let backScoreTotal = 0;
         let noReturn = false;
         for (let i = 0; i < 18; i++) {
-            const score = pageNavigator.scores[0].gross[i];
+            const score = pageNavigator.scorecard.scores[0].gross[i];
             if (!score || score === '' || score === 'X' || score === '0') {
                 noReturn = true;
             }
@@ -141,7 +140,7 @@ class ReviewPage {
             }
         }
         const overallScoreTotal = outScoreTotal + backScoreTotal;
-        const nettScoreTotal = overallScoreTotal - pageNavigator.players[0].ph;
+        const nettScoreTotal = overallScoreTotal - pageNavigator.scorecard.players[0].ph;
 
         if (noReturn) {
             this.outScoreTotal.textContent = 'X';
@@ -166,7 +165,7 @@ class ReviewPage {
 
     renderHoleNumbers() {
         this.holeControls.forEach((control, index) => {
-            control.textContent = (index + 1).toString() + '(' + pageNavigator.players[0].tees.par[index] + ')';
+            control.textContent = (index + 1).toString() + '(' + pageNavigator.scorecard.players[0].tees.par[index] + ')';
         });
     }
    
@@ -179,12 +178,12 @@ class ReviewPage {
             this.scoreSubmitted.style.display = 'none';
 
             backend.showSpinner();
-            const scores = await backend.getScores(pageNavigator.competition, pageNavigator.players[0]);
+            const scores = await backend.getScores(pageNavigator.scorecard.competition, pageNavigator.scorecard.players[0]);
             backend.hideSpinner();
             
             if (scores) {
                 for (let i = 0; i < 18; i++) {
-                    if (scores.gross[i] !== pageNavigator.scores[0].gross[i]) {
+                    if (scores.gross[i] !== pageNavigator.scorecard.scores[0].gross[i]) {
                         return;
                     }
                 }

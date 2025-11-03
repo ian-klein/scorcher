@@ -30,9 +30,6 @@ class Data {
         } else {
             this.eventDiary = bootstrap.diary.events;
         }
-        for(const e of this.eventDiary) {
-            e.date = new Date(e.date);
-        }
     }
 
     async #loadPlayers() {
@@ -59,17 +56,21 @@ class Data {
         return p.firstName + ' ' + p.lastName;
     }
 
+    today() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
     getCompetition(date) {
-        const eventDate = date || new Date();
-        const event = this.eventDiary.findLast(c => c.date.toISOString().slice(0, 10) <= eventDate.toISOString().slice(0, 10));
+        const eventDate = date || this.today();
+        const event = this.eventDiary.findLast(c => c.date <= eventDate);
 
         const comp = new Competition(event);
         return comp;
     }
 
     competitionDisplayName(c) {
-        const day = c.date.getDate().toString().padStart(2, '0');
-        const month = (c.date.getMonth() + 1).toString().padStart(2, '0');
+        const day = c.date.slice(8,10);
+        const month = c.date.slice(5,7);
         return `${day}/${month} Millers ${c.name}`;
     }
 

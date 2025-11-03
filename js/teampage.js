@@ -65,12 +65,12 @@ class TeamPage {
     }
 
     renderHeader() {
-        this.teamCompetitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
-        this.teamCompetitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
+        this.teamCompetitionName.textContent = data.competitionDisplayName(pageNavigator.scorecard.competition);
+        this.teamCompetitionDate.textContent = new Date(pageNavigator.scorecard.competition.date).toLocaleDateString('en-GB');
     }
 
     renderPlayers() {
-        const comp = pageNavigator.competition;
+        const comp = pageNavigator.scorecard.competition;
         const teamSize = comp.teamSize();
 
         if (teamSize > 2) {
@@ -109,7 +109,7 @@ class TeamPage {
             this.teamNextBtn.disabled = true;
         }
         else {
-            const numberOfScores = pageNavigator.competition.numberOfScores();
+            const numberOfScores = pageNavigator.scorecard.competition.numberOfScores();
 
             if (numberOfScores == 1) {
                 const teamHandicap = this.teamHandicapValue.value?.trim();
@@ -124,7 +124,7 @@ class TeamPage {
     onNextBtnClick() {
         this.saveTeam();
 
-        const comp = pageNavigator.competition;
+        const comp = pageNavigator.scorecard.competition;
         const numberOfScores = comp.numberOfScores();
 
         /*
@@ -134,17 +134,17 @@ class TeamPage {
          */
         if (numberOfScores == 1) {
             const teamPlayer = data.getTeamPlayer(comp, this.players, this.th);
-            pageNavigator.players = [ teamPlayer ];
+            pageNavigator.scorecard.players = [ teamPlayer ];
         }
         else {
-            pageNavigator.players = this.players;
+            pageNavigator.scorecard.players = this.players;
         }
         scoreEntryPage.init();
-        pageNavigator.showPage('scoreEntry');
+        pageNavigator.goto('scoreEntry');
     }
 
     onBackBtnClick() {
-        pageNavigator.showPage("splash");
+        pageNavigator.back();
     }
 
     onNameInput(e,index) {
@@ -182,7 +182,7 @@ class TeamPage {
 
     saveTeam() {
         const savedTeam = {
-            competition: pageNavigator.competition,
+            competition: pageNavigator.scorecard.competition,
             players: this.players,
             th: this.th
         };
@@ -202,19 +202,19 @@ class TeamPage {
     }
     
     loadTeam() {
-        const comp = pageNavigator.competition;
+        const comp = pageNavigator.scorecard.competition;
         this.players = new Array(comp.teamSize()).fill(null);
 
         //Initialze the first player from the splash screen
-        this.teamNameA.value = pageNavigator.players[0].name;
-        this.teamPhA.value = pageNavigator.players[0].ph;
-        this.players[0] = pageNavigator.players[0];
+        this.teamNameA.value = pageNavigator.scorecard.players[0].name;
+        this.teamPhA.value = pageNavigator.scorecard.players[0].ph;
+        this.players[0] = pageNavigator.scorecard.players[0];
 
         const rawTeam = localStorage.getItem(SAVED_TEAM_KEY);
         if (rawTeam) {
             const savedTeam = JSON.parse(rawTeam, this.savedTeamReviver);
 
-            if (savedTeam.competition.type === comp.type && savedTeam.competition.date.toISOString().slice(0, 10) === comp.date.toISOString().slice(0, 10)) {
+            if (savedTeam.competition.type === comp.type && savedTeam.competition.date === comp.date) {
                 this.players = savedTeam.players;
                 this.th = savedTeam.th;
             }
