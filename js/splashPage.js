@@ -5,13 +5,15 @@ import { data } from './data.js';
 import { pageNavigator } from './pageNavigator.js';
 import { scoreEntryPage } from './scoreEntryPage.js';
 import { adminPage } from './adminPage.js';
+import { teamPage } from './teampage.js';
+import { Competition, Scorecard } from './schema.js';
 
 const PLAYER_STORAGE_KEY= 'player_v1'
 
 class SplashPage {
     constructor() {
-        this.splashScreen = document.getElementById('splashScreen');
         this.splashControls = document.getElementById('splashControls');
+        this.handicapControls = document.getElementById('handicapControls');
         this.splashCompetitionName = document.getElementById('splashCompetitionName');
         this.emailInput = document.getElementById('emailInput');
         this.handicapValue = document.getElementById('handicapValue');
@@ -19,6 +21,27 @@ class SplashPage {
         this.continueBtn = document.getElementById('continueBtn');
         this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
         this.adminBtn = document.getElementById('adminBtn');
+        this.akqControls = document.getElementById('akqControls');
+        this.aceHole = document.getElementById('aceHole');
+        this.kingHole = document.getElementById('kingHole');
+        this.queenHole = document.getElementById('queenHole');
+        this.testSelect = document.getElementById('testSelect'); //For testing only
+
+        this.competition = null;
+
+        this.wireEvents();
+    }
+
+    isTesting() {
+        return this.emailInput.value === data.testEmail;
+    }
+
+    wireEvents() {
+        this.continueBtn.addEventListener('click', () => this.onContinueBtnClick());
+        this.emailInput.addEventListener('input', () => this.onEmailInputInput());
+        this.handicapValue.addEventListener('input', () => this.onHandicapValueInput());
+        this.adminBtn.addEventListener('click', () => this.onAdminBtnClick());
+        this.testSelect.addEventListener('change', () => this.onTestSelectChange());
     }
 
     renderAdminButton() {
@@ -34,35 +57,31 @@ class SplashPage {
         }
     }
 
-    renderSubmitButton() {
-        //Only score Stableford and strokeplay competitions
-        const comp = data.getCompetition();
-        if (comp.type === 'other') {
-            this.displayMessage('Only use this app for individual Stableford or strokeplay competitions. For this competition just put your signed, completed card in the box');
-            this.continueBtn.disabled = true;
+    renderContinueButton() {
+        if (!this.competition.isSupported()) {
+            this.displayMessage(this.competition.type + ' competitions are not yet supported, so just put your signed, completed card in the box!');
+            this.continueBtn.disabled = !this.isTesting();
         } else {
             //Warn if the competition is in the past
-            const today = new Date();
-            if (comp.date.toISOString().slice(0, 10) !== today.toISOString().slice(0, 10)) {
+            if (this.competition.date !== data.today) {
                 this.displayMessage('This competition has already taken place, so no need to enter scores now');
             }
 
             //Must have email and PH in order to score
             const email = this.emailInput.value.trim();
             const ph = this.handicapValue.value.trim();
-            this.continueBtn.disabled = !email || email.length === 0 || !ph || ph.length === 0;
+            this.continueBtn.disabled = !email || email.length === 0 || (this.competition.isIndividualCompetition() && (!ph || ph.length === 0));
         }
     }
 
 
     renderButtons() {
         this.renderAdminButton();
-        this.renderSubmitButton();
+        this.renderContinueButton();
     }
 
     renderCompetitionName() {
-        const comp = data.getCompetition();
-        this.splashCompetitionName.textContent = data.competitionDisplayName(comp);
+        this.splashCompetitionName.textContent = data.competitionDisplayName(this.competition);
     }
 
     renderPlayer() {
@@ -74,20 +93,33 @@ class SplashPage {
             this.emailInput.value = storedPlayer.email;
             this.handicapValue.value = storedPlayer.ph;            
         }
+
+        if (this.competition.isIndividualCompetition()) {
+            this.handicapControls.style.display = 'flex';
+        } else {
+            this.handicapControls.style.display = 'none';
+        }
+
+        if (this.competition.type === Competition.Type.AKQ) {
+            this.akqControls.style.display = 'flex';
+        } else {
+            this.akqControls.style.display = 'none';
+        }
     }
 
-    init() {
-        this.renderCompetitionName();
-        this.renderPlayer();
-        this.renderButtons();
-        this.wireEvents();
-        this.splashControls.style.display = 'block';
-    }
-
-    hide() {
-        this.splashScreen.style.display = 'none';
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-    }
+    renderTestSelect() {
+        if (this.isTesting()) {
+            this.testSelect.style.display = 'block';
+            for (const type of Object.values(Competition.Type)) {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                this.testSelect.appendChild(option);
+            }
+        } else {
+            this.testSelect.style.display = 'none';
+        }
+    }                
 
     displayMessage(message) {
         this.splashMessage.textContent = message;
@@ -96,7 +128,7 @@ class SplashPage {
     onContinueBtnClick() {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
-        if (email && ph) {
+        if (email) {
             const player = data.getPlayer(email,ph);
             if (!player) {  
                 alert('Email address is not in the player database');
@@ -109,39 +141,62 @@ class SplashPage {
             }
             localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(storedPlayer));
 
-            pageNavigator.player = player;
-            pageNavigator.competition = data.getCompetition();
-    
-            this.hide();
-            scoreEntryPage.init();
-            pageNavigator.showPage('scoreEntry');
+            if (this.competition.type === Competition.Type.AKQ) {
+                if (this.aceHole.value === '' || this.kingHole.value === '' || this.queenHole.value === '') {
+                    alert('Please choose all three Ace, King and Queen holes');
+                    return;
+                }
+
+                player.akq.ace = Number(this.aceHole.value);
+                player.akq.king = Number(this.kingHole.value);
+                player.akq.queen = Number(this.queenHole.value);
+
+                if (player.akq.ace === player.akq.king || player.akq.ace === player.akq.queen || player.akq.king === player.akq.queen) {
+                    alert('Ace, King and Queen holes must be different');
+                    return;
+                }
+            }
+
+            pageNavigator.scorecard = new Scorecard({competition: this.competition, players: [ player ]});
+
+            if (this.competition.isIndividualCompetition()) {
+                scoreEntryPage.init();
+                pageNavigator.goto('scoreEntry');
+            } else {
+                teamPage.init();
+                pageNavigator.goto('team');
+            }            
         }
     }
 
     onEmailInputInput() {
         this.renderButtons();
+        this.renderTestSelect();
     }
 
     onHandicapValueInput() {
-        this.renderSubmitButton();
+        this.renderContinueButton();
     }
 
     onAdminBtnClick() {
-        const email = this.emailInput.value.trim();
-        const ph = this.handicapValue.value.trim();
-        const player = data.getPlayer(email,ph);
-        this.hide();
-        pageNavigator.player = player;
-
         adminPage.init();
-        pageNavigator.showPage('admin');
+        pageNavigator.goto('admin');
     }
 
-    wireEvents() {
-        this.continueBtn.addEventListener('click', () => this.onContinueBtnClick());
-        this.emailInput.addEventListener('input', () => this.onEmailInputInput());
-        this.handicapValue.addEventListener('input', () => this.onHandicapValueInput());
-        this.adminBtn.addEventListener('click', () => this.onAdminBtnClick());
+    onTestSelectChange() {
+        this.competition.type = this.testSelect.value;
+        this.renderPlayer();
+        this.renderButtons();
+    }
+
+    init() {
+        this.competition = data.getCompetition();
+
+        this.renderCompetitionName();
+        this.renderPlayer();
+        this.renderButtons();
+        this.renderTestSelect();
+        this.splashControls.style.display = 'block';
     }
 }
 

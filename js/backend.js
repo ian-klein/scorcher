@@ -14,13 +14,10 @@ class Backend {
     hideSpinner() {
         this.spinnerOverlay.style.display = 'none';
     }
+
     //Submit the score for a player in a competition
-    async submitScores(competition, player, scores) {
-        const response = await this.#postRequest('submit-scores', {
-            competition: competition,
-            player: player,
-            scores: scores
-        });
+    async submitScorecard(scorecard) {
+        const response = await this.#postRequest('submit-scorecard', scorecard);
 
         if (response && response.status === 200) {
             return true;
@@ -30,10 +27,10 @@ class Backend {
     }
 
     //Delete a score for a player in a competition (not currently used)
-    async resetScore(competition, player) {
-        const response = await this.#postRequest('reset-scores', {
+    async resetScorecard(competition, id) {
+        const response = await this.#postRequest('reset-scorecard', {
             competition: competition,
-            player: player
+            id: id
         });
 
         if (response && response.status === 200) {
@@ -44,23 +41,23 @@ class Backend {
     }
 
     //Get the submitted scores for a player in a competition
-    async getScores(competition, player) {
-        const response = await this.#postRequest('get-scores', {
+    async getScorecard(competition, id) {
+        const response = await this.#postRequest('get-scorecard', {
             competition: competition,
-            player: player
+            id: id
         });
 
         if (response && response.status === 200) {
-            const scores = await response.json();
-            return scores;
+            const scorecard = await response.json();
+            return scorecard;
         } else {
             return null;
         }
     }
 
     //Email the submitted scores for a player in a competition (not currently used)
-    async emailScores(competition, player) {
-        const response = await this.#postRequest('email-scores', {
+    async emailScorecard(competition, player) {
+        const response = await this.#postRequest('email-scorecard', {
             competition: competition,
             player: player
         });
@@ -110,6 +107,17 @@ class Backend {
         if (response && response.status === 200) {
             const results = await response.json();
             return results;
+        } else {
+            return null;
+        }
+    }
+
+    //Get the tester email address (for testing only)
+    async getTestEmail() {
+        const response = await this.#postRequest('get-test-email', {});
+        if (response && response.status === 200) {
+            const results = await response.json();
+            return results.email;
         } else {
             return null;
         }

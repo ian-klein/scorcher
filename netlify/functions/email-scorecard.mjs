@@ -2,16 +2,14 @@
 
 'use strict';
 
-import { revive } from '../functionsUtil.mjs';
 const nodemailer = require('nodemailer');
 
-export default async function emailScores(request, context) {
+export default async function emailScorecard(request, context) {
     const body = await request.json();
-    revive(body);
 
     const toEmail = body.player.email;
 
-    console.log('====== emailScores ======');
+    console.log('====== emailScorecard ======');
     console.log('toEmail: ' + toEmail);
 
     const transportConfig = {

@@ -3,16 +3,16 @@
 'use strict';
 
 import { getStore } from '@netlify/blobs';
-import { storeFor, keyFor, revive } from '../functionsUtil.mjs';
+import { storeFor, keyFor } from '../functionsUtil.mjs';
 
-export default async function resetScores(request, context) {
+//The request body is a competition and a scorecard id
+export default async function resetScorecard(request, context) {
     const body = await request.json();
-    revive(body);
 
     const storeName = storeFor(body.competition);
-    const key = keyFor(body.player);
+    const key = keyFor(body.id);
 
-    console.log('====== resetScores ======');
+    console.log('====== resetScorecard ======');
     console.log('storeName: ' + storeName);
     console.log('key: ' + key);
 
