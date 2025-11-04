@@ -1,4 +1,4 @@
-//Get a submitted score for this plyaer and this competition
+//Get a submitted score for this player and this competition
 
 'use strict';
 
