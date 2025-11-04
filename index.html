@@ -16,7 +16,7 @@
     </div>
 
     <!-- Splash Screen -->
-    <section class="splash-screen" id="splashScreen">
+    <section class="splash-screen" data-page="splash" id="splashScreen">
         <div class="splash-content">
             <img src="images/scorcher.png" alt="Scorcher Logo" class="splash-logo">
             <div class="splash-title">Scorecard Checker</div>
@@ -29,10 +29,125 @@
                         <input type="number" id="handicapValue" inputmode="numeric" placeholder="PH">
                     </div>
                     <span id="splashMessage" class="splash-message"></span>
+                    <select id="testSelect" class="test-select" style="display: none;"></select>
+                    <div id="akqControls" class="akq-controls" style="display: none;">
+                        <span>A:</span>
+                        <select id="aceHole">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                        </select>
+                        <span>K:</span>
+                        <select id="kingHole">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                        </select>
+                        <span>Q:</span>
+                        <select id="queenHole">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                        </select>
+                    </div>
                     <button type="button" id="continueBtn">Continue</button>
-                    <button type="button" id="adminBtn" style="display: none;"sp>Admin</button>
+                    <button type="button" id="adminBtn" style="display: none;">Admin</button>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="page" data-page="team" style="display: none;">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="competition-info">
+                <div class="competition-name" id="teamCompetitionName">Club Championship 2025</div>
+                <div class="competition-date" id="teamCompetitionDate">October 1, 2025</div>
+            </div>
+        </div>
+        <div class="team-info">
+            <div class="team-banner">Team Members</div>
+            <div class="team-player" id="teamPlayerA">
+                <label for="teamNameA" class="team-label">A:</label>
+                <input type="text" class="team-name" id="teamNameA" tabindex="1"></input>
+                <label for="teamPhA" class="team-ph-label">PH:</label>
+                <input type="number" inputmode="numeric" class="team-ph" id="teamPhA" tabindex="2"></input>
+            </div>
+            <div class="team-player" id="teamPlayerB">
+                <label for="teamNameB" class="team-label">B:</label>
+                <input type="text" class="team-name" id="teamNameB" tabindex="3"></input>
+                <label for="teamPhB" class="team-ph-label">PH:</label>
+                <input type="number" inputmode="numeric" class="team-ph" id="teamPhB" tabindex="4"></input>
+            </div>
+            <div class="team-player" id="teamPlayerC">
+                <label for="teamNameC" class="team-label">C:</label>
+                <input type="text" class="team-name" id="teamNameC" tabindex="5"></input>
+                <label for="teamPhC" class="team-ph-label">PH:</label>
+                <input type="number" inputmode="numeric" class="team-ph" id="teamPhC" tabindex="6"></input>
+            </div>
+            <div class="team-player" id="teamPlayerD">
+                <label for="teamNameD" class="team-label">D:</label>
+                <input type="text" class="team-name" id="teamNameD" tabindex="7"></input>
+                <label for="teamPhD" class="team-ph-label">PH:</label>
+                <input type="number" inputmode="numeric" class="team-ph" id="teamPhD" tabindex="8"></input>
+            </div>
+        </div>
+
+        <div class="team-handicap-controls" id="teamHandicap">
+            <div class="team-player">
+                <label for="teamHandicapValue" class="team-handicap-label">Team Handicap:</label>
+                <input type="number" inputmode="decimal" id="teamHandicapValue" class="team-handicap-ph" placeholder="TH" tabindex="9">
+            </div>
+        </div>
+
+        <div class="buttons-section">
+            <button class="action-btn back-btn" id="teamBackBtn">Back</button>
+            <button class="action-btn next-btn" id="teamNextBtn">Continue</button>
         </div>
     </section>
 
@@ -45,31 +160,50 @@
                 <div class="competition-date" id="competitionDate">October 1, 2025</div>
             </div>
             <div class="player-info">
-                <div class="player-name" id="playerName">John Smith</div>
-                <div class="handicap-info">
-                    <span class="handicap-label">HI:</span>
-                    <span class="handicap-index" id="handicapIndex">12.4</span>
-                    <span class="handicap-separator">|</span>
-                    <span class="handicap-label">PH:</span>
-                    <span class="playing-handicap" id="playingHandicap">14</span>
-                </div>
+                <span class="player-label" id="scorePlayerLabelA"></span>
+                <span class="player-name" id="scorePlayerNameA"></span>
+                <span class="player-ph" id="scorePlayerPhA"></span>
+                <span class="player-label" id="scorePlayerLabelB"></span>
+                <span class="player-name" id="scorePlayerNameB"></span>
+                <span class="player-ph" id="scorePlayerPhB"></span>
+                <span class="player-label" id="scorePlayerLabelC"></span>
+                <span class="player-name" id="scorePlayerNameC"></span>
+                <span class="player-ph" id="scorePlayerPhC"></span>
+                <span class="player-label" id="scorePlayerLabelD"></span>
+                <span class="player-name" id="scorePlayerNameD"></span>
+                <span class="player-ph" id="scorePlayerPhD"></span>
             </div>
         </div>
 
         <!-- Hole Section -->
-        <div class="hole-section">
-            <span class="context-item" id="priorHoleNumber">4</span>
-            <span class="hole-number" id="holeNumber">1</span>
-            <span class="context-item" id="nextHoleNumber">6</span>
-            <button class="arrow-btn left-arrow" id="prevHole" aria-label="Previous hole">
+        <div class="hole-section" id="holeSection">
+            <button class="arrow-btn" id="prevHole" aria-label="Previous hole">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </button>
-            <span class="context-item" id="priorScore">5</span>
-            <input type="text" class="score-input" id="scoreInput" inputmode="none" readonly value="" maxlength="2">
-            <span class="context-item" id="nextScore">5</span>
-            <button class="arrow-btn right-arrow" id="nextHole" aria-label="Next hole">
+            <div class="basic-score-grid" id="scoreGrid">
+                <span class="context-item" id="priorHoleNumber"></span>
+                <label class="score-label" for="scoreEntrySelect" id="scoreEntryLabel"></label>
+                <span class="hole-number" id="holeNumber"></span>
+                <span class="context-item" id="nextHoleNumber"></span>
+                <div class="lost-yellow-ball" id="lostYellowBall">
+                    <input type="checkbox" id="lostYellowBallCheckbox">
+                    <label for="lostYellowBallCheckbox">Lost ball</label>
+                </div>
+
+                <label class="score-label" for="scoreInputA" id="scoreLabelA">A</label>
+                <label class="score-label" for="scoreInputB" id="scoreLabelB">B</label>
+                <label class="score-label" for="scoreInputC" id="scoreLabelC">C</label>
+
+                <span class="context-item" id="priorScore"></span>
+                <select class="score-entry-select" id="scoreEntrySelect"></select>
+                <input type="text" class="score-input" id="scoreInputA" data-index="0" inputmode="none" readonly value="" maxlength="2"></input>
+                <input type="text" class="score-input" id="scoreInputB" data-index="1" inputmode="none" readonly value="" maxlength="2"></input>
+                <input type="text" class="score-input" id="scoreInputC" data-index="2" inputmode="none" readonly value="" maxlength="2"></input>
+                <span class="context-item" id="nextScore"></span>
+            </div>
+            <button class="arrow-btn" id="nextHole" aria-label="Next hole">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
@@ -99,6 +233,7 @@
 
         <!-- Buttons Section -->
         <div class="buttons-section">
+            <button class="action-btn back-btn" id="scoreEntryBackBtn">Back</button>
             <button class="action-btn review-btn" id="reviewBtn">Review</button>
         </div>
     </section>
@@ -112,14 +247,18 @@
                 <div class="competition-date" id="reviewCompetitionDate">October 1, 2025</div>
             </div>
             <div class="player-info">
-                <div class="player-name" id="reviewPlayerName">John Smith</div>
-                <div class="handicap-info">
-                    <span class="handicap-label">HI:</span>
-                    <span class="handicap-index" id="reviewHandicapIndex">12.4</span>
-                    <span class="handicap-separator">|</span>
-                    <span class="handicap-label">PH:</span>
-                    <span class="playing-handicap" id="reviewPlayingHandicap">14</span>
-                </div>
+                <span class="player-label" id="reviewPlayerLabelA"></span>
+                <span class="player-name" id="reviewPlayerNameA"></span>
+                <span class="player-ph" id="reviewPlayerPhA"></span>
+                <span class="player-label" id="reviewPlayerLabelB"></span>
+                <span class="player-name" id="reviewPlayerNameB"></span>
+                <span class="player-ph" id="reviewPlayerPhB"></span>
+                <span class="player-label" id="reviewPlayerLabelC"></span>
+                <span class="player-name" id="reviewPlayerNameC"></span>
+                <span class="player-ph" id="reviewPlayerPhC"></span>
+                <span class="player-label" id="reviewPlayerLabelD"></span>
+                <span class="player-name" id="reviewPlayerNameD"></span>
+                <span class="player-ph" id="reviewPlayerPhD"></span>
             </div>
         </div>
 
@@ -131,8 +270,8 @@
                     <div class="score-grid">
                         <div class="score-row header-row">
                             <div class="score-cell">Hole</div>
-                            <div class="score-cell">Score</div>
-                            <div class="score-cell">Pts</div>
+                            <div class="score-cell" id="scoreHeaderOut">Score</div>
+                            <div class="score-cell" id="ptsHeaderOut">Pts</div>
                         </div>
                         <!-- Holes 1-9 -->
                         <div class="score-row" data-hole="1">
@@ -193,8 +332,8 @@
                     <div class="score-grid">
                         <div class="score-row header-row">
                             <div class="score-cell">Hole</div>
-                            <div class="score-cell">Score</div>
-                            <div class="score-cell">Pts</div>
+                            <div class="score-cell" id="scoreHeaderBack">Score</div>
+                            <div class="score-cell" id="ptsHeaderBack">Pts</div>
                         </div>
                         <!-- Holes 10-18 -->
                         <div class="score-row" data-hole="10">

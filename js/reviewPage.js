@@ -5,14 +5,21 @@
 import { pageNavigator } from './pageNavigator.js';
 import { backend } from './backend.js';
 import { data } from './data.js';
+import { Competition } from './schema.js';
+import { ui } from './ui.js';
 
 class ReviewPage {
     constructor() {
         this.competitionName = document.getElementById('reviewCompetitionName');
         this.competitionDate = document.getElementById('reviewCompetitionDate');
-        this.playerName = document.getElementById('reviewPlayerName');
-        this.handicapIndex = document.getElementById('reviewHandicapIndex');
-        this.playingHandicap = document.getElementById('reviewPlayingHandicap');
+        
+        this.playerHeader = [    
+            {label: document.getElementById('reviewPlayerLabelA'), name: document.getElementById('reviewPlayerNameA'), ph: document.getElementById('reviewPlayerPhA')},
+            {label: document.getElementById('reviewPlayerLabelB'), name: document.getElementById('reviewPlayerNameB'), ph: document.getElementById('reviewPlayerPhB')},
+            {label: document.getElementById('reviewPlayerLabelC'), name: document.getElementById('reviewPlayerNameC'), ph: document.getElementById('reviewPlayerPhC')},
+            {label: document.getElementById('reviewPlayerLabelD'), name: document.getElementById('reviewPlayerNameD'), ph: document.getElementById('reviewPlayerPhD')}
+        ];
+
         this.backBtn = document.getElementById('backBtn');
         this.submitBtn = document.getElementById('submitBtn');
 
@@ -29,6 +36,11 @@ class ReviewPage {
         this.scoreControls = document.querySelectorAll('.score-val');
         this.pointsControls = document.querySelectorAll('.pts-val');
 
+        this.scoreHeaderOut = document.getElementById('scoreHeaderOut');
+        this.scoreHeaderBack = document.getElementById('scoreHeaderBack');
+        this.ptsHeaderOut = document.getElementById('ptsHeaderOut');
+        this.ptsHeaderBack = document.getElementById('ptsHeaderBack');
+
         this.scoreSubmitted = document.getElementById('scoreSubmitted');
 
         this.wireEvents();
@@ -40,71 +52,169 @@ class ReviewPage {
     }
 
     onBackBtnClick() {
-        pageNavigator.showPage('scoreEntry');
+        pageNavigator.back();
     }
 
     async onSubmitBtnClick() {
-        const isAnyGrossScoreNull = pageNavigator.scores.gross.some(score => score === null);
-
-        if (isAnyGrossScoreNull) {
-            alert('Please enter all scores before submitting');
+        const msg = pageNavigator.scorecard.validate();
+        if (msg) {
+            alert(msg);
             return;
         }
-
+ 
         backend.showSpinner();
-        const isSubmitSuccess = await backend.submitScores(pageNavigator.competition, pageNavigator.player, pageNavigator.scores);
+        const isSubmitSuccess = await backend.submitScores(pageNavigator.scorecard.competition, pageNavigator.scorecard.players[0], pageNavigator.scorecard.scores[0]);
         backend.hideSpinner();
 
         this.renderSubmitButton(isSubmitSuccess);
     }
 
+    setScoreGridStyle(element) {
+        const comp = pageNavigator.scorecard.competition;
+        element.classList.remove('multi-score-2', 'mulit-score-3');
+        if (comp.numberOfScores() === 2) {
+            element.classList.add('multi-score-2');
+        } else if (comp.numberOfScores() === 3) {
+            element.classList.add('mulit-score-3');
+        }
+    }
+
+    renderScoreHeading(scoreHeader) {
+        const comp = pageNavigator.scorecard.competition;
+        this.setScoreGridStyle(scoreHeader);
+        if (comp.numberOfScores() === 1) {
+            scoreHeader.textContent = 'Score';
+        } else {
+            const headers = ['A', 'B', 'C', 'D'].slice(0, comp.numberOfScores());
+            const headerHtml = headers.map(header => `<span>${header}</span>`).join('');
+            scoreHeader.innerHTML = headerHtml;
+        }
+    }
+
+    setPointsGridStyle(element) {
+        const comp = pageNavigator.scorecard.competition;
+        element.classList.remove('mulit-score-3');
+        if (comp.type === Competition.Type.AKQ) {
+            element.classList.add('mulit-score-3');
+        }
+    }
+
+    renderPointsHeading(ptsHeader) {
+        const comp = pageNavigator.scorecard.competition;
+        this.setPointsGridStyle(ptsHeader);
+        if (comp.type === Competition.Type.AKQ) {
+            ptsHeader.innerHTML = '<span></span><span>Pts</span><span></span>';
+        } else {
+            ptsHeader.textContent = 'Pts';
+        }
+    }
+
     renderHeader() {
-        this.competitionName.textContent = data.competitionDisplayName(pageNavigator.competition);
-        this.competitionDate.textContent = pageNavigator.competition.date.toLocaleDateString('en-GB');
-        this.playerName.textContent = pageNavigator.player.name;
-        this.handicapIndex.textContent = pageNavigator.player.hi;
-        this.playingHandicap.textContent = pageNavigator.player.ph;
+        this.competitionName.textContent = data.competitionDisplayName(pageNavigator.scorecard.competition);
+        this.competitionDate.textContent = new Date(pageNavigator.scorecard.competition.date).toLocaleDateString('en-GB');
+
+        ui.renderPlayerHeader(pageNavigator.scorecard.players, this.playerHeader);
+
+        this.renderScoreHeading(this.scoreHeaderOut);
+        this.renderScoreHeading(this.scoreHeaderBack);
+
+        this.renderPointsHeading(this.ptsHeaderOut);
+        this.renderPointsHeading(this.ptsHeaderBack);
     }
 
     renderScores() {
-        if (pageNavigator.competition.type === 'stableford') {
+        const comp = pageNavigator.scorecard.competition;
+        if (comp.numberOfScores() > 1) {
+            const scores = pageNavigator.scorecard.scores;
+
+            for (let h = 0; h < 18; h++)
+            {
+                pageNavigator.scorecard.points[h] = 0;
+                for (let i = 0; i < comp.numberOfScores(); i++) {
+                    pageNavigator.scorecard.points[h] += scores[i].points[h];
+                }
+
+                if (comp.type === Competition.Type.YELLOWBALL) {
+                    const yellowBallIndex = h % 3;
+                    pageNavigator.scorecard.points[h] += scores[yellowBallIndex].points[h];
+                }
+            }
+        }
+
+        if (comp.scoring() === Competition.Type.STABLEFORD) {
             this.renderStablefordScores();
-        } else if (pageNavigator.competition.type === 'strokeplay') {
+        } else if (comp.scoring() === Competition.Type.STROKEPLAY) {
             this.renderStrokeplayScores();
         }
     }
 
     renderStablefordScores() {
+        const comp = pageNavigator.scorecard.competition;
+        const scores = pageNavigator.scorecard.scores;
+
+        //Display gross scores for each hole
         this.scoreControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scores.gross[index];
-        });
-
-        const outScoreTotal = pageNavigator.scores.adjusted.slice(0, 9).reduce((total, value) => total + value, 0);
-        const backScoreTotal = pageNavigator.scores.adjusted.slice(9).reduce((total, value) => total + value, 0);
-        const overallScoreTotal = outScoreTotal + backScoreTotal;
-        const nettScoreTotal = overallScoreTotal - pageNavigator.player.ph;
-
-        let star = '';
-        for (let i = 0; i < 18; i++) {
-            const adjusted = pageNavigator.scores.adjusted[i]?.toString();
-            const gross = pageNavigator.scores.gross[i]?.toString();
-            if (!adjusted || !gross || adjusted !== gross) {
-                star = '*';
-                break;
+            this.setScoreGridStyle(control);
+            if (comp.numberOfScores() === 1) {
+                control.textContent = scores[0].gross[index];
             }
-        }
-    
-        this.outScoreTotal.textContent = outScoreTotal + star;
-        this.backScoreTotal.textContent = backScoreTotal + star;
-        this.overallScoreTotal.textContent = overallScoreTotal + star;
-        this.nettScoreTotal.textContent = nettScoreTotal + star;
-
-        this.pointsControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scores.points[index];
+            else {
+                const scoreHtml = scores.map(score => `<span>${score.gross[index] || ''}</span>`).join('')
+                control.innerHTML = scoreHtml;
+            }
         });
 
-        const outPointsTotal = pageNavigator.scores.points.slice(0, 9).reduce((total, value) => total + value, 0);
-        const backPointsTotal = pageNavigator.scores.points.slice(9).reduce((total, value) => total + value, 0);
+        if (comp.numberOfScores() === 1) {
+            const outScoreTotal = pageNavigator.scorecard.scores[0].adjusted.slice(0, 9).reduce((total, value) => total + value, 0);
+            const backScoreTotal = pageNavigator.scorecard.scores[0].adjusted.slice(9).reduce((total, value) => total + value, 0);
+            const overallScoreTotal = outScoreTotal + backScoreTotal;
+            const nettScoreTotal = overallScoreTotal - pageNavigator.scorecard.players[0].ph;
+
+            let star = '';
+            for (let i = 0; i < 18; i++) {
+                const adjusted = pageNavigator.scorecard.scores[0].adjusted[i]?.toString();
+                const gross = pageNavigator.scorecard.scores[0].gross[i]?.toString();
+                if (!adjusted || !gross || adjusted !== gross) {
+                    star = '*';
+                    break;
+                }
+            }
+        
+            this.outScoreTotal.textContent = outScoreTotal + star;
+            this.backScoreTotal.textContent = backScoreTotal + star;
+            this.overallScoreTotal.textContent = overallScoreTotal + star;
+            this.nettScoreTotal.textContent = nettScoreTotal + star;
+        } else {
+            this.outScoreTotal.textContent = '';
+            this.backScoreTotal.textContent = '';
+            this.overallScoreTotal.textContent = '';
+            this.nettScoreTotal.textContent = '';
+        }
+
+        //Display points for each hole
+        const points = comp.numberOfScores() === 1 ? pageNavigator.scorecard.scores[0].points : pageNavigator.scorecard.points;
+        this.pointsControls.forEach((control, index) => {
+            this.setPointsGridStyle(control);
+            if (comp.type === Competition.Type.AKQ) {
+                let courtCard = '';
+                if (index + 1 === pageNavigator.scorecard.players[0].akq.ace) {
+                    courtCard += 'A';
+                }
+                if (index + 1 === pageNavigator.scorecard.players[0].akq.king) {
+                    courtCard += 'K';
+                }
+                if (index + 1 === pageNavigator.scorecard.players[0].akq.queen) {
+                    courtCard += 'Q';
+                }
+                const ptsHtml = `<span></span><span>${points[index]}</span><span>${courtCard}</span>`;
+                control.innerHTML = ptsHtml;
+            } else {
+                control.textContent = points[index];
+            }
+        });
+
+        const outPointsTotal = points.slice(0, 9).reduce((total, value) => total + value, 0);
+        const backPointsTotal = points.slice(9).reduce((total, value) => total + value, 0);
         const overallPointsTotal = outPointsTotal + backPointsTotal;
 
         this.outPointsTotal.textContent = outPointsTotal;
@@ -114,14 +224,14 @@ class ReviewPage {
 
     renderStrokeplayScores() {
         this.scoreControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scores.gross[index];
+            control.textContent = pageNavigator.scorecard.scores[0].gross[index];
         });
 
         let outScoreTotal = 0;
         let backScoreTotal = 0;
         let noReturn = false;
         for (let i = 0; i < 18; i++) {
-            const score = pageNavigator.scores.gross[i];
+            const score = pageNavigator.scorecard.scores[0].gross[i];
             if (!score || score === '' || score === 'X' || score === '0') {
                 noReturn = true;
             }
@@ -135,7 +245,7 @@ class ReviewPage {
             }
         }
         const overallScoreTotal = outScoreTotal + backScoreTotal;
-        const nettScoreTotal = overallScoreTotal - pageNavigator.player.ph;
+        const nettScoreTotal = overallScoreTotal - pageNavigator.scorecard.players[0].ph;
 
         if (noReturn) {
             this.outScoreTotal.textContent = 'X';
@@ -160,7 +270,7 @@ class ReviewPage {
 
     renderHoleNumbers() {
         this.holeControls.forEach((control, index) => {
-            control.textContent = (index + 1).toString() + '(' + pageNavigator.player.tees.par[index] + ')';
+            control.textContent = (index + 1).toString() + '(' + pageNavigator.scorecard.players[0].tees.par[index] + ')';
         });
     }
    
@@ -173,12 +283,12 @@ class ReviewPage {
             this.scoreSubmitted.style.display = 'none';
 
             backend.showSpinner();
-            const scores = await backend.getScores(pageNavigator.competition, pageNavigator.player);
+            const scores = await backend.getScores(pageNavigator.scorecard.competition, pageNavigator.scorecard.players[0]);
             backend.hideSpinner();
             
             if (scores) {
                 for (let i = 0; i < 18; i++) {
-                    if (scores.gross[i] !== pageNavigator.scores.gross[i]) {
+                    if (scores.gross[i] !== pageNavigator.scorecard.scores[0].gross[i]) {
                         return;
                     }
                 }

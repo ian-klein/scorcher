@@ -4,6 +4,7 @@
 
 import { data } from './data.js';
 import { backend } from './backend.js';
+import { Competition } from './schema.js';
 
 class AdminPage {
     constructor() {
@@ -30,11 +31,10 @@ class AdminPage {
     renderScores() {
         const diary = data.eventDiary;
 
-        const today = new Date();
-        const competitions = diary.filter(e => e.date <= today && e.type !== 'other').slice(0, 3);
+        const competitions = diary.filter(e => e.date <= data.today() && e.type !== Competition.Type.OTHER).slice(-3);
         for (const c of competitions) {
-            const textContent = c.date.toISOString().slice(0, 10) + ' ' + c.name;
-            const value = c.date.toISOString();
+            const textContent = c.date + ' ' + c.name;
+            const value = c.date;
             const option = document.createElement('option');
             option.value = value;
             option.textContent = textContent;
@@ -44,7 +44,7 @@ class AdminPage {
         this.getResultsBtn.disabled = (competitions.length === 0)
         if (competitions.length > 0) {
             const defaultComp = competitions[competitions.length - 1];  
-            this.competitionSelect.value = defaultComp.date.toISOString();
+            this.competitionSelect.value = defaultComp.date;
         }
     }
 
@@ -81,7 +81,7 @@ class AdminPage {
         for (const event of diary) {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${event.date.toISOString().split('T')[0]}</td>
+                <td>${event.date}</td>
                 <td>${event.name}</td>
                 <td>${event.type}</td>
             `;
@@ -116,9 +116,9 @@ class AdminPage {
     }
 
     async onGetResultsBtnClick() {  
-        const date = new Date(this.competitionSelect.value);
+        const date = this.competitionSelect.value;
         const competition = data.getCompetition(date);
-        const fileName = `results-${date.toISOString().slice(0, 10)}.csv`;
+        const fileName = `results-${date}.csv`;
 
         const response = await backend.getResults(competition);
         this.download(response, fileName);
