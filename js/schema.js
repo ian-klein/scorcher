@@ -135,6 +135,10 @@ export class Scorecard {
             this.players = [ new Player() ];
         }
 
+        if (!this.id) {
+            this.id = this.players.map(p => p.name).join(' ').replace(/[^a-zA-Z0-9]/g, '-');
+        }
+
         if (!this.scores) {
             this.scores = new Array(this.players.length).fill(null).map(() => new Score());
         }
@@ -154,11 +158,6 @@ export class Scorecard {
         if (!this.teeShot) {
             this.teeShot = new Array(18).fill(null);    //For scrambles, who took the tee shot for each hole
         }
-    }
-
-    validate() {
-        const missingScores = [];
-        this.teeShot = new Array(18).fill(null);    //For scrambles, who took the tee shot for each hole
     }
 
     validate() {
@@ -216,10 +215,10 @@ export class Scorecard {
             const excessholes = excessScores.join(', ');
 
             if (missingScores.length > 0) {
-                msg = 'Missing scores on hole(s) ' + missingholes + '\n';
+                msg = 'Missing scores on hole(s): ' + missingholes + '\n';
             }
             if (excessScores.length > 0) {
-                msg = msg + 'Excess scores on hole(s) ' + excessholes + '\n';
+                msg = msg + 'Excess scores on hole(s): ' + excessholes + '\n';
             }
         }
 

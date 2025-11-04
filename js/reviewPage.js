@@ -63,7 +63,7 @@ class ReviewPage {
         }
  
         backend.showSpinner();
-        const isSubmitSuccess = await backend.submitScores(pageNavigator.scorecard.competition, pageNavigator.scorecard.players[0], pageNavigator.scorecard.scores[0]);
+        const isSubmitSuccess = await backend.submitScorecard(pageNavigator.scorecard);
         backend.hideSpinner();
 
         this.renderSubmitButton(isSubmitSuccess);
@@ -315,12 +315,13 @@ class ReviewPage {
             this.scoreSubmitted.style.display = 'none';
 
             backend.showSpinner();
-            const scores = await backend.getScores(pageNavigator.scorecard.competition, pageNavigator.scorecard.players[0]);
+            const scorecard = await backend.getScorecard(pageNavigator.scorecard.competition, pageNavigator.scorecard.id);
             backend.hideSpinner();
             
-            if (scores) {
-                for (let i = 0; i < 18; i++) {
-                    if (scores.gross[i] !== pageNavigator.scorecard.scores[0].gross[i]) {
+            if (scorecard && scorecard.scores.length == pageNavigator.scorecard.scores.length) {
+                for (let h = 0; h < 18; h++) {
+                    for (let s = 0; s < scorecard.scores.length; s++)
+                    if (scorecard.scores[s].gross[h] !== pageNavigator.scorecard.scores[s].gross[h]) {
                         return;
                     }
                 }

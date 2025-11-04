@@ -33,7 +33,7 @@ class SplashPage {
     }
 
     isTesting() {
-        return this.emailInput.value === 'ian.klein14@gmail.com';
+        return this.emailInput.value === data.testEmail;
     }
 
     wireEvents() {
@@ -59,7 +59,7 @@ class SplashPage {
 
     renderContinueButton() {
         if (!this.competition.isSupported()) {
-            this.displayMessage('Supported competitions are ' + Competition.supportedTypes().join(', ') + '. For this competition just put your signed, completed card in the box');
+            this.displayMessage(this.competition.type + ' competitions are not yet supported, so just put your signed, completed card in the box!');
             this.continueBtn.disabled = !this.isTesting();
         } else {
             //Warn if the competition is in the past

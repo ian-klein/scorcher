@@ -14,6 +14,7 @@ class Data {
         this.players = [];
         this.admins = [];
         this.course = null;
+        this.testEmail = null;
     }
 
 
@@ -21,6 +22,7 @@ class Data {
         await this.#loadEventDiary();
         await this.#loadPlayers();
         await this.#loadCourse();
+        this.testEmail = await backend.getTestEmail();
     }
 
     async #loadEventDiary() {
