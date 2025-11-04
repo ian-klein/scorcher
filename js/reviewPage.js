@@ -326,6 +326,27 @@ class ReviewPage {
                     }
                 }
 
+                const comp = pageNavigator.scorecard.competition;
+                if (comp.type === Competition.Type.SCRAMBLE) {
+                    for (let h = 0; h < 18; h++) {
+                        if (scorecard.teeShot[h] !== pageNavigator.scorecard.teeShot[h]) {
+                            return;
+                        }
+                    }
+                }
+
+                if (comp.type === Competition.Type.FLAG) {
+                    if (scorecard.flag !== pageNavigator.scorecard.flag) {
+                        return;
+                    }
+                }
+
+                if (comp.type === Competition.Type.YELLOWBALL) {
+                    if (scorecard.lostYellowBall !== pageNavigator.scorecard.lostYellowBall) {
+                        return;
+                    }
+                }
+
                 //Scores are the same - all good
                 this.submitBtn.disabled = true;
                 this.scoreSubmitted.style.display = 'block';

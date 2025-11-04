@@ -227,15 +227,15 @@ export class Scorecard {
             const b = this.teeShot.filter(t => t === 'B').length;
             const c = this.teeShot.filter(t => t === 'C').length;
             if (a < 5 || b < 5 || c < 5) {
-                let msg = '';
+                msg = '';
                 if (a < 5) {
-                    msg = msg + 'Player A only has ' + a + ' tee shots\n';
+                    msg = msg + `Player A is missing ${5 - a} tee shots\n`;
                 }
                 if (b < 5) {
-                    msg = msg + 'Player B only has ' + b + ' tee shots\n';
+                    msg = msg + `Player B is missing ${5 - b} tee shots\n`;
                 }
                 if (c < 5) {
-                    msg = msg + 'Player C only has ' + c + ' tee shots';
+                    msg = msg + `Player C is missing ${5 - c} tee shots`;
                 }
             }
         }
