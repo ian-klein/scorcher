@@ -76,6 +76,8 @@ class ReviewPage {
             element.classList.add('multi-score-2');
         } else if (comp.numberOfScores() === 3) {
             element.classList.add('mulit-score-3');
+        } else if (comp.type === Competition.Type.SCRAMBLE) {
+            element.classList.add('multi-score-2');
         }
     }
 
@@ -124,6 +126,8 @@ class ReviewPage {
 
     renderScores() {
         const comp = pageNavigator.scorecard.competition;
+
+        //Calculate the team points for team comps
         if (comp.numberOfScores() > 1) {
             const scores = pageNavigator.scorecard.scores;
 
@@ -135,8 +139,11 @@ class ReviewPage {
                 }
 
                 if (comp.type === Competition.Type.YELLOWBALL) {
-                    const yellowBallIndex = h % 3;
-                    pageNavigator.scorecard.points[h] += scores[yellowBallIndex].points[h];
+                    const lostYellowBall = pageNavigator.scorecard.lostYellowBall;
+                    if (!lostYellowBall || h + 1 < lostYellowBall) {
+                        const yellowBallIndex = h % 3;
+                        pageNavigator.scorecard.points[h] += scores[yellowBallIndex].points[h];
+                    }
                 }
             }
         }
@@ -159,7 +166,15 @@ class ReviewPage {
                 control.textContent = scores[0].gross[index];
             }
             else {
-                const scoreHtml = scores.map(score => `<span>${score.gross[index] || ''}</span>`).join('')
+                const backgroundColor = [ 'white', 'white', 'white' ];
+                if (comp.type === Competition.Type.YELLOWBALL) {
+                    const lostYellowBall = pageNavigator.scorecard.lostYellowBall;
+                    if (!lostYellowBall || index + 1 < lostYellowBall) {
+                        const yellowBallIndex = index % 3;
+                        backgroundColor[yellowBallIndex] = 'yellow';
+                    }
+                }
+                const scoreHtml = scores.map((score, si) => `<span style="background-color: ${backgroundColor[si]}">${score.gross[index] || ''}</span>`).join('')
                 control.innerHTML = scoreHtml;
             }
         });
@@ -223,15 +238,17 @@ class ReviewPage {
     }
 
     renderStrokeplayScores() {
+        const scores = pageNavigator.scorecard.scores;
+
         this.scoreControls.forEach((control, index) => {
-            control.textContent = pageNavigator.scorecard.scores[0].gross[index];
+            control.textContent = scores[0].gross[index];
         });
 
         let outScoreTotal = 0;
         let backScoreTotal = 0;
         let noReturn = false;
         for (let i = 0; i < 18; i++) {
-            const score = pageNavigator.scorecard.scores[0].gross[i];
+            const score = scores[0].gross[i];
             if (!score || score === '' || score === 'X' || score === '0') {
                 noReturn = true;
             }
@@ -258,11 +275,26 @@ class ReviewPage {
             this.overallScoreTotal.textContent = overallScoreTotal;
             this.nettScoreTotal.textContent = nettScoreTotal;
         }
-        
-        //Clear all the points - not used for strokeplay
-        this.pointsControls.forEach((control, index) => {
-            control.textContent = '';
-        });
+
+        const comp = pageNavigator.scorecard.competition;
+        if (comp.type === Competition.Type.SCRAMBLE) {
+            this.ptsHeaderOut.textContent = 'Tee';
+            this.ptsHeaderBack.textContent = 'Tee';
+            const teeShot = pageNavigator.scorecard.teeShot;
+
+            this.pointsControls.forEach((control, index) => {
+                control.textContent = teeShot[index];
+            });
+        }
+        else {
+            this.ptsHeaderOut.textContent = 'Pts';
+            this.ptsHeaderBack.textContent = 'Pts';
+
+            this.pointsControls.forEach((control, index) => {
+                control.textContent = '';
+            });
+        }
+
         this.outPointsTotal.textContent = '';
         this.backPointsTotal.textContent = '';
         this.overallPointsTotal.textContent = '';

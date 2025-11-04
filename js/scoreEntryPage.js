@@ -163,7 +163,7 @@ class ScoreEntryPage {
 
         this.lostYellowBallCheckbox.addEventListener('change', () => this.onLostYellowBallCheckboxChange());
 
-        this.scoreEntrySelect.addEventListener('change', () => this.onScoreEntrySelectChange);
+        this.scoreEntrySelect.addEventListener('change', () => this.onScoreEntrySelectChange());
     }
 
     navigateHole(direction) {
@@ -298,12 +298,13 @@ class ScoreEntryPage {
 
     onScoreEntrySelectChange() {
         const value = this.scoreEntrySelect.value;
+        const comp = pageNavigator.scorecard.competition;
 
-        if (this.scoreEntryMethod === SCRAMBLE_SCORE_ENTRY) {
+        if (comp.type === Competition.Type.SCRAMBLE) {
             pageNavigator.scorecard.teeShot[this.currentHole - 1] = value;
         }
 
-        if (this.scoreEntryMethod === FLAG_SCORE_ENTRY) {
+        if (comp.type === Competition.Type.FLAG) {
             pageNavigator.scorecard.flag = value;
         }
 
@@ -328,11 +329,12 @@ class ScoreEntryPage {
 
         //Add rendering for scramble/flag select boxes
         if (this.scoreEntryMethod === SCRAMBLE_SCORE_ENTRY) {
+            this.scoreEntrySelect.innerHTML = '';
             if (comp.type === Competition.Type.SCRAMBLE) {
                 const team = pageNavigator.scorecard.players[0].team;
                 for (let i = 0; i < team.length; i++) {
                     const option = document.createElement('option');
-                    option.value = i;
+                    option.value = ['A', 'B', 'C', 'D'][i];
                     option.textContent = ['A', 'B', 'C', 'D'][i];
                     this.scoreEntrySelect.appendChild(option);
                 }
@@ -404,6 +406,18 @@ class ScoreEntryPage {
             this.scoreInputArray[i].value = `${score ?? ''}`;
         }
 
+        if (this.scoreEntryMethod === SCRAMBLE_SCORE_ENTRY) {
+            const comp = pageNavigator.scorecard.competition;
+
+            if (comp.type === Competition.Type.SCRAMBLE) {
+                this.scoreEntrySelect.value = pageNavigator.scorecard.teeShot[this.currentHole - 1];
+            }
+
+            if (comp.type === Competition.Type.FLAG) {
+                this.scoreEntrySelect.value = pageNavigator.scorecard.flag;
+            }
+        }
+
         // Update next score (only for basic score entry)
         if (this.scoreEntryMethod === BASIC_SCORE_ENTRY) {
             if (this.currentHole === 18) {
@@ -417,6 +431,9 @@ class ScoreEntryPage {
     }
 
     init() {
+        this.currentPlayer = 0;
+        this.currentHole = 1;
+
         this.loadScorecard()
 
         this.renderHeader();

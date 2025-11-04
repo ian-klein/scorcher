@@ -45,14 +45,14 @@ export class Competition {
     static INFO = [
         {type: Competition.Type.STABLEFORD, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.STROKEPLAY, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.GREENSOMES, teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.FOURSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.SCRAMBLE,   teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.FOURBALL,   teamSize: 2, numberOfScores: 2, isSupported: false, scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.WALTZ,      teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.YELLOWBALL, teamSize: 3, numberOfScores: 3, isSupported: false, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.FOURBALL,   teamSize: 2, numberOfScores: 2, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.WALTZ,      teamSize: 3, numberOfScores: 3, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        {type: Competition.Type.YELLOWBALL, teamSize: 3, numberOfScores: 3, isSupported: true, scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.OTHER,      teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
     ];
     

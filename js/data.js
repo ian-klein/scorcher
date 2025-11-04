@@ -126,7 +126,7 @@ class Data {
     getTeamPlayer(comp, players, th) { //TODO Comp is required if th is not given but hi is.
         const teamPlayer = new Player();
 
-        teamPlayer.email = '*team*';
+        teamPlayer.email = players[0].email;
         teamPlayer.team = players;
         teamPlayer.name = players.map(p => p.lastName).join(' ');
         teamPlayer.ph = th;
