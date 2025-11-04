@@ -105,6 +105,9 @@ class ScoreEntryPage {
                 pageNavigator.scorecard = new Scorecard({competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players});
             }
         }
+        else {
+                pageNavigator.scorecard = new Scorecard({competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players});
+        }
     }
 
     gridStyleFor(scoreEntryMethod) {
