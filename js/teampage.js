@@ -230,7 +230,8 @@ class TeamPage {
         if (rawTeam) {
             const savedTeam = JSON.parse(rawTeam, this.savedTeamReviver);
 
-            if (savedTeam.competition.type === comp.type && savedTeam.competition.date === comp.date) {
+            if (savedTeam.competition.type === comp.type && savedTeam.competition.date === comp.date &&
+                savedTeam.players.length > 0 && savedTeam.players[0].email === pageNavigator.scorecard.players[0].email) {
                 this.players = savedTeam.players;
                 this.th = savedTeam.th;
             }

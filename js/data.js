@@ -94,34 +94,36 @@ class Data {
 
     getPlayer(email, ph) {
         const p = this.players.find(player => player.email === email);
+        if (!p) {
+            return null;
+        }
 
         const player = new Player(p);
-        if (p) {
-            player.name = this.#fullName(p);
+        player.name = this.#fullName(p);
 
-            //Set tees based on gender
-            if (player.gender === 'male') {
-                player.tees = this.course.male.white;
-            } else {
-                player.tees = this.course.female.gold;
-            }
-
-            //Set playing handicap
-            if (ph) {
-                player.ph = ph;
-            } else if (player.hi) {
-                player.ph = Math.round((player.hi * player.tees.sr / 113 + (player.tees.cr - player.tees.parTotal)) * 0.95);
-            }
-            else {
-                player.ph = 0;
-            }
-
-            //Check if this player is an admin
-            player.admin = this.admins.includes(email);
-
-            //Calculate how many shots are given on each hole for this player
-            player.shots = this.#getShots(player.tees, player.ph);
+        //Set tees based on gender
+        if (player.gender === 'male') {
+            player.tees = this.course.male.white;
+        } else {
+            player.tees = this.course.female.gold;
         }
+
+        //Set playing handicap
+        if (ph) {
+            player.ph = ph;
+        } else if (player.hi) {
+            player.ph = Math.round((player.hi * player.tees.sr / 113 + (player.tees.cr - player.tees.parTotal)) * 0.95);
+        }
+        else {
+            player.ph = 0;
+        }
+
+        //Check if this player is an admin
+        player.admin = this.admins.includes(email);
+
+        //Calculate how many shots are given on each hole for this player
+        player.shots = this.#getShots(player.tees, player.ph);
+
         return player;
     }
 

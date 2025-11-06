@@ -86,27 +86,20 @@ class ScoreEntryPage {
     }
 
     loadScorecard() {
-        const rawScorecard = localStorage.getItem(SAVED_SCORES_KEY);
+        pageNavigator.scorecard = new Scorecard({competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players});
 
+        const rawScorecard = localStorage.getItem(SAVED_SCORES_KEY);
         if (rawScorecard) {
             const scorecard = Scorecard.fromJSON(rawScorecard);
             if (scorecard.competition.type === pageNavigator.scorecard.competition.type && scorecard.competition.date === pageNavigator.scorecard.competition.date) {
-                //Same date and type - zeroize scores for players that are not in the page context
+                //Same date and type - reload scores for players that are in the page context
                 for (let i = 0; i < scorecard.players.length; i++) {
                     const player = scorecard.players[i];
-                    if (!pageNavigator.scorecard.players.find(p => p.name === player.name)) {
-                        scorecard.scores[i] = new Score();
+                    if (pageNavigator.scorecard.players.find(p => p.name === player.name)) {
+                        pageNavigator.scorecard.scores[i] = scorecard.scores[i];
                     }
                 }
-                pageNavigator.scorecard = scorecard;
             }
-            else {
-                //Different date or type - reset scores
-                pageNavigator.scorecard = new Scorecard({competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players});
-            }
-        }
-        else {
-                pageNavigator.scorecard = new Scorecard({competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players});
         }
     }
 

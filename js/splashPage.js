@@ -84,7 +84,7 @@ class SplashPage {
         this.splashCompetitionName.textContent = data.competitionDisplayName(this.competition);
     }
 
-    renderPlayer() {
+    renderPlayerName() {
         //Get email & PH from local storage
         const raw = localStorage.getItem(PLAYER_STORAGE_KEY);
         if (raw) {
@@ -93,11 +93,14 @@ class SplashPage {
             this.emailInput.value = storedPlayer.email;
             this.handicapValue.value = storedPlayer.ph;            
         }
+    }
 
+    renderPlayerData() {
         if (this.competition.isIndividualCompetition()) {
             this.handicapControls.style.display = 'flex';
         } else {
             this.handicapControls.style.display = 'none';
+            this.handicapValue.value = '';
         }
 
         if (this.competition.type === Competition.Type.AKQ) {
@@ -105,6 +108,11 @@ class SplashPage {
         } else {
             this.akqControls.style.display = 'none';
         }
+    }
+
+    renderPlayer() {
+        this.renderPlayerName();
+        this.renderPlayerData();
     }
 
     renderTestSelect() {
@@ -185,7 +193,7 @@ class SplashPage {
 
     onTestSelectChange() {
         this.competition.type = this.testSelect.value;
-        this.renderPlayer();
+        this.renderPlayerData();
         this.renderButtons();
     }
 
