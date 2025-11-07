@@ -289,6 +289,27 @@ class ReviewPage {
             this.pointsControls.forEach((control, index) => {
                 control.textContent = teeShot[index];
             });
+        } else if (comp.type === Competition.Type.FLAG) {
+            this.ptsHeaderOut.textContent = 'shots';
+            this.ptsHeaderBack.textContent = 'shots';
+            const player = pageNavigator.scorecard.players[0];
+
+            let shotsRemaining = Number(player.tees.parTotal) + Number(player.ph);
+            this.pointsControls.forEach((control, index) => {
+                const shotsConsumed = scores[0].gross[index];
+                if (shotsRemaining <= 0) {
+                    //No more shots
+                    control.textContent = '';
+                } else if (shotsRemaining <= player.tees.par[index]) {
+                    //Flag on this hole
+                    control.textContent = pageNavigator.scorecard.flag;
+                    shotsRemaining = 0;
+                } else {
+                    //Shots remaining
+                    shotsRemaining -= shotsConsumed;
+                    control.textContent = shotsRemaining;
+                }
+            });
         }
         else {
             this.ptsHeaderOut.textContent = 'Pts';

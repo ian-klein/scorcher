@@ -46,7 +46,7 @@ export class Competition {
         {type: Competition.Type.STABLEFORD, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.STROKEPLAY, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: false, scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.GREENSOMES, teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.FOURSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.SCRAMBLE,   teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
@@ -188,18 +188,23 @@ export class Scorecard {
             }
             
         } else if (this.competition.type === Competition.Type.FLAG) {
-            let shotsRemaining = this.players[0].ph;
-            let hole = 1;
-            while (hole <= 18 && shotsRemaining > 0) {
-                if (!this.scores[0].gross[hole-1]) {
-                    missingScores.push(hole);
-                } else if (this.scores[0].gross[hole-1] === 'X' ) {
-                    this.flag = Scorecard.FLAG_VALUES[0].value;
-                    break;
+            let shotsRemaining = Number(this.players[0].tees.parTotal) + Number(this.players[0].ph);
+            for (let index=0; index < 18; index++) {
+                const shotsConsumed = this.scores[0].gross[index];
+                if (shotsRemaining <= 0) {
+                    //No more shots
+                    excessScores.push(index+1);
+                } else if (shotsRemaining <= this.players[0].tees.par[index]) {
+                    //Flag on this hole
+                    shotsRemaining = 0;
                 } else {
-                    shotsRemaining -= (this.scores[0].gross[hole-1] - this.players[0].tees[hole-1].par);
+                    //Shots remaining
+                    if (!shotsConsumed) {
+                        missingScores.push(index+1);
+                    } else {
+                        shotsRemaining -= shotsConsumed;
+                    }
                 }
-                hole++;                 
             }            
         } else {
             for (let hole = 1; hole <= 18; hole++) {

@@ -123,6 +123,7 @@ class SplashPage {
                 option.value = type;
                 option.textContent = type;
                 this.testSelect.appendChild(option);
+                this.testSelect.value = null;
             }
         } else {
             this.testSelect.style.display = 'none';
@@ -193,7 +194,7 @@ class SplashPage {
 
     onTestSelectChange() {
         this.competition.type = this.testSelect.value;
-        this.renderPlayerData();
+        this.renderPlayer();
         this.renderButtons();
     }
 
