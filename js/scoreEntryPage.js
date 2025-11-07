@@ -99,6 +99,9 @@ class ScoreEntryPage {
                         pageNavigator.scorecard.scores[i] = scorecard.scores[i];
                     }
                 }
+                pageNavigator.scorecard.lostYellowBall = scorecard.lostYellowBall;
+                pageNavigator.scorecard.flag = scorecard.flag;
+                pageNavigator.scorecard.teeShot = scorecard.teeShot;
             }
         }
     }

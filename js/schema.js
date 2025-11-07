@@ -163,8 +163,8 @@ export class Scorecard {
     validate() {
         const missingScores = [];
         const excessScores = [];
-        let error = null;
-        let warning = null;
+        let errorMsg = null;
+        let warningMsg = null;
 
         if (this.competition.type === Competition.Type.FOURBALL) {
             for (let hole = 1; hole <= 18; hole++) {
@@ -214,13 +214,13 @@ export class Scorecard {
         if (missingScores.length > 0 || excessScores.length > 0) {
             const missingholes = missingScores.join(', ');
             const excessholes = excessScores.join(', ');
-            error = 'Error:\n';
+            errorMsg = 'Error:\n';
 
             if (missingScores.length > 0) {
-                error = error + 'There are missing scores on hole(s):  ' + missingholes + '\n';
+                errorMsg = errorMsg + 'There are missing scores on hole(s):  ' + missingholes + '\n';
             }
             if (excessScores.length > 0) {
-                error = error + 'There are too many scores on hole(s): ' + excessholes + '\n';
+                errorMsg = errorMsg + 'There are too many scores on hole(s): ' + excessholes + '\n';
             }
         }
 
@@ -229,20 +229,20 @@ export class Scorecard {
             const b = this.teeShot.filter(t => t === 'B').length;
             const c = this.teeShot.filter(t => t === 'C').length;
             if (a < 5 || b < 5 || c < 5) {
-                warning = 'Warning:\n';
+                warningMsg = 'Warning:\n';
 
                 if (a < 5) {
-                    warning = warning + `Player A is missing ${5 - a} tee shots\n`;
+                    warningMsg = warningMsg + `Player A is missing ${5 - a} tee shots\n`;
                 }
                 if (b < 5) {
-                    warning = warning + `Player B is missing ${5 - b} tee shots\n`;
+                    warningMsg = warningMsg + `Player B is missing ${5 - b} tee shots\n`;
                 }
                 if (c < 5) {
-                    warning = warning + `Player C is missing ${5 - c} tee shots`;
+                    warningMsg = warningMsg + `Player C is missing ${5 - c} tee shots`;
                 }
             }
         }
 
-        return { error, warning };
+        return { errorMsg, warningMsg };
     }
 }
