@@ -56,10 +56,14 @@ class ReviewPage {
     }
 
     async onSubmitBtnClick() {
-        const msg = pageNavigator.scorecard.validate();
-        if (msg) {
-            alert(msg);
+        const { error, warning } = pageNavigator.scorecard.validate();
+        if (error) {
+            alert(error);
             return;
+        }
+
+        if (warning) {
+            alert(warning);
         }
  
         backend.showSpinner();
