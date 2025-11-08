@@ -2,6 +2,7 @@
 
 import { getStore } from '@netlify/blobs';
 import { storeFor, keyFor } from '../functionsUtil.mjs';
+import { Competition } from '../../js/schema.js';
 
 export default async function getResults(request, context) {
     const body = await request.json();
@@ -22,27 +23,60 @@ export default async function getResults(request, context) {
 
     //Create the results CSV. Each player gets two lines in the CSV: gross scores and points
 
-    const headers = ['id', 'Player', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Out','10', '11', '12', '13', '14', '15', '16', '17', '18', 'Back','Total'];
+    const headers = ['id', 'Player', 'PH','1', '2', '3', '4', '5', '6', '7', '8', '9', 'Out','10', '11', '12', '13', '14', '15', '16', '17', '18', 'Back','Total', 'Nett'];
     
     let csvContent = headers.join(',') + '\n';
     
     // Add scores for each player
     for (const scorecard of results) {
+        const comp = new Competition(scorecard.competition);
+
+        //Add a row for the gross scores of each player
         for (let s = 0; s < scorecard.scores.length; s++) {
+            const name = '"' + scorecard.players[s].name + '"';
+            const ph = scorecard.players[s].ph;
+            const gross = comp.scoring() === Competition.Type.STABLEFORD ? scorecard.scores[s].adjusted : scorecard.scores[s].gross;
+
             const grossOut = scorecard.scores[s].adjusted.slice(0, 9).reduce((a, b) => a + b, 0);
             const grossBack = scorecard.scores[s].adjusted.slice(9).reduce((a, b) => a + b, 0);
             const grossTotal = grossOut + grossBack;
 
-            const pointsOut = scorecard.scores[s].points.slice(0, 9).reduce((a, b) => a + b, 0);
-            const pointsBack = scorecard.scores[s].points.slice(9).reduce((a, b) => a + b, 0);
+            const grossRow = [scorecard.id, name, ph, ...gross.slice(0, 9), grossOut, ...gross.slice(9), grossBack, grossTotal, grossTotal - scorecard.players[s].ph].join(',') + '\n';
+            csvContent += grossRow;
+        }
+
+        //Add a row for the points of stableford comp, or the tee shots of a scramble
+        let name = scorecard.players[0].name;
+        let ph = scorecard.players[0].ph;
+        let points = scorecard.scores[0].points;
+
+        if (scorecard.scores.length > 1) {
+            name = scorecard.id;
+            points = scorecard.points;
+            ph = '';
+        }
+
+        if  (comp.scoring() === Competition.Type.STABLEFORD) {
+            const pointsOut = points.slice(0, 9).reduce((a, b) => a + b, 0);
+            const pointsBack = points.slice(9).reduce((a, b) => a + b, 0);
             const pointsTotal = pointsOut + pointsBack;
 
-            const name = '"' + scorecard.players[s].name + '"';
+            const pointsRow = [scorecard.id, name, ph, ...points.slice(0, 9), pointsOut, ...points.slice(9), pointsBack, pointsTotal, ''].join(',') + '\n';
+            csvContent += pointsRow;
+        }
+        if (comp.type === Competition.Type.SCRAMBLE) {
+            const teeShot = scorecard.teeShot;
+            const a = teeShot.filter(t => t === 'A').length;
+            const b = teeShot.filter(t => t === 'B').length;
+            const c = teeShot.filter(t => t === 'C').length;
 
-            const grossRow = [scorecard.id, name, ...scorecard.scores[s].adjusted.slice(0, 9), grossOut, ...scorecard.scores[s].adjusted.slice(9), grossBack, grossTotal].join(',') + '\n';
-            const pointsRow = [scorecard.id, name, ...scorecard.scores[s].points.slice(0, 9), pointsOut, ...scorecard.scores[s].points.slice(9), pointsBack, pointsTotal].join(',') + '\n';
+            let note = '';
+            if (a < 5 || b < 5 || c < 5) {
+                note = `"Missing tee shots: A had ${a}, B had ${b}, C had ${c}"`;
+            }
 
-            csvContent += grossRow + pointsRow;
+            const teeShotRow = [scorecard.id, name, ph, ...teeShot.slice(0, 9), '', ...teeShot.slice(9), '', '', note].join(',') + '\n';
+            csvContent += teeShotRow;
         }
     }
 

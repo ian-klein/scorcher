@@ -46,7 +46,7 @@ export class Competition {
         {type: Competition.Type.STABLEFORD, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.STROKEPLAY, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STROKEPLAY },
+        {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
         {type: Competition.Type.GREENSOMES, teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.FOURSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
         {type: Competition.Type.SCRAMBLE,   teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
