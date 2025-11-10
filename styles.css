@@ -165,7 +165,9 @@ body {
 .basic-score-grid label:nth-of-type(2),
 .basic-score-grid label:nth-of-type(3),
 .basic-score-grid label:nth-of-type(4),
+.basic-score-grid label:nth-of-type(5),
 .basic-score-grid select:nth-of-type(1),
+.basic-score-grid select:nth-of-type(2),
 .basic-score-grid input:nth-of-type(2),
 .basic-score-grid input:nth-of-type(3),
 .basic-score-grid div:nth-of-type(1) {
@@ -187,6 +189,8 @@ body {
 .scramble-score-grid label:nth-of-type(2),
 .scramble-score-grid label:nth-of-type(3),
 .scramble-score-grid label:nth-of-type(4),
+.scramble-score-grid label:nth-of-type(5),
+.scramble-score-grid select:nth-of-type(2),
 .scramble-score-grid input:nth-of-type(2),
 .scramble-score-grid input:nth-of-type(3),
 .scramble-score-grid div:nth-of-type(1) {
@@ -206,7 +210,9 @@ body {
 }
 
 .waltz-score-grid label:nth-of-type(1),
+.waltz-score-grid label:nth-of-type(2),
 .waltz-score-grid select:nth-of-type(1),
+.waltz-score-grid select:nth-of-type(2),
 .waltz-score-grid span:nth-of-type(1),
 .waltz-score-grid span:nth-of-type(3),
 .waltz-score-grid span:nth-of-type(4),
@@ -219,7 +225,7 @@ body {
     grid-column: 2;
 }
 
-.waltz-score-grid label:nth-of-type(2) {
+.waltz-score-grid label:nth-of-type(3) {
     grid-column: 1;
 }
 
@@ -231,8 +237,10 @@ body {
     align-items: center;
 }
 
-.yellowball-score-grid > label:nth-of-type(1), /*Only hide direct child label (of the select)*/
+.yellowball-score-grid > label:nth-of-type(1), /*Only hide direct child labels (of the selects)*/
+.yellowball-score-grid > label:nth-of-type(2),
 .yellowball-score-grid select:nth-of-type(1),
+.yellowball-score-grid select:nth-of-type(2),
 .yellowball-score-grid span:nth-of-type(1),
 .yellowball-score-grid span:nth-of-type(3),
 .yellowball-score-grid span:nth-of-type(4),
@@ -258,9 +266,11 @@ body {
 .fourball-score-grid span:nth-of-type(4),
 .fourball-score-grid span:nth-of-type(5),
 .fourball-score-grid label:nth-of-type(1),
+.fourball-score-grid label:nth-of-type(2),
 .fourball-score-grid input:nth-of-type(3),
-.fourball-score-grid label:nth-of-type(4),
+.fourball-score-grid label:nth-of-type(5),
 .fourball-score-grid select:nth-of-type(1),
+.fourball-score-grid select:nth-of-type(2),
 .fourball-score-grid div:nth-of-type(1) {
     display: none;
 }
@@ -269,7 +279,7 @@ body {
     grid-column: 2 / span 2;
 }
 
-.fourball-score-grid label:nth-of-type(2) {
+.fourball-score-grid label:nth-of-type(3) {
     grid-column: 2;
 }
 

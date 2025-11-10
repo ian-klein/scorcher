@@ -184,24 +184,37 @@
             </button>
             <div class="basic-score-grid" id="scoreGrid">
                 <span class="context-item" id="priorHoleNumber"></span>
-                <label class="score-label" for="scoreEntrySelect" id="scoreEntryLabel"></label>
+                <label class="score-label" for="teeShotSelect">Teeshot</label>
                 <span class="hole-number" id="holeNumber"></span>
                 <span class="context-item" id="nextHoleNumber"></span>
                 <div class="lost-yellow-ball" id="lostYellowBall">
                     <input type="checkbox" id="lostYellowBallCheckbox">
                     <label for="lostYellowBallCheckbox">Lost ball</label>
                 </div>
+                <label class="score-label" for="flagSelect" id="flagLabel">Flag</label>
 
                 <label class="score-label" for="scoreInputA" id="scoreLabelA">A</label>
                 <label class="score-label" for="scoreInputB" id="scoreLabelB">B</label>
                 <label class="score-label" for="scoreInputC" id="scoreLabelC">C</label>
 
                 <span class="context-item" id="priorScore"></span>
-                <select class="score-entry-select" id="scoreEntrySelect"></select>
+                <select class="score-entry-select" id="teeShotSelect">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
                 <input type="text" class="score-input" id="scoreInputA" data-index="0" inputmode="none" readonly value="" maxlength="2"></input>
                 <input type="text" class="score-input" id="scoreInputB" data-index="1" inputmode="none" readonly value="" maxlength="2"></input>
                 <input type="text" class="score-input" id="scoreInputC" data-index="2" inputmode="none" readonly value="" maxlength="2"></input>
                 <span class="context-item" id="nextScore"></span>
+                <select class="score-entry-select" id="flagSelect">
+                    <option value="F">F</option>
+                    <option value="L">L</option>
+                    <option value="A">A</option>
+                    <option value="G">G</option>
+                    <option value="0">0</option>
+                </select>
+                </select>
             </div>
             <button class="arrow-btn" id="nextHole" aria-label="Next hole">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

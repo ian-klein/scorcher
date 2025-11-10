@@ -196,15 +196,12 @@ export class Scorecard {
                     if (shotsConsumed) {
                         excessScores.push(index+1);
                     }
-                } else if (shotsRemaining <= this.players[0].tees.par[index]) {
-                    //Flag on this hole
-                    shotsRemaining = 0;
                 } else {
-                    //Shots remaining
-                    if (!shotsConsumed) {
-                        missingScores.push(index+1);
+                    //Shots are remaining
+                    if (!shotsConsumed || shotsConsumed === 'X') {
+                        shotsRemaining = -1;
                     } else {
-                        shotsRemaining -= shotsConsumed;
+                        shotsRemaining -= Number(shotsConsumed);
                     }
                 }
             }            
