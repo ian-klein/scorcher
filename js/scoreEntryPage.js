@@ -10,20 +10,14 @@ import { ui } from './ui.js';
 
 const SAVED_SCORES_KEY = 'saved_scores_v3';
 
-//The differnt score entry methods
-const BASIC_SCORE_ENTRY = 'basic';
-const SCRAMBLE_SCORE_ENTRY   = Competition.Type.SCRAMBLE;
-const WALTZ_SCORE_ENTRY      = Competition.Type.WALTZ;
-const YELLOWBALL_SCORE_ENTRY = Competition.Type.YELLOWBALL;
-const FOURBALL_SCORE_ENTRY   = Competition.Type.FOURBALL;
-
-const SCORE_ENTRY_METHODS = [
-    BASIC_SCORE_ENTRY,      //Individual, single score
-    SCRAMBLE_SCORE_ENTRY,   //Also used for flag - adds a dropdown
-    WALTZ_SCORE_ENTRY,      //1,2,3 scores
-    YELLOWBALL_SCORE_ENTRY, //All 3 scores, with lost ball checkbox
-    FOURBALL_SCORE_ENTRY    //1 of 2 scores
-];
+const ScoreEntryMethod = Object.freeze({
+    BASIC:      'basic',                    //Individual, single score
+    SCRAMBLE:   Competition.Type.SCRAMBLE,  //Adds tee-shot dropdown
+    FLAG:       Competition.Type.FLAG,      //Adds flag dropdown
+    WALTZ:      Competition.Type.WALTZ,     //1,2,3 scores
+    YELLOWBALL: Competition.Type.YELLOWBALL,//All 3 scores, with lost ball checkbox
+    FOURBALL:   Competition.Type.FOURBALL   //1 of 2 scores
+});
 
 const STYLE_SUFFIX = '-score-grid';  //Suffix for the grid styles defined in styles.css
 
@@ -107,18 +101,49 @@ class ScoreEntryPage {
     }
 
     gridStyleFor(scoreEntryMethod) {
+        if (scoreEntryMethod === ScoreEntryMethod.FLAG) {
+            scoreEntryMethod = ScoreEntryMethod.SCRAMBLE; //TODO: Remove this when flag grid style is implemented
+        }
         return scoreEntryMethod + STYLE_SUFFIX;
     }
 
     scoreEntryMethodFor(comp) {
-        const type = comp.type === 'flag' ? 'scramble' : comp.type;
-        if (SCORE_ENTRY_METHODS.includes(type)) {
-            return type;
+        const method = Object.values(ScoreEntryMethod).find(m => m === comp.type);
+        if (method) {
+            return method;
         }
         else {
-            return BASIC_SCORE_ENTRY;
+            return ScoreEntryMethod.BASIC;
         }
     }
+
+    //Returns <0 when shots exhausted, 0 when flag hole, >0 when shots remaining
+    isFlagHole() {
+        const player = pageNavigator.scorecard.players[this.currentPlayer];
+        let shotsRemaining = Number(player.tees.parTotal) + Number(player.ph);
+        let hole = 1;
+        while (hole < this.currentHole && shotsRemaining > 0) {
+            const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[hole - 1];
+            if (!gross || gross === 'X') break;
+            shotsRemaining -= Number(gross);
+            hole++;
+        }
+
+        if (hole < this.currentHole) {
+            //The shots ran out before this hole
+            return false;
+        }
+
+        const par = player.tees.par[this.currentHole - 1];
+        if (shotsRemaining > 0 && shotsRemaining <= par) {
+            //The flag hole is this hole
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
 
     wireEvents() {
         // Navigation arrows
@@ -176,7 +201,7 @@ class ScoreEntryPage {
     }
 
     handleKeypadInput(value) {
-        let autoNavigate = this.scoreEntryMethod === BASIC_SCORE_ENTRY;
+        let autoNavigate = this.scoreEntryMethod === ScoreEntryMethod.BASIC;
         const scoreInput = this.scoreInputArray[this.currentPlayer];
         const currentScore = scoreInput.value;
         
@@ -319,7 +344,7 @@ class ScoreEntryPage {
 
     renderScoreEntryStyle() {
         const comp = pageNavigator.scorecard.competition;
-        for (const method of SCORE_ENTRY_METHODS) {
+        for (const method of Object.values(ScoreEntryMethod)) {
             this.scoreGrid.classList.remove(this.gridStyleFor(method));
         };
 
@@ -327,7 +352,7 @@ class ScoreEntryPage {
         this.scoreGrid.classList.add(this.gridStyleFor(this.scoreEntryMethod));
 
         //Add rendering for scramble/flag select boxes
-        if (this.scoreEntryMethod === SCRAMBLE_SCORE_ENTRY) {
+        if (this.scoreEntryMethod === ScoreEntryMethod.SCRAMBLE || this.scoreEntryMethod === ScoreEntryMethod.FLAG) {
             this.scoreEntrySelect.innerHTML = '';
             if (comp.type === Competition.Type.SCRAMBLE) {
                 const team = pageNavigator.scorecard.players[0].team;
@@ -351,7 +376,7 @@ class ScoreEntryPage {
             }
         }
 
-        if (this.scoreEntryMethod === YELLOWBALL_SCORE_ENTRY || this.scoreEntryMethod === WALTZ_SCORE_ENTRY) {
+        if (this.scoreEntryMethod === ScoreEntryMethod.YELLOWBALL || this.scoreEntryMethod === ScoreEntryMethod.WALTZ) {
             this.scoreInputArray[this.currentPlayer].focus();
         }
     }
@@ -361,7 +386,7 @@ class ScoreEntryPage {
         this.holeNumber.textContent = '- ' + this.currentHole + ' -';
 
         // Update prior hole number (only for basic score entry)
-        if (this.scoreEntryMethod === BASIC_SCORE_ENTRY) {
+        if (this.scoreEntryMethod === ScoreEntryMethod.BASIC) {
             if (this.currentHole === 1) {
                 this.priorHoleNumber.textContent = '';
                 this.priorScore.textContent = '';
@@ -371,8 +396,8 @@ class ScoreEntryPage {
             }
         }
 
-        //Format yellow ball entry
-        if (this.scoreEntryMethod === YELLOWBALL_SCORE_ENTRY) {
+        //Render yellow ball entry
+        if (this.scoreEntryMethod === ScoreEntryMethod.YELLOWBALL) {
             const yellowBallIndex = (this.currentHole - 1) % 3;
             const lostYellowBall = pageNavigator.scorecard.lostYellowBall;
             for (let i = 0; i < 3; i++){
@@ -399,26 +424,25 @@ class ScoreEntryPage {
             }
         }
 
+        //Render flag entry
+        if (this.scoreEntryMethod === ScoreEntryMethod.FLAG) {
+            this.scoreEntrySelect.value = pageNavigator.scorecard.flag;
+            this.scoreEntrySelect.disabled = !this.isFlagHole();
+        }
+
         // Update score input with saved score for this hole
         for(let i =0; i < pageNavigator.scorecard.players.length; i++) {
             const score = pageNavigator.scorecard.scores[i].gross[this.currentHole - 1];
             this.scoreInputArray[i].value = `${score ?? ''}`;
         }
 
-        if (this.scoreEntryMethod === SCRAMBLE_SCORE_ENTRY) {
-            const comp = pageNavigator.scorecard.competition;
-
-            if (comp.type === Competition.Type.SCRAMBLE) {
-                this.scoreEntrySelect.value = pageNavigator.scorecard.teeShot[this.currentHole - 1];
-            }
-
-            if (comp.type === Competition.Type.FLAG) {
-                this.scoreEntrySelect.value = pageNavigator.scorecard.flag;
-            }
+        //Render tee-shot for scramble
+        if (this.scoreEntryMethod === ScoreEntryMethod.SCRAMBLE) {
+            this.scoreEntrySelect.value = pageNavigator.scorecard.teeShot[this.currentHole - 1];
         }
 
         // Update next score (only for basic score entry)
-        if (this.scoreEntryMethod === BASIC_SCORE_ENTRY) {
+        if (this.scoreEntryMethod === ScoreEntryMethod.BASIC) {
             if (this.currentHole === 18) {
                 this.nextHoleNumber.textContent = '';
                 this.nextScore.textContent = '';

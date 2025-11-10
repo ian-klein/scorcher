@@ -193,7 +193,9 @@ export class Scorecard {
                 const shotsConsumed = this.scores[0].gross[index];
                 if (shotsRemaining <= 0) {
                     //No more shots
-                    excessScores.push(index+1);
+                    if (shotsConsumed) {
+                        excessScores.push(index+1);
+                    }
                 } else if (shotsRemaining <= this.players[0].tees.par[index]) {
                     //Flag on this hole
                     shotsRemaining = 0;
