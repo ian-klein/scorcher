@@ -117,7 +117,6 @@ class ScoreEntryPage {
         }
     }
 
-    //Returns <0 when shots exhausted, 0 when flag hole, >0 when shots remaining
     isFlagHole() {
         const player = pageNavigator.scorecard.players[this.currentPlayer];
         let shotsRemaining = Number(player.tees.parTotal) + Number(player.ph);
