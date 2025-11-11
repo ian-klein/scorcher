@@ -105,7 +105,7 @@ export class Score {
 
 export class Scorecard {    
     static FLAG_VALUES= [
-        { value: 'X', text: '' },
+        { value: '0', text: '' },
         { value: 'F', text: 'F' },
         { value: 'L', text: 'L' },
         { value: 'A', text: 'A' },
@@ -189,16 +189,16 @@ export class Scorecard {
             
         } else if (this.competition.type === Competition.Type.FLAG) {
             let shotsRemaining = Number(this.players[0].tees.parTotal) + Number(this.players[0].ph);
-            for (let index=0; index < 18; index++) {
-                const shotsConsumed = this.scores[0].gross[index];
+            for (let hole = 1; hole <= 18; hole++) {
+                const shotsConsumed = this.scores[0].gross[hole-1];
                 if (shotsRemaining <= 0) {
-                    //No more shots
-                    if (shotsConsumed) {
-                        excessScores.push(index+1);
+                    if (shotsConsumed && shotsConsumed !== 'X') {
+                        excessScores.push(hole);
                     }
                 } else {
-                    //Shots are remaining
-                    if (!shotsConsumed || shotsConsumed === 'X') {
+                    if (!shotsConsumed) {
+                        missingScores.push(hole);
+                    } else if (shotsConsumed === 'X') {
                         shotsRemaining = -1;
                     } else {
                         shotsRemaining -= Number(shotsConsumed);

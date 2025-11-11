@@ -290,8 +290,8 @@ class ReviewPage {
                 control.textContent = teeShot[index];
             });
         } else if (comp.type === Competition.Type.FLAG) {
-            this.ptsHeaderOut.textContent = 'shots';
-            this.ptsHeaderBack.textContent = 'shots';
+            this.ptsHeaderOut.textContent = 'Shots';
+            this.ptsHeaderBack.textContent = 'Shots';
             const player = pageNavigator.scorecard.players[0];
 
             let shotsRemaining = Number(player.tees.parTotal) + Number(player.ph);
@@ -300,16 +300,19 @@ class ReviewPage {
                 if (shotsRemaining <= 0) {
                     //No more shots
                     control.textContent = '';
-                } else if (shotsRemaining <= player.tees.par[index]) {
-                    //Flag on this hole
+                } else if (shotsConsumed === 'X') {
+                    shotsRemaining = 1;
                     control.textContent = pageNavigator.scorecard.flag;
-                    shotsRemaining = 0;
                 } else {
                     //Shots remaining
                     shotsRemaining -= shotsConsumed;
                     control.textContent = shotsRemaining;
                 }
             });
+            this.outScoreTotal.textContent = '';
+            this.backScoreTotal.textContent = '';
+            this.overallScoreTotal.textContent = '';
+            this.nettScoreTotal.textContent = '';
         }
         else {
             this.ptsHeaderOut.textContent = 'Pts';

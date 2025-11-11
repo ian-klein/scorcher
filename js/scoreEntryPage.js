@@ -124,7 +124,7 @@ class ScoreEntryPage {
         let hole = 1;
         while (hole < this.currentHole) {
             const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[hole - 1];
-            if (!gross || gross === 'X') {
+            if (gross === 'X') {
                 shotsRemaining = -1;
             } else {
                 shotsRemaining -= Number(gross);
@@ -135,10 +135,11 @@ class ScoreEntryPage {
             hole++;
         }
 
+        //The current hole is split from the main loop for when this is called from within handleKeypadInput
         if (hole === this.currentHole) {
             const currentScoreText = this.scoreInputArray[this.currentPlayer].value;
-            if (!currentScoreText || currentScoreText === 'X') {
-                shotsRemaining = -1; //Flag must be planted
+            if (currentScoreText === 'X') {
+                shotsRemaining = -1; 
             } else {
                 shotsRemaining -= Number(currentScoreText);
             }
@@ -236,9 +237,11 @@ class ScoreEntryPage {
             const shotsRemaining = this.getShotsRemaining();
             if (shotsRemaining <= 0) {
                 autoNavigate = false;
-                if (shotsRemaining === 0) { //The ball made iot to the hole!
+                if (shotsRemaining === 0) { //The ball made it to the hole!
                     this.flagSelect.value = "0";
                     pageNavigator.scorecard.flag = "0";
+                } else {
+                    scoreInput.value = 'X';
                 }
                 this.renderFlagSelect(true, shotsRemaining === 0);
             } else {
@@ -456,7 +459,7 @@ class ScoreEntryPage {
             this.flagSelect.value = pageNavigator.scorecard.flag;
 
             const shotsRemaining = this.getShotsRemaining();
-            if (shotsRemaining <= 0) {
+            if (shotsRemaining < pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1]) {
                 this.renderFlagSelect(true, shotsRemaining === 0);
             } else {
                 this.renderFlagSelect(false, false);

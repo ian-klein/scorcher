@@ -41,7 +41,24 @@ export default async function getResults(request, context) {
             const grossBack = scorecard.scores[s].adjusted.slice(9).reduce((a, b) => a + b, 0);
             const grossTotal = grossOut + grossBack;
 
-            const grossRow = [scorecard.id, name, ph, ...gross.slice(0, 9), grossOut, ...gross.slice(9), grossBack, grossTotal, grossTotal - scorecard.players[s].ph].join(',') + '\n';
+            let grossRow = '';
+            if (comp.type === Competition.Type.FLAG) {
+                let shotsRemaining = Number(scorecard.players[s].tees.parTotal) + Number(scorecard.players[s].ph);
+                for (let hole = 1; hole <= 18 && shotsRemaining > 0; hole++) {
+                    const shotsConsumed = scorecard.scores[s].gross[hole-1];
+                    if (shotsConsumed === 'X') {
+                        shotsRemaining = -1;
+                    } else {
+                        shotsRemaining -= Number(shotsConsumed);
+                    }
+                }
+
+                const result = shotsRemaining > 0 ? shotsRemaining : scorecard.flag;
+                grossRow = [scorecard.id, name, ph, ...gross.slice(0, 9), '', ...gross.slice(9), '', '', result].join(',') + '\n';
+            } else {
+                grossRow = [scorecard.id, name, ph, ...gross.slice(0, 9), grossOut, ...gross.slice(9), grossBack, grossTotal, grossTotal - scorecard.players[s].ph].join(',') + '\n';
+            }
+
             csvContent += grossRow;
         }
 
