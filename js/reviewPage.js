@@ -12,12 +12,12 @@ class ReviewPage {
     constructor() {
         this.competitionName = document.getElementById('reviewCompetitionName');
         this.competitionDate = document.getElementById('reviewCompetitionDate');
-        
-        this.playerHeader = [    
-            {label: document.getElementById('reviewPlayerLabelA'), name: document.getElementById('reviewPlayerNameA'), ph: document.getElementById('reviewPlayerPhA')},
-            {label: document.getElementById('reviewPlayerLabelB'), name: document.getElementById('reviewPlayerNameB'), ph: document.getElementById('reviewPlayerPhB')},
-            {label: document.getElementById('reviewPlayerLabelC'), name: document.getElementById('reviewPlayerNameC'), ph: document.getElementById('reviewPlayerPhC')},
-            {label: document.getElementById('reviewPlayerLabelD'), name: document.getElementById('reviewPlayerNameD'), ph: document.getElementById('reviewPlayerPhD')}
+
+        this.playerHeader = [
+            { label: document.getElementById('reviewPlayerLabelA'), name: document.getElementById('reviewPlayerNameA'), ph: document.getElementById('reviewPlayerPhA') },
+            { label: document.getElementById('reviewPlayerLabelB'), name: document.getElementById('reviewPlayerNameB'), ph: document.getElementById('reviewPlayerPhB') },
+            { label: document.getElementById('reviewPlayerLabelC'), name: document.getElementById('reviewPlayerNameC'), ph: document.getElementById('reviewPlayerPhC') },
+            { label: document.getElementById('reviewPlayerLabelD'), name: document.getElementById('reviewPlayerNameD'), ph: document.getElementById('reviewPlayerPhD') }
         ];
 
         this.backBtn = document.getElementById('backBtn');
@@ -44,7 +44,7 @@ class ReviewPage {
         this.scoreSubmitted = document.getElementById('scoreSubmitted');
 
         this.wireEvents();
-    }        
+    }
 
     wireEvents() {
         this.backBtn.addEventListener('click', () => this.onBackBtnClick());
@@ -65,7 +65,7 @@ class ReviewPage {
         if (warningMsg) {
             alert(warningMsg);
         }
- 
+
         backend.showSpinner();
         const isSubmitSuccess = await backend.submitScorecard(pageNavigator.scorecard);
         backend.hideSpinner();
@@ -135,18 +135,26 @@ class ReviewPage {
         if (comp.numberOfScores() > 1) {
             const scores = pageNavigator.scorecard.scores;
 
-            for (let h = 0; h < 18; h++)
-            {
-                pageNavigator.scorecard.points[h] = 0;
-                for (let i = 0; i < comp.numberOfScores(); i++) {
-                    pageNavigator.scorecard.points[h] += scores[i].points[h];
+            if (comp.type === Competition.Type.MULTIPLIER) {
+                for (let h = 0; h < 18; h++) {
+                    pageNavigator.scorecard.points[h] = 1;
+                    for (let i = 0; i < comp.numberOfScores(); i++) {
+                        pageNavigator.scorecard.points[h] *= scores[i].points[h];
+                    }
                 }
+            } else {
+                for (let h = 0; h < 18; h++) {
+                    pageNavigator.scorecard.points[h] = 0;
+                    for (let i = 0; i < comp.numberOfScores(); i++) {
+                        pageNavigator.scorecard.points[h] += scores[i].points[h];
+                    }
 
-                if (comp.type === Competition.Type.YELLOWBALL) {
-                    const lostYellowBall = pageNavigator.scorecard.lostYellowBall;
-                    if (!lostYellowBall || h + 1 < lostYellowBall) {
-                        const yellowBallIndex = h % 3;
-                        pageNavigator.scorecard.points[h] += scores[yellowBallIndex].points[h];
+                    if (comp.type === Competition.Type.YELLOWBALL) {
+                        const lostYellowBall = pageNavigator.scorecard.lostYellowBall;
+                        if (!lostYellowBall || h + 1 < lostYellowBall) {
+                            const yellowBallIndex = h % 3;
+                            pageNavigator.scorecard.points[h] += scores[yellowBallIndex].points[h];
+                        }
                     }
                 }
             }
@@ -170,7 +178,7 @@ class ReviewPage {
                 control.textContent = scores[0].gross[index];
             }
             else {
-                const backgroundColor = [ 'white', 'white', 'white' ];
+                const backgroundColor = ['white', 'white', 'white'];
                 if (comp.type === Competition.Type.YELLOWBALL) {
                     const lostYellowBall = pageNavigator.scorecard.lostYellowBall;
                     if (!lostYellowBall || index + 1 < lostYellowBall) {
@@ -198,7 +206,7 @@ class ReviewPage {
                     break;
                 }
             }
-        
+
             this.outScoreTotal.textContent = outScoreTotal + star;
             this.backScoreTotal.textContent = backScoreTotal + star;
             this.overallScoreTotal.textContent = overallScoreTotal + star;
@@ -238,7 +246,7 @@ class ReviewPage {
 
         this.outPointsTotal.textContent = outPointsTotal;
         this.backPointsTotal.textContent = backPointsTotal;
-        this.overallPointsTotal.textContent = overallPointsTotal;    
+        this.overallPointsTotal.textContent = overallPointsTotal;
     }
 
     renderStrokeplayScores() {
@@ -333,7 +341,7 @@ class ReviewPage {
             control.textContent = (index + 1).toString() + '(' + pageNavigator.scorecard.players[0].tees.par[index] + ')';
         });
     }
-   
+
     async renderSubmitButton(isOnSubmit) {
         if (isOnSubmit) {
             this.submitBtn.disabled = true;
@@ -345,13 +353,13 @@ class ReviewPage {
             backend.showSpinner();
             const scorecard = await backend.getScorecard(pageNavigator.scorecard.competition, pageNavigator.scorecard.id);
             backend.hideSpinner();
-            
+
             if (scorecard && scorecard.scores.length == pageNavigator.scorecard.scores.length) {
                 for (let h = 0; h < 18; h++) {
                     for (let s = 0; s < scorecard.scores.length; s++)
-                    if (scorecard.scores[s].gross[h] !== pageNavigator.scorecard.scores[s].gross[h]) {
-                        return;
-                    }
+                        if (scorecard.scores[s].gross[h] !== pageNavigator.scorecard.scores[s].gross[h]) {
+                            return;
+                        }
                 }
 
                 const comp = pageNavigator.scorecard.competition;

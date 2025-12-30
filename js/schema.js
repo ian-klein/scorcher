@@ -16,8 +16,8 @@ export class Player {
         this.tees = null;
         this.shots = null;
         this.akq = {     //The AKQ hole numbers for an AKQ comp
-            ace: -1, 
-            king: -1, 
+            ace: -1,
+            king: -1,
             queen: -1
         };
 
@@ -31,31 +31,35 @@ export class Competition {
     static Type = Object.freeze({
         STABLEFORD: 'stableford',
         STROKEPLAY: 'strokeplay',
-        AKQ:        'akq',
-        FLAG:       'flag',
+        AKQ: 'akq',
+        FLAG: 'flag',
         GREENSOMES: 'greensomes',
-        FOURSOMES:  'foursomes',
-        SCRAMBLE:   'scramble',
-        FOURBALL:   'fourball',
-        WALTZ:      'waltz',
+        FOURSOMES: 'foursomes',
+        SCRAMBLE: 'scramble',
+        FOURBALL: 'fourball',
+        WALTZ: 'waltz',
         YELLOWBALL: 'yellowball',
-        OTHER:      'other'
+        BOGEYPAR: 'bogeypar',
+        MULTIPLIER: 'multiplier',
+        OTHER: 'other'
     });
 
     static INFO = [
-        {type: Competition.Type.STABLEFORD, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.STROKEPLAY, teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.AKQ,        teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.FLAG,       teamSize: 1, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.GREENSOMES, teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.FOURSOMES,  teamSize: 2, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.SCRAMBLE,   teamSize: 3, numberOfScores: 1, isSupported: true,  scoring: Competition.Type.STROKEPLAY },
-        {type: Competition.Type.FOURBALL,   teamSize: 2, numberOfScores: 2, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.WALTZ,      teamSize: 3, numberOfScores: 3, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.YELLOWBALL, teamSize: 3, numberOfScores: 3, isSupported: true,  scoring: Competition.Type.STABLEFORD },
-        {type: Competition.Type.OTHER,      teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
+        { type: Competition.Type.STABLEFORD, teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.STROKEPLAY, teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STROKEPLAY },
+        { type: Competition.Type.AKQ, teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.FLAG, teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STROKEPLAY },
+        { type: Competition.Type.GREENSOMES, teamSize: 2, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.FOURSOMES, teamSize: 2, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.SCRAMBLE, teamSize: 3, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STROKEPLAY },
+        { type: Competition.Type.FOURBALL, teamSize: 2, numberOfScores: 2, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.WALTZ, teamSize: 3, numberOfScores: 3, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.YELLOWBALL, teamSize: 3, numberOfScores: 3, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.BOGEYPAR, teamSize: 1, numberOfScores: 1, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.MULTIPLIER, teamSize: 2, numberOfScores: 2, isSupported: true, scoring: Competition.Type.STABLEFORD },
+        { type: Competition.Type.OTHER, teamSize: 0, numberOfScores: 0, isSupported: false, scoring: Competition.Type.STROKEPLAY },
     ];
-    
+
     constructor(obj) {
         if (obj) {
             Object.assign(this, obj);
@@ -103,8 +107,8 @@ export class Score {
     }
 }
 
-export class Scorecard {    
-    static FLAG_VALUES= [
+export class Scorecard {
+    static FLAG_VALUES = [
         { value: '0', text: '' },
         { value: 'F', text: 'F' },
         { value: 'L', text: 'L' },
@@ -132,7 +136,7 @@ export class Scorecard {
             Object.assign(this, obj);
         } else {
             this.competition = new Competition();
-            this.players = [ new Player() ];
+            this.players = [new Player()];
         }
 
         if (!this.id) {
@@ -168,17 +172,17 @@ export class Scorecard {
 
         if (this.competition.type === Competition.Type.FOURBALL) {
             for (let hole = 1; hole <= 18; hole++) {
-                if (!this.scores[0].gross[hole-1] && !this.scores[1].gross[hole-1]) {
+                if (!this.scores[0].gross[hole - 1] && !this.scores[1].gross[hole - 1]) {
                     missingScores.push(hole);
                 }
-                if (this.scores[0].gross[hole-1] && this.scores[1].gross[hole-1]) {
+                if (this.scores[0].gross[hole - 1] && this.scores[1].gross[hole - 1]) {
                     excessScores.push(hole);
                 }
-            }            
+            }
         } else if (this.competition.type === Competition.Type.WALTZ) {
             for (let hole = 1; hole <= 18; hole++) {
-                const numRequired = ((hole-1) % 3) + 1;
-                const numEntered = (this.scores[0].gross[hole-1] ? 1 : 0) + (this.scores[1].gross[hole-1] ? 1 : 0) + (this.scores[2].gross[hole-1] ? 1 : 0);
+                const numRequired = ((hole - 1) % 3) + 1;
+                const numEntered = (this.scores[0].gross[hole - 1] ? 1 : 0) + (this.scores[1].gross[hole - 1] ? 1 : 0) + (this.scores[2].gross[hole - 1] ? 1 : 0);
                 if (numEntered < numRequired) {
                     missingScores.push(hole);
                 }
@@ -186,11 +190,11 @@ export class Scorecard {
                     excessScores.push(hole);
                 }
             }
-            
+
         } else if (this.competition.type === Competition.Type.FLAG) {
             let shotsRemaining = Number(this.players[0].tees.parTotal) + Number(this.players[0].ph);
             for (let hole = 1; hole <= 18; hole++) {
-                const shotsConsumed = this.scores[0].gross[hole-1];
+                const shotsConsumed = this.scores[0].gross[hole - 1];
                 if (shotsRemaining <= 0) {
                     if (shotsConsumed && shotsConsumed !== 'X') {
                         excessScores.push(hole);
@@ -204,10 +208,10 @@ export class Scorecard {
                         shotsRemaining -= Number(shotsConsumed);
                     }
                 }
-            }            
+            }
         } else {
             for (let hole = 1; hole <= 18; hole++) {
-                const grossScores = this.scores.map(s => s.gross[hole-1]);
+                const grossScores = this.scores.map(s => s.gross[hole - 1]);
                 if (grossScores.includes(null)) {
                     missingScores.push(hole);
                 }

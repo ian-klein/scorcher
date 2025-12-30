@@ -11,14 +11,14 @@ import { ui } from './ui.js';
 const SAVED_SCORES_KEY = 'saved_scores_v3';
 
 const ScoreEntryMethod = Object.freeze({
-    BASIC:      'basic',                    //Individual, single score
-    SCRAMBLE:   Competition.Type.SCRAMBLE,  //Adds tee-shot dropdown
-    FLAG:       Competition.Type.FLAG,      //Adds flag dropdown
-    WALTZ:      Competition.Type.WALTZ,     //1,2,3 scores
+    BASIC: 'basic',                    //Individual, single score
+    SCRAMBLE: Competition.Type.SCRAMBLE,  //Adds tee-shot dropdown
+    FLAG: Competition.Type.FLAG,      //Adds flag dropdown
+    WALTZ: Competition.Type.WALTZ,     //1,2,3 scores
     YELLOWBALL: Competition.Type.YELLOWBALL,//All 3 scores, with lost ball checkbox
-    FOURBALL:   Competition.Type.FOURBALL   //1 of 2 scores
+    FOURBALL: Competition.Type.FOURBALL,  //1 of 2 scores
+    MULTIPLIER: Competition.Type.MULTIPLIER //2 scores, both must be entered
 });
-
 const STYLE_SUFFIX = '-score-grid';  //Suffix for the grid styles defined in styles.css
 
 class ScoreEntryPage {
@@ -28,13 +28,13 @@ class ScoreEntryPage {
         this.competitionName = document.getElementById('competitionName');
         this.competitionDate = document.getElementById('competitionDate');
 
-        this.playerHeader = [    
-            {label: document.getElementById('scorePlayerLabelA'), name: document.getElementById('scorePlayerNameA'), ph: document.getElementById('scorePlayerPhA')},
-            {label: document.getElementById('scorePlayerLabelB'), name: document.getElementById('scorePlayerNameB'), ph: document.getElementById('scorePlayerPhB')},
-            {label: document.getElementById('scorePlayerLabelC'), name: document.getElementById('scorePlayerNameC'), ph: document.getElementById('scorePlayerPhC')},
-            {label: document.getElementById('scorePlayerLabelD'), name: document.getElementById('scorePlayerNameD'), ph: document.getElementById('scorePlayerPhD')}
+        this.playerHeader = [
+            { label: document.getElementById('scorePlayerLabelA'), name: document.getElementById('scorePlayerNameA'), ph: document.getElementById('scorePlayerPhA') },
+            { label: document.getElementById('scorePlayerLabelB'), name: document.getElementById('scorePlayerNameB'), ph: document.getElementById('scorePlayerPhB') },
+            { label: document.getElementById('scorePlayerLabelC'), name: document.getElementById('scorePlayerNameC'), ph: document.getElementById('scorePlayerPhC') },
+            { label: document.getElementById('scorePlayerLabelD'), name: document.getElementById('scorePlayerNameD'), ph: document.getElementById('scorePlayerPhD') }
         ];
-        
+
         // Hole elements
         this.holeSection = document.getElementById('holeSection');
         this.holeNumber = document.getElementById('holeNumber');
@@ -58,13 +58,13 @@ class ScoreEntryPage {
             this.scoreInputB,
             this.scoreInputC
         ];
-        
+
         // Keypad elements
         this.keypad = document.querySelector('.keypad');
         this.numberKeys = document.querySelectorAll('.number-key');
         this.specialKey = document.querySelector('.special-key');
         this.deleteKey = document.querySelector('.delete-key');
-        
+
         // Action buttons
         this.reviewBtn = document.getElementById('reviewBtn');
         this.backBtn = document.getElementById('scoreEntryBackBtn');
@@ -81,7 +81,7 @@ class ScoreEntryPage {
     }
 
     loadScorecard() {
-        pageNavigator.scorecard = new Scorecard({competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players});
+        pageNavigator.scorecard = new Scorecard({ competition: pageNavigator.scorecard.competition, players: pageNavigator.scorecard.players });
 
         const rawScorecard = localStorage.getItem(SAVED_SCORES_KEY);
         if (rawScorecard) {
@@ -104,6 +104,8 @@ class ScoreEntryPage {
     gridStyleFor(scoreEntryMethod) {
         if (scoreEntryMethod === ScoreEntryMethod.FLAG) {
             scoreEntryMethod = ScoreEntryMethod.BASIC; //Use basic grid style for flag comps
+        } else if (scoreEntryMethod === ScoreEntryMethod.MULTIPLIER) {
+            scoreEntryMethod = ScoreEntryMethod.FOURBALL; //Use 4ball grid style for multiplier comps
         }
         return scoreEntryMethod + STYLE_SUFFIX;
     }
@@ -139,7 +141,7 @@ class ScoreEntryPage {
         if (hole === this.currentHole) {
             const currentScoreText = this.scoreInputArray[this.currentPlayer].value;
             if (currentScoreText === 'X') {
-                shotsRemaining = -1; 
+                shotsRemaining = -1;
             } else {
                 shotsRemaining -= Number(currentScoreText);
             }
@@ -147,7 +149,7 @@ class ScoreEntryPage {
 
         return shotsRemaining;
     }
-    
+
     wireEvents() {
         // Navigation arrows
         this.prevHole.addEventListener('click', (e) => {
@@ -158,21 +160,21 @@ class ScoreEntryPage {
             e.preventDefault();
             this.navigateHole(1);
         });
-        
+
         // Keypad buttons
         this.keypad.addEventListener('click', (e) => {
             e.preventDefault();
             const btn = e.target.closest('.key-btn');
             if (!btn) return;
-            
+
             const value = btn.dataset.value;
             this.handleKeypadInput(value);
         });
-        
+
         // Action buttons
         this.reviewBtn.addEventListener('click', () => this.onReviewBtnClick());
         this.backBtn.addEventListener('click', () => this.onBackBtnClick());
-        
+
         // Prevent score fields from being edited
         this.scoreInputA.addEventListener('keydown', (e) => {
             e.preventDefault();
@@ -196,10 +198,10 @@ class ScoreEntryPage {
 
     navigateHole(direction) {
         let newHole = this.currentHole + direction;
-        
+
         if (newHole < 1) newHole = 18;
         if (newHole > 18) newHole = 1;
-        
+
         this.currentHole = newHole;
         this.renderHoleScore();
     }
@@ -208,7 +210,7 @@ class ScoreEntryPage {
         let autoNavigate = this.scoreEntryMethod === ScoreEntryMethod.BASIC || this.scoreEntryMethod === ScoreEntryMethod.FLAG;
         const scoreInput = this.scoreInputArray[this.currentPlayer];
         const currentScore = scoreInput.value;
-        
+
         if (value === 'DEL') {
             // Delete last character
             scoreInput.value = currentScore.slice(0, -1);
@@ -273,14 +275,22 @@ class ScoreEntryPage {
 
     calculatePoints() {
         const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1];
+        const blob = pageNavigator.scorecard.competition.type === Competition.Type.BOGEYPAR ? -1 : 0
 
         if (!gross || gross === 'X' || gross === '' || gross === 0) {
-            return 0;
-        } else {
-            const par = pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1];
-            const nett = gross - pageNavigator.scorecard.players[this.currentPlayer].shots[this.currentHole - 1];
+            return blob;
+        }
 
-            let points = Math.max(0,  par-nett + 2);
+        const par = pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1];
+        const nett = gross - pageNavigator.scorecard.players[this.currentPlayer].shots[this.currentHole - 1];
+
+
+        if (pageNavigator.scorecard.competition.type === Competition.Type.BOGEYPAR) {
+            const points = Math.min(1, Math.max(-1, par - nett));
+            return points;
+        }
+        else {
+            let points = Math.max(0, par - nett + 2);
 
             if (pageNavigator.scorecard.competition.type === Competition.Type.AKQ) {
                 if (this.currentHole == pageNavigator.scorecard.players[this.currentPlayer].akq.ace) {
@@ -298,7 +308,7 @@ class ScoreEntryPage {
             return points;
         }
     }
-    
+
     calculateAdjusted() {
         const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1];
         const par = pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1];
@@ -408,7 +418,7 @@ class ScoreEntryPage {
         if (this.scoreEntryMethod === ScoreEntryMethod.YELLOWBALL) {
             const yellowBallIndex = (this.currentHole - 1) % 3;
             const lostYellowBall = pageNavigator.scorecard.lostYellowBall;
-            for (let i = 0; i < 3; i++){
+            for (let i = 0; i < 3; i++) {
                 if (i === yellowBallIndex && (!lostYellowBall || this.currentHole < lostYellowBall)) {
                     this.scoreInputArray[i].style.backgroundColor = 'yellow';
                 }
@@ -422,18 +432,18 @@ class ScoreEntryPage {
                 this.lostYellowBallCheckbox.disabled = false;
             }
             else {
-                this.lostYellowBallCheckbox.disabled = pageNavigator.scorecard.lostYellowBall !== this.currentHole; 
-                this.lostYellowBallCheckbox.checked = pageNavigator.scorecard.lostYellowBall === this.currentHole; 
+                this.lostYellowBallCheckbox.disabled = pageNavigator.scorecard.lostYellowBall !== this.currentHole;
+                this.lostYellowBallCheckbox.checked = pageNavigator.scorecard.lostYellowBall === this.currentHole;
             }
         }
         else {
-            for(let i =0; i < pageNavigator.scorecard.players.length; i++) {
+            for (let i = 0; i < pageNavigator.scorecard.players.length; i++) {
                 this.scoreInputArray[i].style.backgroundColor = 'white';
             }
         }
 
         // Update score input with saved score for this hole
-        for(let i =0; i < pageNavigator.scorecard.players.length; i++) {
+        for (let i = 0; i < pageNavigator.scorecard.players.length; i++) {
             const score = pageNavigator.scorecard.scores[i].gross[this.currentHole - 1];
             this.scoreInputArray[i].value = `${score ?? ''}`;
         }
