@@ -273,16 +273,16 @@ class ScoreEntryPage {
         this.saveScorecard();
     }
 
-    calculatePoints() {
-        const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1];
+    calculatePoints(player = this.currentPlayer, hole = this.currentHole) {
+        const gross = pageNavigator.scorecard.scores[player].gross[hole - 1];
         const blob = pageNavigator.scorecard.competition.type === Competition.Type.BOGEYPAR ? -1 : 0
 
         if (!gross || gross === 'X' || gross === '' || gross === 0) {
             return blob;
         }
 
-        const par = pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1];
-        const nett = gross - pageNavigator.scorecard.players[this.currentPlayer].shots[this.currentHole - 1];
+        const par = pageNavigator.scorecard.players[player].tees.par[hole - 1];
+        const nett = gross - pageNavigator.scorecard.players[player].shots[hole - 1];
 
 
         if (pageNavigator.scorecard.competition.type === Competition.Type.BOGEYPAR) {
@@ -293,13 +293,13 @@ class ScoreEntryPage {
             let points = Math.max(0, par - nett + 2);
 
             if (pageNavigator.scorecard.competition.type === Competition.Type.AKQ) {
-                if (this.currentHole == pageNavigator.scorecard.players[this.currentPlayer].akq.ace) {
+                if (hole == pageNavigator.scorecard.players[player].akq.ace) {
                     points = points * 4;
                 }
-                if (this.currentHole == pageNavigator.scorecard.players[this.currentPlayer].akq.king) {
+                if (hole == pageNavigator.scorecard.players[player].akq.king) {
                     points = points * 3;
                 }
-                if (this.currentHole == pageNavigator.scorecard.players[this.currentPlayer].akq.queen) {
+                if (hole == pageNavigator.scorecard.players[player].akq.queen) {
                     points = points * 2;
                 }
             }
@@ -309,10 +309,10 @@ class ScoreEntryPage {
         }
     }
 
-    calculateAdjusted() {
-        const gross = pageNavigator.scorecard.scores[this.currentPlayer].gross[this.currentHole - 1];
-        const par = pageNavigator.scorecard.players[this.currentPlayer].tees.par[this.currentHole - 1];
-        const shots = pageNavigator.scorecard.players[this.currentPlayer].shots[this.currentHole - 1];
+    calculateAdjusted(player = this.currentPlayer, hole = this.currentHole) {
+        const gross = pageNavigator.scorecard.scores[player].gross[hole - 1];
+        const par = pageNavigator.scorecard.players[player].tees.par[hole - 1];
+        const shots = pageNavigator.scorecard.players[player].shots[hole - 1];
 
         if (!gross || gross === 'X' || gross === '' || gross === 0) {
             return par + shots + 2;
@@ -321,12 +321,21 @@ class ScoreEntryPage {
         }
     }
 
+
     onScoreInputFocus(e) {
         const index = e.target.dataset.index;
         this.currentPlayer = parseInt(index);
     }
 
     onReviewBtnClick() {
+        //In case anything was changed after entry, recalculate before review
+        for (let player = 0; player < pageNavigator.scorecard.players.length; player++) {
+            for (let hole = 1; hole <= 18; hole++) {
+                pageNavigator.scorecard.scores[player].points[hole - 1] = this.calculatePoints(player, hole);
+                pageNavigator.scorecard.scores[player].adjusted[hole - 1] = this.calculateAdjusted(player, hole);
+            }
+        }
+        this.saveScorecard();
         pageNavigator.goto('review');
         reviewPage.init();
     }

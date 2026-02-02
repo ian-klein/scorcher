@@ -347,45 +347,16 @@ class ReviewPage {
             this.submitBtn.disabled = true;
             this.scoreSubmitted.style.display = 'block';
         } else {
-            this.submitBtn.disabled = false;
-            this.scoreSubmitted.style.display = 'none';
-
             backend.showSpinner();
             const scorecard = await backend.getScorecard(pageNavigator.scorecard.competition, pageNavigator.scorecard.id);
             backend.hideSpinner();
 
-            if (scorecard && scorecard.scores.length == pageNavigator.scorecard.scores.length) {
-                for (let h = 0; h < 18; h++) {
-                    for (let s = 0; s < scorecard.scores.length; s++)
-                        if (scorecard.scores[s].gross[h] !== pageNavigator.scorecard.scores[s].gross[h]) {
-                            return;
-                        }
-                }
-
-                const comp = pageNavigator.scorecard.competition;
-                if (comp.type === Competition.Type.SCRAMBLE) {
-                    for (let h = 0; h < 18; h++) {
-                        if (scorecard.teeShot[h] !== pageNavigator.scorecard.teeShot[h]) {
-                            return;
-                        }
-                    }
-                }
-
-                if (comp.type === Competition.Type.FLAG) {
-                    if (scorecard.flag !== pageNavigator.scorecard.flag) {
-                        return;
-                    }
-                }
-
-                if (comp.type === Competition.Type.YELLOWBALL) {
-                    if (scorecard.lostYellowBall !== pageNavigator.scorecard.lostYellowBall) {
-                        return;
-                    }
-                }
-
-                //Scores are the same - all good
+            if (scorecard && scorecard.equals(pageNavigator.scorecard)) {
                 this.submitBtn.disabled = true;
                 this.scoreSubmitted.style.display = 'block';
+            } else {
+                this.submitBtn.disabled = false;
+                this.scoreSubmitted.style.display = 'none';
             }
         }
     }

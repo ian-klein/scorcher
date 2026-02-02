@@ -2,6 +2,9 @@
 
 'use strict';
 
+import { Scorecard } from './schema.js';
+
+
 class Backend {
     constructor() {
         this.spinnerOverlay = document.getElementById('spinnerOverlay');
@@ -48,8 +51,8 @@ class Backend {
         });
 
         if (response && response.status === 200) {
-            const scorecard = await response.json();
-            return scorecard;
+            const scorecardJson = await response.text();
+            return Scorecard.fromJSON(scorecardJson);
         } else {
             return null;
         }
@@ -128,7 +131,7 @@ class Backend {
         const requestHeaders = {
             'Content-Type': 'application/json'
         };
-        
+
         const requestBody = JSON.stringify(body);
         const requestUrl = new URL('./.netlify/functions/' + urlSuffix, window.location.origin);
 

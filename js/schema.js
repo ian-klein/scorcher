@@ -25,6 +25,14 @@ export class Player {
             Object.assign(this, obj);
         }
     }
+
+    equals(other) {
+        return this.email === other.email &&
+            this.gender === other.gender &&
+            this.ph === other.ph &&
+            this.akq.ace === other.akq.ace && this.akq.king === other.akq.king && this.akq.queen === other.akq.queen;
+    }
+
 }
 
 export class Competition {
@@ -97,6 +105,12 @@ export class Competition {
     scoring() {
         return Competition.INFO.find(i => i.type === this.type).scoring;
     }
+
+    equals(other) {
+        return this.name === other.name &&
+            this.date === other.date &&
+            this.type == other.type;
+    }
 }
 
 export class Score {
@@ -104,6 +118,12 @@ export class Score {
         this.gross = new Array(18).fill(null);      //Gross score for each hole
         this.points = new Array(18).fill(0);        //Stableford points for each hole
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
+    }
+
+    equals(other) {
+        return this.gross.every((score, index) => score === other.gross[index]) &&
+            this.points.every((score, index) => score === other.points[index]) &&
+            this.adjusted.every((score, index) => score === other.adjusted[index]);
     }
 }
 
@@ -121,6 +141,8 @@ export class Scorecard {
             return new Competition(value);
         } else if (key === 'players' || key === 'team') {
             return value?.map(v => new Player(v));
+        } else if (key == 'scores   ') {
+            return value?.map(v => new Score(v));
         } else {
             return value;
         }
@@ -252,5 +274,15 @@ export class Scorecard {
         }
 
         return { errorMsg, warningMsg };
+    }
+
+    equals(other) {
+        return this.competition.equals(other.competition) &&
+            this.players.length == other.players.length && this.players.every((player, index) => player.equals(other.players[index])) &&
+            this.scores.length == other.scores.length && this.scores.every((score, index) => score.equals(other.scores[index])) &&
+            this.points.every((point, index) => point === other.points[index]) &&
+            this.lostYellowBall === other.lostYellowBall &&
+            this.flag === other.flag &&
+            this.teeShot.every((who, index) => who === other.teeShot[index]);
     }
 }
