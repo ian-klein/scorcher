@@ -114,10 +114,14 @@ export class Competition {
 }
 
 export class Score {
-    constructor() {
+    constructor(obj) {
         this.gross = new Array(18).fill(null);      //Gross score for each hole
         this.points = new Array(18).fill(0);        //Stableford points for each hole
         this.adjusted = new Array(18).fill(null);   //Stableford adjusted gross score for each hole
+
+        if (obj) {
+            Object.assign(this, obj);
+        }
     }
 
     equals(other) {
@@ -141,7 +145,7 @@ export class Scorecard {
             return new Competition(value);
         } else if (key === 'players' || key === 'team') {
             return value?.map(v => new Player(v));
-        } else if (key == 'scores   ') {
+        } else if (key == 'scores') {
             return value?.map(v => new Score(v));
         } else {
             return value;
