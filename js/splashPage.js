@@ -8,7 +8,7 @@ import { adminPage } from './adminPage.js';
 import { teamPage } from './teampage.js';
 import { Competition, Scorecard } from './schema.js';
 
-const PLAYER_STORAGE_KEY= 'player_v1'
+const PLAYER_STORAGE_KEY = 'player_v1'
 
 class SplashPage {
     constructor() {
@@ -19,7 +19,7 @@ class SplashPage {
         this.handicapValue = document.getElementById('handicapValue');
         this.emailInputGroup = document.getElementById('emailInputGroup');
         this.continueBtn = document.getElementById('continueBtn');
-        this.splashMessage = document.getElementById('splashMessage');                                                                                                                                                                                                                      
+        this.splashMessage = document.getElementById('splashMessage');
         this.adminBtn = document.getElementById('adminBtn');
         this.akqControls = document.getElementById('akqControls');
         this.aceHole = document.getElementById('aceHole');
@@ -47,7 +47,7 @@ class SplashPage {
     renderAdminButton() {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
-        const player = data.getPlayer(email,ph);
+        const player = data.getPlayer(email, ph);
         const isAdmin = player && player.admin;
 
         if (isAdmin) {
@@ -63,9 +63,10 @@ class SplashPage {
             this.continueBtn.disabled = !this.isTesting();
         } else {
             //Warn if the competition is in the past
-            if (this.competition.date !== data.today) {
+            if (this.competition.date !== data.today()) {
                 this.displayMessage('This competition has already taken place, so no need to enter scores now');
             }
+
 
             //Must have email and PH in order to score
             const email = this.emailInput.value.trim();
@@ -91,7 +92,7 @@ class SplashPage {
             const storedPlayer = JSON.parse(raw);
 
             this.emailInput.value = storedPlayer.email;
-            this.handicapValue.value = storedPlayer.ph;            
+            this.handicapValue.value = storedPlayer.ph;
         }
     }
 
@@ -128,7 +129,7 @@ class SplashPage {
         } else {
             this.testSelect.style.display = 'none';
         }
-    }                
+    }
 
     displayMessage(message) {
         this.splashMessage.textContent = message;
@@ -138,8 +139,8 @@ class SplashPage {
         const email = this.emailInput.value.trim();
         const ph = this.handicapValue.value.trim();
         if (email) {
-            const player = data.getPlayer(email,ph);
-            if (!player) {  
+            const player = data.getPlayer(email, ph);
+            if (!player) {
                 alert('Email address is not in the player database');
                 return;
             }
@@ -166,7 +167,7 @@ class SplashPage {
                 }
             }
 
-            pageNavigator.scorecard = new Scorecard({competition: this.competition, players: [ player ]});
+            pageNavigator.scorecard = new Scorecard({ competition: this.competition, players: [player] });
 
             if (this.competition.isIndividualCompetition()) {
                 scoreEntryPage.init();
@@ -174,7 +175,7 @@ class SplashPage {
             } else {
                 teamPage.init();
                 pageNavigator.goto('team');
-            }            
+            }
         }
     }
 
